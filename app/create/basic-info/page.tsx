@@ -12,7 +12,8 @@ import "react-date-picker/dist/DatePicker.css";
 import "react-calendar/dist/Calendar.css";
 import ReactSelectOptions from "../../components/select/ReactSelect";
 import MainFooter from "@/app/components/footer/MainFooter";
-
+import { storeData } from "@/app/utils/localstorage";
+import { useRouter } from "next/navigation";
 const regRequirements = [
   { title: "First name" },
   { title: "Last name" },
@@ -49,31 +50,56 @@ export type Value = ValuePiece | [ValuePiece, ValuePiece];
 const BasicInfo = () => {
   const [startDate, setStartDate] = useState<Value>(new Date());
   const [startTime, setStartTime] = useState<any>("10:00");
+  const router = useRouter();
+
+  const nextHandler = () => {
+    storeData("event-creation", [
+      {
+        title: "Basic info",
+        path: "basic-info",
+        isComplete: true,
+        isActive: false,
+      },
+      { title: "Details", path: "details", isComplete: false, isActive: false },
+      {
+        title: "Basic Tickets",
+        path: "ticket",
+        isComplete: false,
+        isActive: false,
+      },
+    ]);
+
+    router.push("/create/details");
+  };
+  const backHandler = () => {
+    router.push("/event");
+  };
+
   return (
-    <div className="w-full mb-20">
+    <div className="w-[94%] mx-auto  mb-20 ">
       <div>
         <h2 className="text-[24px] font-semibold">Organizers Information</h2>
         <p className="text-gray-500 w-[70%] mt-2 mb-9">
           Please provide your full name, email address, and a phone number where
           we can reach you.
         </p>
-        <div className="flex items-center space-x-6 ">
-          <div>
+        <div className="flex flex-col gap-6 md:flex-row items-center  ">
+          <div className="w-full md:basis-1/2">
             <label className="text-sm text-gray-800" htmlFor="organizerName">
               Organizer's name <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
-              className="h-[56px] text-sm w-[338px] text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
+              className="h-[56px] text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
             />
           </div>
-          <div>
+          <div className="w-full md:basis-1/2">
             <label className="text-sm text-gray-800" htmlFor="organizerName">
               Phone Number <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
-              className="h-[56px] text-sm w-[338px] text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
+              className="h-[56px] text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
             />
           </div>
         </div>
@@ -83,7 +109,7 @@ const BasicInfo = () => {
 
       <div>
         <h2 className="text-[24px] font-semibold">Event's Details</h2>
-        <p className="text-gray-500 w-[70%] mt-2 mb-9">
+        <p className="text-gray-500 w-[90%] md:w-[70%] mt-2 mb-9">
           Please provide your full name, email address, and a phone number where
           we can reach you.
         </p>
@@ -111,7 +137,7 @@ const BasicInfo = () => {
           /> */}
           <ReactSelectOptions options={options} />
         </div>
-        <div className="my-6">
+        <div className="my-6 ">
           <label
             className="text-sm block text-gray-800 mb-2"
             htmlFor="organizerName"
@@ -254,7 +280,7 @@ const BasicInfo = () => {
           ))}
         </div>
       </div>
-      <MainFooter />
+      <MainFooter nextHandler={nextHandler} backHandler={backHandler} />
     </div>
   );
 };

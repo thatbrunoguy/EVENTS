@@ -10,7 +10,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <section className="py-[50px] w-[80%] mx-auto">
+    <section className="py-[50px] w-full md:w-[80%] md:mx-auto">
       <BasicInfoHeader />
 
       <div className="flex justify-between">

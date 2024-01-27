@@ -23,10 +23,10 @@ const AddTicketType = ({ isModalOpen, setIsModalOpen }: Iprops) => {
     <section>
       <div
         onClick={() => setIsModalOpen(false)}
-        className="bg-black bg-opacity-50 fixed top-0 left-0 right-0 bottom-0"
+        className="bg-black bg-opacity-50 fixed z-20  top-0 left-0 right-0 bottom-0"
         aria-label="backdrop"
       />
-      <div className="w-[664px] min-h-[676px] bg-white rounded-lg fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+      <div className="w-[664px] min-h-[676px] z-50 bg-white rounded-lg fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
         <header className="font-semibold px-6 text-xl mb-8 border-b-[.8px] border-gray-300 py-6">
           Add a ticket type
         </header>

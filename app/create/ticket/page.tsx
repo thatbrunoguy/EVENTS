@@ -11,6 +11,9 @@ import AddTicketType from "@/app/components/ticketType/AddTicketType";
 import { IoEyeSharp } from "react-icons/io5";
 import { RiDeleteBin6Fill } from "react-icons/ri";
 import ConfirmDeleteModal from "@/app/components/modals/ConfirmDelete";
+import { updateLocalStorageField } from "@/app/utils/localstorage";
+import { useRouter } from "next/navigation";
+import MainFooter from "@/app/components/footer/MainFooter";
 
 const options = [
   { icon: <IoEyeSharp />, title: "View ticket type" },
@@ -19,6 +22,16 @@ const options = [
 const Ticket = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
+  const router = useRouter();
+
+  const nextHandler = () => {
+    updateLocalStorageField("event-creation", "ticket", "isComplete", true);
+
+    // router.push("/event");
+  };
+  const backHandler = () => {
+    router.push("/create/details");
+  };
   return (
     <div>
       {isModalOpen && (
@@ -86,6 +99,7 @@ const Ticket = () => {
           </button>
         </div>
       </div>
+      <MainFooter nextHandler={nextHandler} backHandler={backHandler} />
     </div>
   );
 };

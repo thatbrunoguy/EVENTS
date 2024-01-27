@@ -31,7 +31,7 @@ const Header = () => {
     },
   ]);
   return (
-    <div className="w-full flex justify-end pr-7 border-b">
+    <div className="w-full flex justify-center md:justify-end md:pr-7 border-b ">
       <div className="flex items-center space-x-4 py-4">
         <p className="text-sm">Select event</p>
         <div className="w-[1px] h-[48px] bg-gray-300" />
@@ -43,7 +43,7 @@ const Header = () => {
           align="end"
           menuButton={
             <MenuButton style={{ background: "transparent" }}>
-              <div className="border-2 px-3 py-3 flex items-center justify-between border-primaryPurple rounded-lg  text-primaryPurple w-[400px] bg-purple-100">
+              <div className="border-2 px-3 py-3 flex items-center justify-between border-primaryPurple rounded-lg  text-primaryPurple w-[60vw] md:min-w-[340px] md:w-[65%] lg:w-[400px] bg-purple-100">
                 <p>Eko Events centre</p>
                 <div className="text-xl">
                   <IoChevronDown />
@@ -56,7 +56,7 @@ const Header = () => {
           {options.map((item, index) => (
             <MenuItem className="hover:bg-lightPurple" key={index}>
               <div className="flex items-center space-x-5 p-3 ">
-                <div className="h-[72px] w-[72px] relative rounded overflow-hidden">
+                <div className="h-[72px] w-[72px] hidden relative rounded overflow-hidden">
                   <Image
                     fill
                     src="/assets/event.jpeg"

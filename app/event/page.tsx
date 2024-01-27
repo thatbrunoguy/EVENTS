@@ -10,62 +10,62 @@ import { useState } from "react";
 
 export default function Event() {
   const [options, setOptions] = useState<any>([
-    {
-      title: " Eko convections centre",
-      desc: "Lekki paradise estate 3, chevron drive",
-      date: "Saturday, October 22, 2023 | 7:30pm",
-      quantity: "0/10000",
-      price: "Free",
-    },
-    {
-      title: " Eko convections centre",
-      desc: "Lekki paradise estate 3, chevron drive",
-      date: "Saturday, October 22, 2023 | 7:30pm",
-      quantity: "0/10000",
-      price: "₦20,000.00 - ₦50,000.00 ",
-    },
-    {
-      title: " Eko convections centre",
-      desc: "Lekki paradise estate 3, chevron drive",
-      date: "Saturday, October 22, 2023 | 7:30pm",
-      quantity: "0/10000",
-      price: "Free",
-    },
-    {
-      title: " Eko convections centre",
-      desc: "Lekki paradise estate 3, chevron drive",
-      date: "Saturday, October 22, 2023 | 7:30pm",
-      quantity: "0/10000",
-      price: "₦20,000.00",
-    },
-    {
-      title: " Eko convections centre",
-      desc: "Lekki paradise estate 3, chevron drive",
-      date: "Saturday, October 22, 2023 | 7:30pm",
-      quantity: "0/10000",
-      price: "Free",
-    },
-    {
-      title: " Eko convections centre",
-      desc: "Lekki paradise estate 3, chevron drive",
-      date: "Saturday, October 22, 2023 | 7:30pm",
-      quantity: "0/10000",
-      price: "₦20,000.00",
-    },
-    {
-      title: " Eko convections centre",
-      desc: "Lekki paradise estate 3, chevron drive",
-      date: "Saturday, October 22, 2023 | 7:30pm",
-      quantity: "0/10000",
-      price: "Free",
-    },
-    {
-      title: " Eko convections centre",
-      desc: "Lekki paradise estate 3, chevron drive",
-      date: "Saturday, October 22, 2023 | 7:30pm",
-      quantity: "0/10000",
-      price: "₦20,000.00 - ₦50,000.00 ",
-    },
+    // {
+    //   title: " Eko convections centre",
+    //   desc: "Lekki paradise estate 3, chevron drive",
+    //   date: "Saturday, October 22, 2023 | 7:30pm",
+    //   quantity: "0/10000",
+    //   price: "Free",
+    // },
+    // {
+    //   title: " Eko convections centre",
+    //   desc: "Lekki paradise estate 3, chevron drive",
+    //   date: "Saturday, October 22, 2023 | 7:30pm",
+    //   quantity: "0/10000",
+    //   price: "₦20,000.00 - ₦50,000.00 ",
+    // },
+    // {
+    //   title: " Eko convections centre",
+    //   desc: "Lekki paradise estate 3, chevron drive",
+    //   date: "Saturday, October 22, 2023 | 7:30pm",
+    //   quantity: "0/10000",
+    //   price: "Free",
+    // },
+    // {
+    //   title: " Eko convections centre",
+    //   desc: "Lekki paradise estate 3, chevron drive",
+    //   date: "Saturday, October 22, 2023 | 7:30pm",
+    //   quantity: "0/10000",
+    //   price: "₦20,000.00",
+    // },
+    // {
+    //   title: " Eko convections centre",
+    //   desc: "Lekki paradise estate 3, chevron drive",
+    //   date: "Saturday, October 22, 2023 | 7:30pm",
+    //   quantity: "0/10000",
+    //   price: "Free",
+    // },
+    // {
+    //   title: " Eko convections centre",
+    //   desc: "Lekki paradise estate 3, chevron drive",
+    //   date: "Saturday, October 22, 2023 | 7:30pm",
+    //   quantity: "0/10000",
+    //   price: "₦20,000.00",
+    // },
+    // {
+    //   title: " Eko convections centre",
+    //   desc: "Lekki paradise estate 3, chevron drive",
+    //   date: "Saturday, October 22, 2023 | 7:30pm",
+    //   quantity: "0/10000",
+    //   price: "Free",
+    // },
+    // {
+    //   title: " Eko convections centre",
+    //   desc: "Lekki paradise estate 3, chevron drive",
+    //   date: "Saturday, October 22, 2023 | 7:30pm",
+    //   quantity: "0/10000",
+    //   price: "₦20,000.00 - ₦50,000.00 ",
+    // },
   ]);
 
   return (

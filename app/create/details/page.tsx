@@ -13,9 +13,13 @@ import { TransparentButton } from "@/app/components/buttons/button";
 import { GoSearch } from "react-icons/go";
 import DatePicker from "react-date-picker";
 import TimePicker from "react-time-picker";
+import MainFooter from "@/app/components/footer/MainFooter";
+import { updateLocalStorageField } from "@/app/utils/localstorage";
+import { useRouter } from "next/navigation";
 
 const Details = () => {
   const [eventPhoto, setEventPhoto] = useState<any>([]);
+  const router = useRouter();
 
   const [eventDetails, setEventDetails] = useState({
     isEditOrganizerInfo: false,
@@ -23,6 +27,7 @@ const Details = () => {
     isEditEventLocation: false,
     isEditEventDateAndTime: false,
   });
+
   const [startDate, setStartDate] = useState<Value>(new Date());
   const [startTime, setStartTime] = useState<any>("10:00");
 
@@ -41,8 +46,18 @@ const Details = () => {
     </div>
   ));
 
+  const nextHandler = () => {
+    updateLocalStorageField("event-creation", "details", "isComplete", true);
+
+    router.push("/create/ticket");
+  };
+
+  const backHandler = () => {
+    router.push("/create/basic-info");
+  };
+
   return (
-    <section className="">
+    <section className="mb-20">
       <p className="text-sm w-full text-gray-700 mb-2">
         Add a photo of your event <span className="text-red-600">*</span>
       </p>
@@ -454,6 +469,7 @@ const Details = () => {
       </div>
       {/* Add FAQ */}
       <Faq />
+      <MainFooter backHandler={backHandler} nextHandler={nextHandler} />
     </section>
   );
 };

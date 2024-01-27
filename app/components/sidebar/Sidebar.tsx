@@ -10,6 +10,8 @@ import {
 } from "react-icons/md";
 import { PiUsersThreeLight } from "react-icons/pi";
 import { AiOutlineSetting } from "react-icons/ai";
+import { IoMdWallet } from "react-icons/io";
+import { TbCalendarTime } from "react-icons/tb";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -40,15 +42,26 @@ const routes = [
     path: "sales",
   },
   {
+    title: "Wallet History",
+    icon: <IoMdWallet />,
+    path: "wallet",
+  },
+  {
     title: "Settings",
     icon: <AiOutlineSetting />,
     path: "settings",
   },
+  {
+    title: "Event Check ins",
+    icon: <TbCalendarTime />,
+    path: "event/check-ins",
+  },
 ];
 const Sidebar = () => {
   const path = usePathname().split("/");
+  console.log("path", path);
   return (
-    <div className="h-screen w-[268px] py-[25px] border-r relative">
+    <div className="h-screen w-[294px] hidden md:block py-[25px] border-r relative">
       <div className="pl-6">
         <Image
           src="/assets/eventparrot-logo.svg"
@@ -59,12 +72,15 @@ const Sidebar = () => {
         />
       </div>
 
-      <div className="px-6 flex-col gap-2 space-y-2 justify-center mt-12 ">
+      <div className="px-6  flex-col gap-2 space-y-2 justify-center mt-12 ">
         {routes.map((item) => (
           <Link
             className={`flex items-center space-x-3 text-base px-4 py-3 text-gray-500 rounded-2xl hover:bg-lightPurple hover:text-primaryPurple hover:font-semibold ${
-              path[1] === item.path &&
-              "bg-lightPurple text-primaryPurple font-semibold"
+              path.length > 2
+                ? `${path[1]}/${path[2]}` === item.path &&
+                  "bg-lightPurple text-primaryPurple font-semibold"
+                : path[1] === item.path &&
+                  "bg-lightPurple text-primaryPurple font-semibold"
             }`}
             key={item.title}
             href={`/${item.path}`}

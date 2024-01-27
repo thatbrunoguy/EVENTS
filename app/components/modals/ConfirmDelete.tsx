@@ -3,9 +3,15 @@ import { MdCalendarToday, MdClose } from "react-icons/md";
 
 type Iprops = {
   setIsDeleteModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  title?: string;
+  content?: string;
 };
 
-const ConfirmDeleteModal = ({ setIsDeleteModalOpen }: Iprops) => {
+const ConfirmDeleteModal = ({
+  setIsDeleteModalOpen,
+  title = "Are you sure want to delete this event type",
+  content = "By deleting this event, you will lose all the data or information and this action can&apos;t be undone",
+}: Iprops) => {
   return (
     <>
       <div
@@ -26,13 +32,8 @@ const ConfirmDeleteModal = ({ setIsDeleteModalOpen }: Iprops) => {
           </div>
         </div>
         <div className="px-6 ">
-          <h4 className="font-semibold text-lg">
-            Are you sure want to delete this event type
-          </h4>
-          <p className="text-lightText pt-4">
-            By deleting this event, you will lose all the data or information
-            and this action can&apos;t be undone
-          </p>
+          <h4 className="font-semibold text-lg">{title}</h4>
+          <p className="text-lightText pt-4">{content}</p>
         </div>
 
         <footer className="flex absolute bottom-0 left-0 right-0 items-center justify-between px-6 py-3 border-t border-t-gray-200">

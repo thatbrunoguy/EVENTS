@@ -42,8 +42,8 @@ const Faq = () => {
   return (
     <div>
       <Accordion>
-        {faqs.map((faq) => (
-          <AccordionItem>
+        {faqs.map((faq, i) => (
+          <AccordionItem key={i}>
             <AccordionHeader className="w-full ">
               <div className="py-5 w-full border-b flex items-center justify-between">
                 <h3 className={`accordion-title`}>{faq.title}</h3>
