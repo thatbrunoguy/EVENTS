@@ -35,9 +35,9 @@ export default function Dashboard() {
     },
   ]);
   return (
-    <section className="flex justify-between">
+    <section className="flex flex-col mb-4 lg:mb-0 items-center md:items-stretch lg:flex-row  justify-between">
       {/* LEFT */}
-      <div className="px-9 mt-[60px] border-r pr-12">
+      <div className="px-2 md:px-9 mt-[60px] border-r md:pr-12">
         <div className="pb-5 border-b">
           <h3 className="font-semibold text-2xl">
             Your next event is in 83 days
@@ -45,7 +45,7 @@ export default function Dashboard() {
           <p>Use this tool to sell more tickets when promoting your event</p>
         </div>
 
-        <div className="mt-9 border-[0.5px] p-5 rounded-md">
+        <div className="mt-9 border-[0.5px] md:p-5 rounded-md ">
           <Menu
             className="w-full"
             direction="bottom"
@@ -53,7 +53,7 @@ export default function Dashboard() {
             align="start"
             menuButton={
               <MenuButton style={{ background: "transparent" }}>
-                <div className="border px-3 py-3 flex items-center  h-[104px] justify-between shadow-lg rounded-lg w-[624px] bg-white">
+                <div className="border md:px-3 py-3 flex flex-1 items-center  h-auto md:h-[104px] justify-between shadow-lg rounded-lg w-full ">
                   <div className="flex items-center space-x-5 p-3 ">
                     <div className="h-[72px] w-[72px] relative rounded overflow-hidden">
                       <Image
@@ -63,8 +63,10 @@ export default function Dashboard() {
                         objectFit="cover"
                       />
                     </div>
-                    <div>
-                      <h4 className="font-semibold mb-1">{options[0].title}</h4>
+                    <div className="">
+                      <h4 className="font-semibold mb-1 ">
+                        {options[0].title}
+                      </h4>
                       <p className="text-lightText">{options[0].desc}</p>
                       <p className="text-lightText">{options[0].date}</p>
                     </div>
@@ -83,8 +85,8 @@ export default function Dashboard() {
                   className="hover:bg-gray-100 hover:border-b cursor-pointer"
                   key={index}
                 >
-                  <div className="flex items-center w-[575px] space-x-5 p-3 ">
-                    <div className="h-[72px] w-[72px] relative rounded overflow-hidden">
+                  <div className="flex items-center w-[90%] lg:w-[575px] space-x-5 md:p-3 ">
+                    <div className="h-[42px] md:h-[72px] w-[42px] md:w-[72px] relative rounded overflow-hidden">
                       <Image
                         fill
                         src="/assets/event.jpeg"
@@ -93,7 +95,7 @@ export default function Dashboard() {
                       />
                     </div>
                     <div>
-                      <h4 className="font-semibold mb-1">{item.title}</h4>
+                      <h4 className="font-semibold  mb-1">{item.title}</h4>
                       <p className="text-lightText">{item.desc}</p>
                       <p className="text-lightText">{item.date}</p>
                     </div>
@@ -104,7 +106,7 @@ export default function Dashboard() {
           </Menu>
         </div>
 
-        <div className="mt-24">
+        <div className="mt-5 lg:mt-24">
           <div className="w-full p-4 bg-purple-50 mb-3 py-6 flex items-center space-x-3">
             <input
               type="checkbox"
@@ -142,7 +144,7 @@ export default function Dashboard() {
 
       {/* RIGHT */}
 
-      <div className="mt-[60px] w-[38%] text-lg mr-9 rounded-lg border shadow-lg relative overflow-hidden">
+      <div className="mt-[60px] w-[95%] mx-auto  pb-16 lg:pb-0 lg:mx-0  lg:w-[38%] text-lg lg:mr-9 rounded-lg border shadow-lg relative overflow-hidden">
         <div className="py-9 px-9 bg-[#FCEFE8] relative">
           <h3 className="uppercase w-[300px] text-xl font-semibold">
             Sell out your events quickly with our{" "}

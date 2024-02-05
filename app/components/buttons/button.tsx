@@ -11,7 +11,7 @@ export const TransparentButton = ({
     <button
       onClick={onClickHandler}
       style={styles}
-      className="w-[202px] hover:bg-lightPurple transition-all duration-300 ease-in-out h-12 border rounded-lg border-lightText text-lightText bg-transparent flex items-center justify-center"
+      className=" w-full hover:bg-lightPurple transition-all duration-300 ease-in-out h-12 border rounded-lg border-lightText text-lightText bg-transparent flex items-center justify-center"
     >
       {title}
     </button>
@@ -27,7 +27,7 @@ export const SolidButton = ({
     <button
       onClick={onClickHandler}
       style={styles}
-      className="w-[202px] h-12 text-white rounded-lg  bg-primaryPurple flex items-center justify-center"
+      className="w-full h-12 text-white rounded-lg  bg-primaryPurple flex items-center justify-center"
     >
       {title}
     </button>

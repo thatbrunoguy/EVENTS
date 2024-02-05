@@ -21,13 +21,13 @@ const PaymentSuccess = ({ setIsModalOpen }: Iprops) => {
         className="bg-black bg-opacity-50 backdrop-blur-sm fixed z-20  top-0 left-0 right-0 bottom-0"
         aria-label="backdrop"
       />
-      <div className="w-[533px] h-[342px] flex flex-col items-center justify-center rounded-md p-6 bg-white z-50 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ">
+      <div className="w-[94%] md:w-[533px] h-[342px] flex flex-col items-center justify-center rounded-md p-6 bg-white z-50 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ">
         <div className="absolute top-0 left-0 botto right-0">
           <Confetti width={533} height={342} />
         </div>
         <h2 className="mb-2 text-2xl font-medium">Tokens bought successful</h2>
 
-        <p className="text-lightText">
+        <p className="text-lightText text-center md:text-left">
           {" "}
           You have been credited 10 Tokens for campaign
         </p>

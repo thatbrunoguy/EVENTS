@@ -19,7 +19,7 @@ const BuyTokenModal = ({ setIsModalOpen }: Iprops) => {
         className="bg-black bg-opacity-50 backdrop-blur-sm fixed z-20  top-0 left-0 right-0 bottom-0"
         aria-label="backdrop"
       />
-      <div className="w-[760px] h-auto rounded-md bg-white z-50 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ">
+      <div className="w-[94%] md:w-[760px] h-auto rounded-md bg-white z-50 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ">
         <div className="py-4 px-6 border-b">
           <p className="text-xl font-medium">Buy Tokens</p>
         </div>

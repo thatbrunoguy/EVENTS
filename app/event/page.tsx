@@ -7,6 +7,7 @@ import { HiOutlinePlusSm } from "react-icons/hi";
 import Link from "next/link";
 import { IoIosMore } from "react-icons/io";
 import { useState } from "react";
+import MobileFooter from "../components/footer/MobileFooter";
 
 export default function Event() {
   const [options, setOptions] = useState<any>([
@@ -71,6 +72,8 @@ export default function Event() {
   return (
     <section className="flex">
       <Sidebar />
+      <MobileFooter />
+
       <main className="h-screen overflow-y-scroll flex-1">
         {/* <Header /> */}
         <div className="w-full flex  h-full justify-center items-center">

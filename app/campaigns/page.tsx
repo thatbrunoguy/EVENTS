@@ -11,6 +11,7 @@ import { useState } from "react";
 import Dashboard from "./Dashboard";
 import EmailCampaign from "./EmailCampaign";
 import AdsCampaign from "./AdsCampaign";
+import MobileFooter from "../components/footer/MobileFooter";
 
 const tablist_ = [
   {
@@ -31,8 +32,10 @@ export default function Campaigns() {
   const [tablist, setTablist] = useState([...tablist_]);
 
   return (
-    <section className="flex">
+    <section className="flex pb-20 md:pb-0">
       <Sidebar />
+      <MobileFooter />
+
       <main className="h-screen overflow-y-scroll flex-1">
         <Header />
         {/* <h3 className="font-semibold text-2xl ml-12 mt-12">Campaigns</h3> */}

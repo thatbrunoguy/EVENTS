@@ -10,7 +10,7 @@ type Iprops = {
 const ConfirmDeleteModal = ({
   setIsDeleteModalOpen,
   title = "Are you sure want to delete this event type",
-  content = "By deleting this event, you will lose all the data or information and this action can&apos;t be undone",
+  content = "By deleting this event, you will lose all the data or information and this action can't be undone",
 }: Iprops) => {
   return (
     <>
@@ -19,7 +19,7 @@ const ConfirmDeleteModal = ({
         className="bg-black bg-opacity-50 fixed top-0 left-0 right-0 bottom-0"
         aria-label="backdrop"
       />
-      <div className="w-[430px] h-[292px] rounded-md bg-white fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+      <div className=" w-[95%] mx-auto md:w-[430px] h-[320px] md:h-[292px] rounded-md bg-white fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
         <div className="flex items-center justify-between p-6">
           <div className="h-12 w-12 text-[#CC0000] bg-[#FCEDED] text-2xl rounded-full grid place-content-center ">
             <MdCalendarToday />
@@ -36,14 +36,14 @@ const ConfirmDeleteModal = ({
           <p className="text-lightText pt-4">{content}</p>
         </div>
 
-        <footer className="flex absolute bottom-0 left-0 right-0 items-center justify-between px-6 py-3 border-t border-t-gray-200">
+        <footer className="flex absolute bottom-0 left-0 right-0 items-center justify-between space-x-3 md:space-x-0 px-6 py-3 border-t border-t-gray-200">
           <button
             onClick={() => setIsDeleteModalOpen(false)}
-            className="h-9 w-[179px] transition-all duration-300 ease-in-out hover:bg-red-100 text-sm shadow-sm bg-white border border-gray-200 rounded-md flex items-center justify-center"
+            className="h-9 basis-1/2 md:w-[179px] transition-all duration-300 ease-in-out hover:bg-red-100 text-sm shadow-sm bg-white border border-gray-200 rounded-md flex items-center justify-center"
           >
             <p>Cancel</p>
           </button>
-          <button className="h-9 w-[179px] text-sm text-white  bg-[#CC0000] shadow-sm rounded-md flex items-center justify-center">
+          <button className="h-9 basis-1/2 md:w-[179px] text-sm text-white  bg-[#CC0000] shadow-sm rounded-md flex items-center justify-center">
             <p>Yes, delete</p>
           </button>
         </footer>

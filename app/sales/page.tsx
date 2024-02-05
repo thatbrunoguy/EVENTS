@@ -12,88 +12,89 @@ import DashHeader from "./Header";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
 import { IoMailOpenSharp } from "react-icons/io5";
-
+import MobileFooter from "../components/footer/MobileFooter";
+import GlobalTable from "../components/table/GlobalTable";
 export default function Guestlist() {
   const [tickets, setTickets] = useState<any>([
     {
-      name: " Diamond Pass",
+      name: "Aiamond Pass",
       quantity: 127,
       revenue: "₦77,500.00",
       fees: "₦15,500.00",
       net: "₦70,000.00",
     },
     {
-      name: " Diamond Pass",
+      name: "Biamond Pass",
       quantity: 127,
       revenue: "₦77,500.00",
       fees: "₦15,500.00",
       net: "₦70,000.00",
     },
     {
-      name: " Diamond Pass",
+      name: "Ciamond Pass",
       quantity: 127,
       revenue: "₦77,500.00",
       fees: "₦15,500.00",
       net: "₦70,000.00",
     },
     {
-      name: " Diamond Pass",
+      name: "Diamond Pass",
       quantity: 127,
       revenue: "₦77,500.00",
       fees: "₦15,500.00",
       net: "₦70,000.00",
     },
     {
-      name: " Diamond Pass",
+      name: "Eiamond Pass",
       quantity: 127,
       revenue: "₦77,500.00",
       fees: "₦15,500.00",
       net: "₦70,000.00",
     },
     {
-      name: " Diamond Pass",
+      name: "Fiamond Pass",
       quantity: 127,
       revenue: "₦77,500.00",
       fees: "₦15,500.00",
       net: "₦70,000.00",
     },
     {
-      name: " Diamond Pass",
+      name: "Giamond Pass",
       quantity: 127,
       revenue: "₦77,500.00",
       fees: "₦15,500.00",
       net: "₦70,000.00",
     },
     {
-      name: " Diamond Pass",
+      name: "Hiamond Pass",
       quantity: 127,
       revenue: "₦77,500.00",
       fees: "₦15,500.00",
       net: "₦70,000.00",
     },
     {
-      name: " Diamond Pass",
+      name: "Iiamond Pass",
       quantity: 127,
       revenue: "₦77,500.00",
       fees: "₦15,500.00",
       net: "₦70,000.00",
     },
     {
-      name: " Diamond Pass",
+      name: "Jiamond Pass",
       quantity: 127,
       revenue: "₦77,500.00",
       fees: "₦15,500.00",
       net: "₦70,000.00",
     },
     {
-      name: " Diamond Pass",
+      name: "Kiamond Pass",
       quantity: 127,
       revenue: "₦77,500.00",
       fees: "₦15,500.00",
       net: "₦70,000.00",
     },
     {
-      name: " Diamond Pass",
+      name: "Liamond Pass",
       quantity: 127,
       revenue: "₦77,500.00",
       fees: "₦15,500.00",
@@ -145,6 +146,33 @@ export default function Guestlist() {
       date: "Sep 29, 2023",
     },
   ];
+
+  const ticketColumns = [
+    { key: "name", name: "Name" },
+    { key: "quantity", name: "Quantity" },
+    { key: "revenue", name: "Revenue" },
+    { key: "fees", name: "Fees" },
+    { key: "net", name: "Net" },
+  ];
+
+  const ticketRows = tickets.map((ticket: any, index: number) => ({
+    id: index, // assuming you want to use the array index as ID
+    ...ticket,
+  }));
+
+  const paymentColumns = [
+    { key: "recipient", name: "Recipient" },
+    { key: "account", name: "Account" },
+    { key: "transferFee", name: "Transfer Fee" },
+    { key: "payout", name: "Payout" },
+    { key: "date", name: "Date" },
+  ];
+
+  const paymentRows = paymentHistory.map((payment, index) => ({
+    id: index, // assuming you want to use the array index as ID
+    ...payment,
+  }));
+
   const [isGuestlistModalOpen, setIsGuestlistModalOpen] =
     useState<boolean>(false);
 
@@ -183,6 +211,8 @@ export default function Guestlist() {
         progressStyle={{ background: "#7431B8" }}
       />
       <Sidebar />
+      <MobileFooter />
+
       <main className="h-screen overflow-y-scroll flex-1">
         <Header />
         {!tickets.length ? (
@@ -221,27 +251,8 @@ export default function Guestlist() {
                 </button>
               </div>
 
-              <div className="">
-                <header className="w-full bg-[#FBFAFC] text-sm grid grid-flow-col  py-3 px-4 ">
-                  <p className="col-span-1">Ticket name</p>
-                  <p className="">Total Tickets sold</p>
-                  <p className="">Total Sales revenue </p>
-                  <p className="">Fees</p>
-                  <p className="">Net sales revenue</p>
-                  {/* <p className="w-1/6"></p> */}
-                </header>
-                {tickets.map((item: any, index: number) => (
-                  <div
-                    key={index}
-                    className="w-full border-b grid grid-flow-col  p-3 py-4 text-sm"
-                  >
-                    <h4 className="font-semibold">{item.name}</h4>
-                    <p className="">{item.quantity}</p>
-                    <p className=" ml-16">{item.revenue}</p>
-                    <div className="">{item.fees}</div>
-                    <div className="">{item.net}</div>
-                  </div>
-                ))}
+              <div className="h-auto">
+                <GlobalTable columns={ticketColumns} rows={ticketRows} />
               </div>
             </div>
 
@@ -260,30 +271,10 @@ export default function Guestlist() {
                   </div>
                   <p>Export as CSV</p>
                 </button>
+                {/* TABLE */}
               </div>
 
-              <div className="">
-                <header className="w-full bg-[#FBFAFC] text-sm grid grid-flow-col  py-3 px-4 ">
-                  <p className="col-span-1">Recipient</p>
-                  <p className="">Bank account</p>
-                  <p className="">Transfer fee </p>
-                  <p className="">Payout</p>
-                  <p className="">Payment date</p>
-                  {/* <p className="w-1/6"></p> */}
-                </header>
-                {paymentHistory.map((item: any, index: number) => (
-                  <div
-                    key={index}
-                    className="w-full border-b grid grid-flow-col  p-3 py-4 text-sm"
-                  >
-                    <h4 className="font-semibold">{item.recipient}</h4>
-                    <p className="-ml-8">{item.account}</p>
-                    <p className="">{item.transferFee}</p>
-                    <div className="">{item.payout}</div>
-                    <div className="">{item.date}</div>
-                  </div>
-                ))}
-              </div>
+              <GlobalTable columns={paymentColumns} rows={paymentRows} />
             </div>
           </>
         )}

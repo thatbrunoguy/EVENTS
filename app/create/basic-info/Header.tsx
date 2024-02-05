@@ -9,7 +9,7 @@ const BasicInfoHeader = () => {
   return (
     <main>
       {isBasicInfo && (
-        <header className="mb-12 w-[94%] mx-auto md:w-full">
+        <header className="mb-6 md:mb-12 w-[94%] mx-auto md:w-full">
           <h2 className="text-[40px] font-semibold">Hi Christian 👋🏼</h2>
           <p className="text-lightText">
             Ready to arrange your event? It'll just take a few minutes.

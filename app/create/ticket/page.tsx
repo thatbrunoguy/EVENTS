@@ -44,7 +44,7 @@ const Ticket = () => {
         <ConfirmDeleteModal setIsDeleteModalOpen={setIsDeleteModalOpen} />
       )}
       <div className="mt-8">
-        <div className=" w-full p-6 border-[.1px] flex justify-between border-gray-300 px-6 shadow-md rounded-md">
+        <div className=" w-[94%] mx-auto md:w-full p-6 border-[.1px] flex justify-between border-gray-300 px-6 shadow-md rounded-md">
           <div className="flex space-x-4">
             <div className="text-[#106BD5] text-2xl  w-8 h-8 grid place-content-center rounded bg-[#EDF4FC]">
               <PiCreditCard />
@@ -85,7 +85,7 @@ const Ticket = () => {
           </Menu>
         </div>
         {/* Add Ticket Type */}
-        <div className="w-full px-6 py-6 mt-9 border border-dashed border-gray-500 rounded-md">
+        <div className="w-[94%] mx-auto md:w-full px-6 py-6 mt-9 border border-dashed border-gray-500 rounded-md">
           <p className="font-semibold ">Add Ticket type</p>
           <p className="text-lightText mt-3 mb-5 ">
             Create Your Event Experience: Select Ticket Type and Submit. You can
@@ -105,8 +105,3 @@ const Ticket = () => {
 };
 
 export default Ticket;
-{
-  /* <div className="absolute -top-3 -right-3 cursor-pointer hover:bg-primaryPurple hover:text-white w-12 h-12 rounded-full text-primaryPurple bg-lightPurple grid place-content-center">
-
-</div> */
-}

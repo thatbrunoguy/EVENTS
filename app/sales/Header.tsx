@@ -36,16 +36,18 @@ const DashHeader = () => {
     <div
       //   rightIcon={<Left />}
       //   leftIcon={<Right />}
-      className="w-full max-h-[120px] overflow-y-clip border-t-[3px] flex items-center justify-center gap-16 border-[#4C9FFF] p-4 py-6 shadow-lg rounded bg-white"
+      className="w-full h-auto  md:min-h-[120px] overflow-y-clip border-t-[3px] flex flex-wrap items-center justify-center gap-10 md:gap-16 border-[#4C9FFF] p-4 py-6 shadow-lg rounded bg-white"
     >
       {list.map((item: ListItem, i) => (
         <React.Fragment key={i}>
-          <div className="mx-10">
-            <h1 className="font-semibold text-4xl text-center">{item.total}</h1>
+          <div className="md:mx-10">
+            <h1 className="font-semibold text-2xl md:text-4xl text-center">
+              {item.total}
+            </h1>
             <p className="text-lightText text-center">{item.title}</p>
           </div>
           {i === 2 && (
-            <button className="py-[10px] px-5 rounded-md text-sm text-white h-10 bg-primaryPurple grid placc">
+            <button className="py-[10px] px-3 md:px-5 rounded-md text-sm text-white h-10 bg-primaryPurple grid place-content-center">
               Payout Now
             </button>
           )}

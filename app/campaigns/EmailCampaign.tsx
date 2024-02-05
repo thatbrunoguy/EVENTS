@@ -8,6 +8,15 @@ import { HiOutlinePlusSm } from "react-icons/hi";
 import Link from "next/link";
 import { IoIosMore } from "react-icons/io";
 
+import { Swiper, SwiperSlide } from "swiper/react";
+
+// Import Swiper styles
+import "swiper/css";
+import "swiper/css/pagination";
+
+// import required modules
+import { Pagination } from "swiper/modules";
+
 const emailCampaign = [
   {
     title: "Revenue",
@@ -107,11 +116,22 @@ const EmailCampaign = () => {
 
   return (
     <div className="w-[90%] mx-auto mt-14">
-      <header className="flex items-center justify-between">
+      <Swiper
+        slidesPerView={"auto"}
+        // centeredSlides={true}
+        spaceBetween={"5%"}
+        pagination={{ clickable: true }}
+        modules={[Pagination]}
+        className="h-auto"
+        // keyboard={true}
+        // mousewheel={true}
+        // cssMode={true}
+      >
         {emailCampaign.map((item, i) => (
-          <div
+          <SwiperSlide
             key={i}
-            className="w-[122px] relative p-4 h-[140px] bg-white shadow-lg rounded-e-md  border-[.4px] border-gray-300"
+            style={{ width: "122px" }}
+            className=" relative p-4 h-[140px] mb-12 bg-white shadow-lg rounded-e-md  border-[.4px] border-gray-300"
           >
             <div className="absolute cursor-pointer top-4 right-4 text-sm">
               <GoInfo />
@@ -125,9 +145,9 @@ const EmailCampaign = () => {
 
             <p className="font-semibold text-2xl my-2">{item.value}</p>
             <p className="text-sm text-lightText">{item.title}</p>
-          </div>
+          </SwiperSlide>
         ))}
-      </header>
+      </Swiper>
 
       {/* TABLE */}
 

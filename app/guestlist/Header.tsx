@@ -13,14 +13,14 @@ type ListItem = {
 
 const Left = () => {
   return (
-    <div className="w-8 h-8 absolute top[50%] -translate-y-[50%] left-4 rounded-full grid place-content-center text-2xl hover:cursor-pointer hover:bg-opacity-50 text-[#FF8548] bg-[#FCEFE8]">
+    <div className="w-8 h-8 absolute top-[50%] -translate-y-[50%] left-2 rounded-full grid place-content-center text-2xl hover:cursor-pointer hover:bg-opacity-50 text-[#FF8548] bg-[#FCEFE8]">
       <MdOutlineKeyboardArrowLeft />
     </div>
   );
 };
 const Right = () => {
   return (
-    <div className="w-8 h-8 rounded-full absolute right-4 top[50%] -translate-y-[50%] grid place-content-center text-2xl hover:cursor-pointer hover:bg-opacity-50 text-[#FF8548] bg-[#FCEFE8]">
+    <div className="w-8 h-8 rounded-full absolute right-2 top-[50%] -translate-y-[50%] grid place-content-center text-2xl hover:cursor-pointer hover:bg-opacity-50 text-[#FF8548] bg-[#FCEFE8]">
       <MdOutlineKeyboardArrowRight />
     </div>
   );
@@ -43,9 +43,9 @@ const DashHeader = () => {
   ];
   return (
     <ScrollingCarousel
-      //   rightIcon={<Left />}
-      //   leftIcon={<Right />}
-      className="w-full max-h-[120px] overflow-y-clip border-t-[3px] flex items-center justify-center gap-16 border-[#FF8548] p-4 py-6 shadow-lg rounded bg-white"
+      rightIcon={<Left />}
+      leftIcon={<Right />}
+      className="w-full max-h-[120px] overflow-y-clip border-t-[3px]  gap-16 border-[#FF8548] p-4 py-8 shadow-lg rounded bg-white"
     >
       {list.map((item: ListItem, i) => (
         <div key={i} className="mx-10">

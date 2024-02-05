@@ -71,7 +71,7 @@ const CreateEmailCampaignBasic = () => {
           </p>
           <div>
             <label className="text-sm text-gray-800" htmlFor="organizerName">
-              Organizer’s name <span className="text-red-500">*</span>
+              Organizer&apos;s name <span className="text-red-500">*</span>
             </label>
             <input
               type="text"

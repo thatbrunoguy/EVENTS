@@ -57,7 +57,7 @@ const Details = () => {
   };
 
   return (
-    <section className="mb-20">
+    <section className="mb-20  w-[94%] mx-auto md:w-full   ">
       <p className="text-sm w-full text-gray-700 mb-2">
         Add a photo of your event <span className="text-red-600">*</span>
       </p>
@@ -131,7 +131,7 @@ const Details = () => {
               where we can reach you.
             </p>
             <div className="flex items-center space-x-6 ">
-              <div>
+              <div className="basis-1/2">
                 <label
                   className="text-sm text-gray-800"
                   htmlFor="organizerName"
@@ -140,10 +140,10 @@ const Details = () => {
                 </label>
                 <input
                   type="text"
-                  className="h-[56px] text-sm w-[338px] text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
+                  className="h-[56px] text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
                 />
               </div>
-              <div>
+              <div className="basis-1/2">
                 <label
                   className="text-sm text-gray-800"
                   htmlFor="organizerName"
@@ -152,7 +152,7 @@ const Details = () => {
                 </label>
                 <input
                   type="text"
-                  className="h-[56px] text-sm w-[338px] text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
+                  className="h-[56px] text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
                 />
               </div>
             </div>
@@ -293,7 +293,9 @@ const Details = () => {
         ) : (
           <div className="border-[2px] p-6 border-primaryPurple rounded-md">
             <div className="flex items-center justify-between">
-              <h2 className="text-[24px] font-semibold">Event's Location</h2>
+              <h2 className="text-[24px] font-semibold">
+                Event&apos;s Location
+              </h2>
               <div
                 onClick={() =>
                   setEventDetails((prev) => ({
@@ -312,8 +314,12 @@ const Details = () => {
               numbers
             </p>
             <div className="mt-9 mb-6 flex items-center space-x-6">
-              <TransparentButton title="Venue" />
-              <TransparentButton title="Online Event" />
+              <div className="basis-1/2">
+                <TransparentButton title="Venue" />
+              </div>
+              <div className="basis-1/2">
+                <TransparentButton title="Online Event" />
+              </div>
             </div>
             <label className="text-sm text-gray-800" htmlFor="organizerName">
               Venue Location <span className="text-red-500">*</span>

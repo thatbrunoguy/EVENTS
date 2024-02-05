@@ -5,7 +5,7 @@ import { MdEmail } from "react-icons/md";
 const OTP = () => {
   return (
     <section className="flex h-screen items-center justify-center">
-      <div className="w-[480px] ">
+      <div className=" w-[95%] md:w-[480px] ">
         <div className="w-[60px] h-[60px] p-7 bg-lightPurple mx-auto text-3xl text-primaryPurple rounded-full grid place-content-center mt-3">
           <MdEmail />
         </div>
@@ -18,9 +18,9 @@ const OTP = () => {
           Please type it below.
         </p>
 
-        <div className="flex items-center space-x-6 mt-6 mb-2">
+        <div className="flex items-center space-x-2 md:space-x-6 mt-6 mb-2">
           {[1, 2, 3, 4, 5, 6].map((item) => (
-            <div className="h-[60px] w-[60px] focus-within:border-primaryPurple border rounded-lg grid place-content-center">
+            <div className="h-[60px] md:w-[60px] focus-within:border-primaryPurple border rounded-lg grid place-content-center">
               <input
                 type="tel"
                 maxLength={1}

@@ -62,7 +62,7 @@ export const TabsComponent2 = ({ tablist, setTablist }) => {
               item.isActive
                 ? "border-b-[2px] border-primaryPurple  text-primaryPurple"
                 : "border-none text-lightText"
-            } cursor-pointer px-4 py-4 transition-all basis-1/2 duration-300 ease-in-out `}
+            } cursor-pointer md:px-4 py-4 transition-all basis-1/2 duration-300 ease-in-out text-xs md:text-base `}
           >
             {item.title}
           </div>

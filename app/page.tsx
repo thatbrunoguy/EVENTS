@@ -16,6 +16,7 @@ import {
   FaXTwitter,
 } from "react-icons/fa6";
 import { PiShareLight } from "react-icons/pi";
+import MobileFooter from "./components/footer/MobileFooter";
 
 const emailCampaign = [
   {
@@ -140,7 +141,8 @@ export default function Home() {
   return (
     <section className="flex ">
       <Sidebar />
-      <main className="h-screen overflow-y-scroll flex-1">
+      <MobileFooter />
+      <main className="h-screen pb-24 md:pb-0 overflow-y-scroll flex-1">
         <Header />
         <h3 className="font-semibold text-2xl ml-12 mt-12">Dashboard</h3>
         <div className="flex justify-between w-[92%] mx-auto">

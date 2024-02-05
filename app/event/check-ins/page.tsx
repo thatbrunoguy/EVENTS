@@ -7,6 +7,7 @@ import Tabs from "./Tabs";
 import Image from "next/image";
 import { HiOutlinePlusSm } from "react-icons/hi";
 import CheckInModal from "./CheckInModal";
+import MobileFooter from "@/app/components/footer/MobileFooter";
 
 const CheckIns = () => {
   const [options, setOptions] = useState<any>([
@@ -87,8 +88,9 @@ const CheckIns = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
-    <div className="flex">
+    <div className="flex pb-20 md:pb-0">
       <Sidebar />
+      <MobileFooter />
 
       <main className="w-full h-screen overflow-y-scroll">
         <Header />
@@ -118,8 +120,8 @@ const CheckIns = () => {
             </button>
           </div>
         ) : (
-          <div className="flex justify-between px-7">
-            <div className="w-[398px] mt-[10%] h-[244px] bg-white rounded-md border-[.6px] shadow-md p-6">
+          <div className="flex flex-col lg:flex-row justify-between px-3 md:px-7">
+            <div className="w-full md:w-[398px] mt-[10%] h-[244px] bg-white rounded-md border-[.6px] shadow-md p-6">
               <h3 className="text">Check in attendee</h3>
 
               <div className="my-6">
@@ -144,22 +146,22 @@ const CheckIns = () => {
 
             {/* RIGHT */}
 
-            <div className="mt-[6%]">
+            <div className="mt-[6%] w-full lg:w-[45%]">
               <div className="flex justify-end">
                 <Tabs />
               </div>
               <header className="w-full text-sm flex items-center py-3 px-4 bg-[#FBFAFC]">
-                <p className="w-[384px]">Attendees</p>
-                <p className="w-380px]">Ticket type</p>
+                <p className="basis-1/2">Attendees</p>
+                <p className="basis-1/2">Ticket type</p>
               </header>
               {options.map((item: any, index: number) => (
                 <div
                   key={index}
                   className="flex w-full border-b items-center justify-between"
                 >
-                  <div className="flex items-center space-x-5 p-3 ">
-                    <div className="w-[360px] text-gray-700">{item.team}</div>
-                    <div className="w-[380px] flex">
+                  <div className="flex flex-1 items-center space-x-5 p-3 ">
+                    <div className="basis-1/2 text-gray-700">{item.team}</div>
+                    <div className="basis-1/2 flex">
                       <div
                         className={`p-2 rounded-sm  ${
                           item.status.includes("Free")

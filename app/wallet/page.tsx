@@ -12,6 +12,7 @@ import DashHeader from "./Header";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
 import { IoMailOpenSharp } from "react-icons/io5";
+import MobileFooter from "../components/footer/MobileFooter";
 
 export default function Guestlist() {
   const paymentHistory: any = [
@@ -142,6 +143,8 @@ export default function Guestlist() {
         progressStyle={{ background: "#7431B8" }}
       />
       <Sidebar />
+      <MobileFooter />
+
       <main className="h-screen overflow-y-scroll flex-1">
         <Header />
         {!paymentHistory.length ? (

@@ -10,32 +10,32 @@ const Checkout = () => {
 
   return (
     <section>
-      <header className="flex justify-between items-center py-[18px] border-b px-6">
+      <header className="flex  justify-between items-center py-[18px] border-b px-6">
         <h3 className="font-medium text-lg">Checkout</h3>
         <div className="text p-2 hover:bg-gray-200 rounded-full cursor-pointer">
           <AiOutlineClose />
         </div>
       </header>
 
-      <main className="flex justify-between pr-8">
-        <div className="mt-8 w-[50%] pl-8">
+      <main className="flex flex-col items-center md:items-stretch md:flex-row justify-between md:pr-8 mb-6 md:mb-0 ">
+        <div className="mt-8 w-[94%] md:w-[50%] md:pl-8">
           <div className="flex items-center space-x-6 ">
-            <div>
+            <div className="basis-1/2">
               <label className="text-sm text-gray-800" htmlFor="organizerName">
                 First name <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
-                className="h-[56px] text-sm w-[338px] text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
+                className="h-[56px] text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
               />
             </div>
-            <div>
+            <div className="basis-1/2">
               <label className="text-sm text-gray-800" htmlFor="organizerName">
                 Last name <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
-                className="h-[56px] text-sm w-[338px] text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
+                className="h-[56px] text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
               />
             </div>
           </div>
@@ -82,7 +82,7 @@ const Checkout = () => {
 
           {/* ACCEPT */}
 
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-3 mt-3 md:mt-0">
             <input
               className="block w-4 h-4 accent-primaryPurple"
               type="checkbox"
@@ -98,7 +98,7 @@ const Checkout = () => {
 
           <button
             // onClick={() => setIsModalOpen(true)}
-            className="bg-purple-700 mt-9 py-[10px] px-5 w-[244px] h-12 hover:bg-opacity-70 text-white text-sm rounded-lg grid place-content-center"
+            className="bg-purple-700 mt-9 py-[10px] px-5 w-full md:w-[244px] h-12 hover:bg-opacity-70 text-white text-sm rounded-lg grid place-content-center"
           >
             <p>Buy Ticket</p>
           </button>
@@ -117,13 +117,15 @@ const Checkout = () => {
         </div>
 
         {/* RIGHT */}
-        <div className="mt-8">
-          <div className="overflow-hidden w-[394px] h-[200px] rounded-tl-2xl rounded-tr-2xl">
+        <div className="mt-8 w-[94%] md:w-auto">
+          <div className="overflow-hidden relative w-full md:w-[394px] h-[200px] rounded-tl-2xl rounded-tr-2xl">
             <Image
+              className="object-cover"
               src="/assets/event-img.png"
               alt="Eventparrot event"
-              width={394}
-              height={200}
+              fill
+              // width={394}
+              // height={200}
               //   priority
             />
           </div>

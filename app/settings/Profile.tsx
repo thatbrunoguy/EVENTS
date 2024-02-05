@@ -29,12 +29,12 @@ const OrganizationProfile = () => {
         {/* UPLOAD */}
 
         {eventPhoto.length === 0 && (
-          <div className="w-[270px] relative flex items-center justify-center h-[177px] border border-dashed rounded-lg border-gray-600">
+          <div className="w-full md:w-[270px] relative flex items-center justify-center h-[177px] border border-dashed rounded-lg border-gray-600">
             <FileUpload setEventPhoto={setEventPhoto} />
           </div>
         )}
         {eventPhoto.length > 0 && (
-          <div className="w-[270px] relative overflow-hidden flex items-center justify-center h-[177px] border rounded-lg border-primaryPurple hover:bg-lightPurple">
+          <div className="w-full md:w-[270px] relative overflow-hidden flex items-center justify-center h-[177px] border rounded-lg border-primaryPurple hover:bg-lightPurple">
             <div
               onClick={() => setEventPhoto([])}
               className="w-[72px] h-[72px] cursor-pointer text-3xl transition-all duration-300 ease-in-out hover:text-red-500 hover:bg-red-100 rounded-full bg-white grid place-content-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
@@ -46,7 +46,7 @@ const OrganizationProfile = () => {
         )}
       </div>
 
-      <div className="w-[50%]">
+      <div className="w-full md:w-[50%]">
         <div className="my-6">
           <label
             className="text-sm mb-2 block text-gray-800"

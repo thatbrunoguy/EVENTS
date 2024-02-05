@@ -51,7 +51,7 @@ const CreateAdsCampaign = () => {
     <section className="w-full min-h-screen flex">
       {isModalOpen && <BuyTokenModal setIsModalOpen={setIsModalOpen} />}
 
-      <div className="p-12 bg-white basis-[55%]">
+      <div className="p-2 py-4 md:p-12 bg-white w-full md:basis-[55%]">
         <h3 className="font-semibold text-xl mb-2">📢 Eventparrot Ads</h3>
         <p className="text-sm">
           You're on the verge of promoting on our worldwide marketplace, where
@@ -59,7 +59,7 @@ const CreateAdsCampaign = () => {
           placement and enhance your ticket sales.
         </p>
 
-        <div className="mt-9 border-[0.5px] p-5 rounded-md">
+        <div className="mt-9 border-[0.5px] p-2 md:p-5 rounded-md">
           <h3 className="">Select an Event</h3>
           <Menu
             className="w-full"
@@ -68,7 +68,7 @@ const CreateAdsCampaign = () => {
             align="start"
             menuButton={
               <MenuButton style={{ background: "transparent" }}>
-                <div className="border px-3 py-3 flex items-center mt-6 h-[104px] justify-between shadow-lg rounded-lg w-[624px] bg-white">
+                <div className="border px-3 py-3 flex items-center mt-6 md:h-[104px] justify-between shadow-lg rounded-lg w-full md:w-[624px] bg-white">
                   <div className="flex items-center space-x-5 p-3 ">
                     <div className="h-[72px] w-[72px] relative rounded overflow-hidden">
                       <Image
@@ -98,8 +98,8 @@ const CreateAdsCampaign = () => {
                   className="hover:bg-gray-100 hover:border-b cursor-pointer"
                   key={index}
                 >
-                  <div className="flex items-center w-[575px] space-x-5 p-3 ">
-                    <div className="h-[72px] w-[72px] relative rounded overflow-hidden">
+                  <div className="flex items-center w-full md:w-[575px] space-x-3 md:space-x-5 md:p-3 ">
+                    <div className="h-[42px] md:h-[72px] w-[42px] md:w-[72px] relative rounded overflow-hidden">
                       <Image
                         fill
                         src="/assets/event.jpeg"
@@ -107,7 +107,7 @@ const CreateAdsCampaign = () => {
                         objectFit="cover"
                       />
                     </div>
-                    <div>
+                    <div className="w-full">
                       <h4 className="font-semibold mb-1">{item.title}</h4>
                       <p className="text-lightText">{item.desc}</p>
                       <p className="text-lightText">{item.date}</p>
@@ -283,7 +283,7 @@ const CreateAdsCampaign = () => {
 
       {/* RIGHT */}
 
-      <div className="basis-[45%] min-h-screen p-12 bg-gray-100">
+      <div className="basis-[45%] hidden md:block min-h-screen p-12 bg-gray-100">
         <div>
           <h4 className="text-xl w-full font-semibold">Preview</h4>
 
@@ -306,7 +306,7 @@ const CreateAdsCampaign = () => {
           {/* FAQS */}
 
           <div>
-            <h4 className="text-xl w-full font-semibold">Faqs</h4>
+            <h4 className=" text-xl w-full font-semibold">Faqs</h4>
             <div>
               <Faq />
             </div>

@@ -9,24 +9,25 @@ const SignUp = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isProgressed, setIsProgressed] = useState(false);
   return (
-    <section className="w-screen h-screen flex items-center justify-between p-6">
+    <section className="w-screen h-screen flex items-center justify-between p-3 md:p-6">
       {/* LEFT */}
-      <div className="basis-1/2 ">
-        <div className=" w-[518px] mx-auto">
+      <div className="w-full md:basis-1/2 ">
+        <div className=" w-full md:w-[518px] mx-auto">
           <header className="w-full flex flex-col items-center mb-10">
-            <div>
+            <div className="relative w-[120px] md:w-[200px] h-9 md:h-[42px]">
               <Image
                 src="/assets/eventparrot-logo.svg"
                 alt="Eventparrot logo"
-                width={200}
-                height={42}
+                fill
                 priority
               />
             </div>
-            <h3 className="font-semibold text-3xl mt-3">Welcome back!</h3>
+            <h3 className="font-semibold text-2xl md:text-3xl mt-1 md:mt-3">
+              Welcome back!
+            </h3>
           </header>
           <div>
-            <div className="mb-6">
+            <div className="mb-4 md:mb-6">
               <label className="text-sm text-gray-800" htmlFor="organizerName">
                 Email <span className="text-red-500">*</span>
               </label>
@@ -101,7 +102,7 @@ const SignUp = () => {
               </Link>
             </div>
           )}
-          <div className="flex items-center space-x-4 my-5">
+          <div className="flex items-center space-x-4 my-4 md:my-5">
             <div className="basis-1/2 h-[.8px] bg-[#E7E4EB]" />
             <p className="text-sm text-[#706D73] ">or</p>
             <div className="basis-1/2 h-[.8px] bg-[#E7E4EB]" />
@@ -114,11 +115,11 @@ const SignUp = () => {
             <p>Sign up with Google</p>
           </div>
 
-          <div className="mt-11 text-sm">
+          <div className="mt-6 md:mt-11 text-sm">
             <p>
               Already have an account?{" "}
               <span className="text-primaryPurple font-medium hover:underline hover:underline-offset-2">
-                <Link href="/auth/sign-up">Log in</Link>
+                <Link href="/auth/login">Log in</Link>
               </span>
             </p>
           </div>
@@ -127,7 +128,7 @@ const SignUp = () => {
 
       {/* RIGHT */}
 
-      <div className="basis-1/2 h-screen p-6">
+      <div className="hidden md:block   basis-1/2 h-screen p-6">
         <div className="relative w-full h-full overflow-hidden rounded-[20px]">
           <Image
             fill

@@ -61,7 +61,7 @@ const Sidebar = () => {
   const path = usePathname().split("/");
   console.log("path", path);
   return (
-    <div className="h-screen w-[294px] hidden md:block py-[25px] border-r relative">
+    <div className="h-screen min-w-[284px] w-[284px] hidden md:block py-[25px] border-r relative">
       <div className="pl-6">
         <Image
           src="/assets/eventparrot-logo.svg"

@@ -55,5 +55,5 @@ export function updateLocalStorageField(key, path, fieldName, newValue) {
 export const steps = [
   { title: "Basic info", isComplete: false, isActive: true },
   { title: "Details", isComplete: false, isActive: false },
-  { title: "Basic Tickets", isComplete: false, isActive: false },
+  { title: "Tickets", isComplete: false, isActive: false },
 ];

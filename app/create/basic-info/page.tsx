@@ -62,7 +62,7 @@ const BasicInfo = () => {
       },
       { title: "Details", path: "details", isComplete: false, isActive: false },
       {
-        title: "Basic Tickets",
+        title: "BTickets",
         path: "ticket",
         isComplete: false,
         isActive: false,

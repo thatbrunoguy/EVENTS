@@ -6,21 +6,22 @@ import React from "react";
 import { FcGoogle } from "react-icons/fc";
 const Login = () => {
   return (
-    <section className="w-screen h-screen flex items-center justify-between p-6">
+    <section className="w-screen h-screen flex items-center justify-between p-3 md:p-6">
       {/* LEFT */}
-      <div className="basis-1/2 ">
-        <div className=" w-[518px] mx-auto">
+      <div className="w-full md:basis-1/2 ">
+        <div className=" w-full md:w-[518px] mx-auto">
           <header className="w-full flex flex-col items-center mb-10">
-            <div>
+            <div className="relative w-[120px] md:w-[200px] h-9 md:h-[42px]">
               <Image
                 src="/assets/eventparrot-logo.svg"
                 alt="Eventparrot logo"
-                width={200}
-                height={42}
+                fill
                 priority
               />
             </div>
-            <h3 className="font-semibold text-3xl mt-3">Welcome back!</h3>
+            <h3 className="font-semibold text-2xl md:text-3xl mt-3">
+              Welcome back!
+            </h3>
           </header>
 
           <div>
@@ -75,7 +76,7 @@ const Login = () => {
 
       {/* RIGHT */}
 
-      <div className="basis-1/2 h-screen p-6">
+      <div className=" hidden md:block basis-1/2 h-screen p-6">
         <div className="relative w-full h-full overflow-hidden rounded-[20px]">
           <Image
             fill

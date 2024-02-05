@@ -40,8 +40,8 @@ export default function SettingsPage() {
           Organization settings
         </h3>
 
-        <div className="w-[92%] mx-auto">
-          <div className="w-[50%] mt-5">
+        <div className="w-[95%] sm:w-[92%] mx-auto">
+          <div className="xl:w-[60%] mt-5">
             <TabsComponent2 tablist={tablist} setTablist={setTablist} />
           </div>
 

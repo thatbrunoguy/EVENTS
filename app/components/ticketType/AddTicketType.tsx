@@ -17,7 +17,6 @@ const AddTicketType = ({ isModalOpen, setIsModalOpen }: Iprops) => {
     font: 600,
     backgroundColor: "#F5EDFC",
     height: "42px",
-    width: "160px",
   };
   return (
     <section>
@@ -26,27 +25,29 @@ const AddTicketType = ({ isModalOpen, setIsModalOpen }: Iprops) => {
         className="bg-black bg-opacity-50 fixed z-20  top-0 left-0 right-0 bottom-0"
         aria-label="backdrop"
       />
-      <div className="w-[664px] min-h-[676px] z-50 bg-white rounded-lg fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+      <div className=" w-[96%] mx-auto md:w-[664px] md:min-h-[676px] z-50 bg-white rounded-lg fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
         <header className="font-semibold px-6 text-xl mb-8 border-b-[.8px] border-gray-300 py-6">
           Add a ticket type
         </header>
-        <main className="px-8 max-h-[70vh] overflow-y-scroll">
+        <main className="px-3 md:px-8 max-h-[70vh] overflow-y-scroll">
           <p className="text-sm font-semibold text-gray-800">
             Which kind of ticket is it? <span className="text-red-500">*</span>
           </p>
-          <div className="mt-2 mb-6 flex items-center space-x-6">
-            <TransparentButton
-              title="Free"
-              styles={isFree ? activeStyle : { height: "42px", width: "160px" }}
-              onClickHandler={() => setIsFree(true)}
-            />
-            <TransparentButton
-              title="Paid"
-              styles={
-                !isFree ? activeStyle : { height: "42px", width: "160px" }
-              }
-              onClickHandler={() => setIsFree(false)}
-            />
+          <div className="mt-2 mb-6 flex items-center space-x-3 md:space-x-6">
+            <div className="basis-1/2 md:w-[160px]">
+              <TransparentButton
+                title="Free"
+                styles={isFree ? activeStyle : { height: "42px" }}
+                onClickHandler={() => setIsFree(true)}
+              />
+            </div>
+            <div className="basis-1/2 md:w-[160px]">
+              <TransparentButton
+                title="Paid"
+                styles={!isFree ? activeStyle : { height: "42px" }}
+                onClickHandler={() => setIsFree(false)}
+              />
+            </div>
           </div>
 
           {/* Ticket name */}
