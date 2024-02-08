@@ -1,14 +1,63 @@
 "use client";
 
+import { Login } from "@/app/types";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { FcGoogle } from "react-icons/fc";
+import { FiEye, FiEyeOff } from "react-icons/fi";
+import { signIn } from "next-auth/react";
+import { useSession } from "next-auth/react";
+import PrimaryLoading from "@/app/components/loaders/PrimaryLoading";
+import toast, { Toaster } from "react-hot-toast";
+import { useRouter } from "next/navigation";
+
 const Login = () => {
+  const router = useRouter();
+  const { data: session, status } = useSession();
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
+  useLayoutEffect(() => {
+    if (status === "authenticated") {
+      router.push("/");
+    }
+  }, [status]);
+
+  const [loginCredential, setLoginCredential] = useState<Login>({
+    email: "",
+    password: "",
+  });
+
+  const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const res = await signIn("credentials", {
+      ...loginCredential,
+      redirect: false,
+      // callbackUrl: "/",
+    });
+
+    console.log("res", res);
+    if (res?.error) {
+      toast.error(res.error as string);
+    }
+  };
+  // console.log("status", status);
+  // console.log("session", session);
+
+  // if (status === "authenticated") {
+  //   return <p>Signed in as {session.user.email}</p>
+  // }
+  if (status === "loading") {
+    return <PrimaryLoading />;
+  }
+
   return (
     <section className="w-screen h-screen flex items-center justify-between p-3 md:p-6">
+      {/* {status === "loading" && <PrimaryLoading />} */}
+      <Toaster position="top-right" reverseOrder={false} />
+
       {/* LEFT */}
-      <div className="w-full md:basis-1/2 ">
+      <form onSubmit={submitHandler} className="w-full md:basis-1/2 ">
         <div className=" w-full md:w-[518px] mx-auto">
           <header className="w-full flex flex-col items-center mb-10">
             <div className="relative w-[120px] md:w-[200px] h-9 md:h-[42px]">
@@ -29,26 +78,58 @@ const Login = () => {
               Email <span className="text-red-500">*</span>
             </label>
             <input
-              type="text"
+              value={loginCredential.email}
+              onChange={(e) =>
+                setLoginCredential((prev) => ({
+                  ...prev,
+                  email: e.target.value,
+                }))
+              }
+              type="email"
+              required
               className="h-[56px] text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
             />
           </div>
 
           <div className="my-6">
-            <label className="text-sm text-gray-800" htmlFor="organizerName">
-              Password <span className="text-red-500">*</span>
+            <label
+              className="text-sm text-gray-800 mb-2 block"
+              htmlFor="organizerName"
+            >
+              Create password <span className="text-red-500">*</span>
             </label>
-            <input
-              type="text"
-              className="h-[56px] text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
-            />
+
+            <div className="h-[56px] w-full flex items-center rounded-lg pr-4 bg-[#F8F8F8] focus-within:border-[2px]  focus-within:border-purple-600 ">
+              <input
+                value={loginCredential.password}
+                onChange={(e) =>
+                  setLoginCredential((prev) => ({
+                    ...prev,
+                    password: e.target.value,
+                  }))
+                }
+                required
+                type={isPasswordVisible ? "text" : "password"}
+                className="h-full text-sm w-full text-gray-600 px-3  block  bg-transparent outline-none border-none"
+              />
+
+              <div
+                className="cursor-pointer"
+                onClick={() => setIsPasswordVisible((prev) => !prev)}
+              >
+                {isPasswordVisible ? <FiEye /> : <FiEyeOff />}
+              </div>
+            </div>
           </div>
 
-          <Link href="/auth/otp">
-            <button className="bg-primaryPurple w-full h-14 hover:bg-opacity-70 rounded-md text-sm text-white">
-              <p>Continue</p>
-            </button>
-          </Link>
+          {/* <Link href="/auth/otp"> */}
+          <button
+            type="submit"
+            className="bg-primaryPurple w-full h-14 hover:bg-opacity-70 rounded-md text-sm text-white"
+          >
+            <p>Continue</p>
+          </button>
+          {/* </Link> */}
 
           <div className="flex items-center space-x-4 my-5">
             <div className="basis-1/2 h-[.8px] bg-[#E7E4EB]" />
@@ -72,7 +153,7 @@ const Login = () => {
             </p>
           </div>
         </div>
-      </div>
+      </form>
 
       {/* RIGHT */}
 

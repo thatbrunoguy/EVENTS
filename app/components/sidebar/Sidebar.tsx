@@ -14,6 +14,9 @@ import { IoMdWallet } from "react-icons/io";
 import { TbCalendarTime } from "react-icons/tb";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { signOut, useSession } from "next-auth/react";
+import { storeData } from "@/app/utils/localstorage";
+import { EVENTSPARROT_USER } from "@/app/constants";
 
 const routes = [
   {
@@ -59,7 +62,22 @@ const routes = [
 ];
 const Sidebar = () => {
   const path = usePathname().split("/");
+  const { data: session, status } = useSession();
+
+  const handleSignOutClick = async () => {
+    try {
+      await signOut();
+    } catch (error) {
+      console.error("Error during sign-out:", error);
+    }
+  };
+  console.log("status", status);
+  console.log("session", session);
   console.log("path", path);
+
+  if (status == "authenticated") {
+    storeData(EVENTSPARROT_USER, session.user);
+  }
   return (
     <div className="h-screen min-w-[284px] w-[284px] hidden md:block py-[25px] border-r relative">
       <div className="pl-6">
@@ -92,7 +110,10 @@ const Sidebar = () => {
       </div>
 
       <div className="flex space-x-3 py-6 pl-4 border-t absolute bottom-0 left-0 right-0">
-        <div className="relative w-[47px] h-[47px] rounded-full overflow-hidden">
+        <div
+          onClick={handleSignOutClick}
+          className="relative w-[47px] h-[47px] rounded-full overflow-hidden"
+        >
           <img
             src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cHJvZmlsZSUyMHBpY3R1cmV8ZW58MHx8MHx8fDA%3D"
             alt="profile pic"
@@ -102,10 +123,13 @@ const Sidebar = () => {
             // style={{ borderRadius: "50%", objectFit: "cover" }}
           />
         </div>
-        <div>
-          <p>Christian Peters</p>
-          <p className="text-sm text-gray-500">Role: Marketer</p>
-        </div>
+        {session?.user && (
+          <div>
+            {/* @ts-ignore */}
+            <p>{`${session?.user?.user?.first_name} ${session?.user?.user?.last_name}`}</p>
+            <p className="text-sm text-gray-500">Role: Marketer</p>
+          </div>
+        )}
       </div>
     </div>
   );

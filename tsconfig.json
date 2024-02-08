@@ -28,7 +28,8 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "app/components/select/ReactSelect.jsx",
-    "app/components/fileUpload/FileUpload.jsx"
+    "app/components/fileUpload/FileUpload.jsx",
+    "app/components/table/GlobalTable.jsx"
   ],
   "exclude": ["node_modules"]
 }
