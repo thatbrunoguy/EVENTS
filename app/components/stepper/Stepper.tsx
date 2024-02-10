@@ -12,62 +12,49 @@ export interface Step {
   isActive: boolean;
 }
 
-const Stepper = () => {
-  const step: Step[] = [
-    {
-      title: "Basic info",
-      path: "basic-info",
-      isComplete: false,
-      isActive: false,
-    },
-    { title: "Details", path: "details", isComplete: false, isActive: false },
-    {
-      title: "Basic Tickets",
-      path: "ticket",
-      isComplete: false,
-      isActive: false,
-    },
-  ];
+type Iprops = {
+  steps: Step[];
+  setSteps: React.Dispatch<React.SetStateAction<Step[]>>;
+};
+const Stepper = ({ steps, setSteps }: Iprops) => {
+  // const activeStepsHandler = (
+  //   currentPath: string,
+  //   stepsArray: Step[]
+  // ): Step[] => {
+  //   const currentStepIndex = stepsArray.findIndex(
+  //     (step) => step.path === currentPath
+  //   );
 
-  const [steps, setSteps] = useState<Step[]>(step);
+  //   if (currentStepIndex !== -1) {
+  //     // Deactivate all steps
+  //     stepsArray.forEach((step) => {
+  //       step.isActive = false;
+  //     });
 
-  const activeStepsHandler = (
-    currentPath: string,
-    stepsArray: Step[]
-  ): Step[] => {
-    const currentStepIndex = stepsArray.findIndex(
-      (step) => step.path === currentPath
-    );
+  //     // Activate the current step
+  //     stepsArray[currentStepIndex].isActive = true;
+  //   }
 
-    if (currentStepIndex !== -1) {
-      // Deactivate all steps
-      stepsArray.forEach((step) => {
-        step.isActive = false;
-      });
+  //   // Return the updated steps array
+  //   return [...stepsArray];
+  // };
 
-      // Activate the current step
-      stepsArray[currentStepIndex].isActive = true;
-    }
+  // const currentPath = usePathname().split("/")[2];
 
-    // Return the updated steps array
-    return [...stepsArray];
-  };
+  // useEffect(() => {
+  //   const res = activeStepsHandler(currentPath, steps);
+  //   const storedStep = getData("event-creation");
 
-  const currentPath = usePathname().split("/")[2];
-
-  useEffect(() => {
-    // const res = activeStepsHandler(currentPath, steps);
-    const storedStep = getData("event-creation");
-
-    if (storedStep !== null) {
-      setSteps(storedStep);
-      const res = activeStepsHandler(currentPath, storedStep);
-      setSteps(res);
-    } else {
-      const res = activeStepsHandler(currentPath, steps);
-      setSteps(res);
-    }
-  }, [currentPath]);
+  //   if (storedStep !== null) {
+  //     setSteps(storedStep);
+  //     const res = activeStepsHandler(currentPath, storedStep);
+  //     setSteps(res);
+  //   }
+  //    else {
+  //   const res = activeStepsHandler(currentPath, steps);
+  //   setSteps(res);
+  //   }
+  // }, [currentPath]);
 
   return (
     <section>

@@ -18,6 +18,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <TanstackQuery>{children}</TanstackQuery>
+        {/* <script
+          type="text/javascript"
+          src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_PLACES}&libraries=places`}
+        /> */}
       </body>
     </html>
   );

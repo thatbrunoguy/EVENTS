@@ -20,6 +20,8 @@ import { useRouter } from "next/navigation";
 const Details = () => {
   const [eventPhoto, setEventPhoto] = useState<any>([]);
   const router = useRouter();
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [quillValue, setQuillValue] = useState("");
 
   const [eventDetails, setEventDetails] = useState({
     isEditOrganizerInfo: false,
@@ -250,7 +252,11 @@ const Details = () => {
                 placeholder="Select category"
                 className="h-[56px] text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
               /> */}
-              <ReactSelectOptions options={options} />
+              <ReactSelectOptions
+                selectedOption={selectedOption}
+                setSelectedOption={setSelectedOption}
+                options={options}
+              />
             </div>
             <div className="my-6">
               <label
@@ -260,7 +266,7 @@ const Details = () => {
                 Description of your event{" "}
                 <span className="text-red-500">*</span>
               </label>
-              <ReactQuillEditor />
+              <ReactQuillEditor value={quillValue} setValue={setQuillValue} />
             </div>
           </div>
         )}

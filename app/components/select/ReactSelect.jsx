@@ -9,9 +9,11 @@ const options = [
   { value: "vanilla", label: "Vanilla" },
 ];
 
-export default function ReactSelectOptions({ options = [] }) {
-  const [selectedOption, setSelectedOption] = useState(null);
-
+export default function ReactSelectOptions({
+  options = [],
+  selectedOption,
+  setSelectedOption,
+}) {
   return (
     <div>
       <Select

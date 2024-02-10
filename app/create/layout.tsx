@@ -13,8 +13,8 @@ export default function DashboardLayout({
   return (
     <section className="py-5 md:py-[50px] w-full md:w-[95%] lg:w-[80%] md:mx-auto">
       <BasicInfoHeader />
-
-      <div className="flex justify-between md:space-x-16 lg:space-x-0">
+      {children}
+      {/* <div className="flex justify-between md:space-x-16 lg:space-x-0">
         <div>
           <Stepper />
         </div>
@@ -26,7 +26,7 @@ export default function DashboardLayout({
             {children}
           </>
         </main>
-      </div>
+      </div> */}
     </section>
   );
 }

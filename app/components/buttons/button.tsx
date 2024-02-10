@@ -21,13 +21,19 @@ export const TransparentButton = ({
 export const SolidButton = ({
   title = "Button",
   styles = {},
+  isComplete = true,
   onClickHandler = () => {},
 }) => {
   return (
     <button
       onClick={onClickHandler}
       style={styles}
-      className="w-full h-12 text-white rounded-lg  bg-primaryPurple flex items-center justify-center"
+      disabled={!isComplete}
+      className={` ${
+        isComplete
+          ? "bg-primaryPurple"
+          : "bg-primaryPurple bg-opacity-20 cursor-wait"
+      } w-full h-12 text-white rounded-lg   flex items-center justify-center`}
     >
       {title}
     </button>

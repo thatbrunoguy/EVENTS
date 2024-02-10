@@ -2,7 +2,7 @@
 
 import ReactQuillEditor from "@/app/components/Reactquill";
 import { TransparentButton } from "@/app/components/buttons/button";
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { GoSearch } from "react-icons/go";
 import TimePicker from "react-time-picker";
 import DatePicker from "react-date-picker";
@@ -12,16 +12,37 @@ import "react-date-picker/dist/DatePicker.css";
 import "react-calendar/dist/Calendar.css";
 import ReactSelectOptions from "../../components/select/ReactSelect";
 import MainFooter from "@/app/components/footer/MainFooter";
-import { storeData } from "@/app/utils/localstorage";
+import { getData, storeData } from "@/app/utils/localstorage";
 import { useRouter } from "next/navigation";
-const regRequirements = [
-  { title: "First name" },
-  { title: "Last name" },
-  { title: "Email" },
-  { title: "Phone Number" },
-  { title: "Job title" },
-  { title: "Company" },
-  { title: "Address" },
+import GoogleLocationSearch from "@/app/components/googleLocationSearch";
+import { computeDateTime } from "@/app/helpers";
+
+// DETAILS
+
+import Faq from "@/app/components/faq/Faq";
+import FileUpload from "@/app/components/fileUpload/FileUpload";
+import { BiPencil } from "react-icons/bi";
+import { RiDeleteBin6Fill } from "react-icons/ri";
+import { FaAngleDown } from "react-icons/fa6";
+import { updateLocalStorageField } from "@/app/utils/localstorage";
+
+// TICKET
+
+import { PiCreditCard } from "react-icons/pi";
+import { IoMdMore } from "react-icons/io";
+import { Menu, MenuItem, MenuButton } from "@szhsin/react-menu";
+import "@szhsin/react-menu/dist/index.css";
+import "@szhsin/react-menu/dist/transitions/slide.css";
+import { GoPlus } from "react-icons/go";
+import AddTicketType from "@/app/components/ticketType/AddTicketType";
+import { IoEyeSharp } from "react-icons/io5";
+import ConfirmDeleteModal from "@/app/components/modals/ConfirmDelete";
+import Stepper, { Step } from "@/app/components/stepper/Stepper";
+import MobileStepper from "@/app/components/stepper/MobileStepper";
+
+const ticketOptions = [
+  { icon: <IoEyeSharp />, title: "View ticket type" },
+  { icon: <RiDeleteBin6Fill />, title: "Delete ticket type" },
 ];
 
 export const options = [
@@ -45,243 +66,1222 @@ export const options = [
 ];
 type ValuePiece = Date | null;
 
+type OrganizerType = {
+  name: string;
+  phone: string;
+};
+type LocationDetailsType = {
+  address: string;
+  latitude: string;
+  longitude: string;
+};
+
+type RequirementType = {
+  name: string;
+  required: boolean;
+  title: string;
+};
+
+type FaqType = {
+  question: string;
+  answer: string;
+};
+
+export type EventInfoType = {
+  organizer: OrganizerType;
+  name: string;
+  description: string;
+  location_type: number;
+  location_details: LocationDetailsType;
+  start_date: string;
+  end_date: string;
+  timezone: string;
+  category: [string];
+  registration_requirements: RequirementType[];
+  medias: string[];
+  faqs: FaqType[];
+  tickets: [];
+};
+const step: Step[] = [
+  {
+    title: "Basic info",
+    path: "basic-info",
+    isComplete: false,
+    isActive: true,
+  },
+  { title: "Details", path: "details", isComplete: false, isActive: false },
+  {
+    title: "BasicTickets",
+    path: "ticket",
+    isComplete: false,
+    isActive: false,
+  },
+];
+
 export type Value = ValuePiece | [ValuePiece, ValuePiece];
 
 const BasicInfo = () => {
+  const [steps, setSteps] = useState<Step[]>(step);
   const [startDate, setStartDate] = useState<Value>(new Date());
   const [startTime, setStartTime] = useState<any>("10:00");
+  const [endDate, setEndDate] = useState<Value>(new Date());
+  const [endTime, setEndTime] = useState<any>("10:00");
+  const [isOnlineEvent, setIsOnlineEvent] = useState(false);
+  const [selectedOption, setSelectedOption] = useState<any>(null);
+  const [locationValue, setLocationValue] = useState<null | any>(null);
+  const [quillValue, setQuillValue] = useState("");
+  const [isComplete, setIsComplete] = useState(false);
+  const [isComplete2, setIsComplete2] = useState(false);
+  const [isComplete3, setIsComplete3] = useState(false);
+
+  // TICKET
+
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
+  const [creationStatus, setCreationStatus] = useState({
+    basicInfo: true,
+    details: false,
+    ticket: false,
+  });
+
+  // DETAILS
+
+  const [eventPhoto, setEventPhoto] = useState<any>([]);
+
+  const [eventDetails, setEventDetails] = useState({
+    isEditOrganizerInfo: false,
+    isEditEventDetails: false,
+    isEditEventLocation: false,
+    isEditEventDateAndTime: false,
+  });
+
+  // const toggleIsCompleteByIndex = (
+  //   index: number,
+  //   toggleTo: boolean
+  // ): Step[] => {
+  //   return steps.map((s, i) => {
+  //     if (i === index) {
+  //       return { ...s, isComplete: toggleTo };
+  //     }
+  //     return s;
+  //   });
+  // };
+  const toggleIsCompleteByIndex = (index: number, toggleTo: boolean): void => {
+    setSteps((prevSteps) => {
+      return prevSteps.map((s, i) => {
+        if (i === index) {
+          return { ...s, isComplete: toggleTo };
+        } else {
+          return s;
+        }
+      });
+    });
+  };
+
+  const [eventInfo, setEventInfo] = useState<EventInfoType>({
+    organizer: { name: "", phone: "" },
+    name: "",
+    description: "",
+    location_type: 0,
+    start_date: "",
+    end_date: "",
+    timezone: "Africa/Lagos",
+    category: [""],
+    location_details: {
+      address: "",
+      latitude: "",
+      longitude: "",
+    },
+    registration_requirements: [
+      { name: "firstName", required: true, title: "First name" },
+      { name: "lastName", required: true, title: "Last name" },
+      { name: "email", required: true, title: "Email" },
+      { name: "tel", required: true, title: "Phone Number" },
+      { name: "jobTitle", required: true, title: "Job title" },
+      { name: "company", required: true, title: "Company" },
+      { name: "address", required: true, title: "Address" },
+    ],
+    medias: [],
+    faqs: [],
+    tickets: [],
+  });
+
+  const computeDateTime = useCallback((date: any, time: any) => {
+    console.log("Date", date, "Time", time);
+    const dateString = date.toISOString().split("T")[0];
+    const dateTimeString = `${dateString}T${time}`;
+    return dateTimeString;
+  }, []);
+
+  useEffect(() => {
+    const startDateTime = computeDateTime(startDate, startTime);
+    setEventInfo((prevEventInfo) => ({
+      ...prevEventInfo,
+      start_date: startDateTime,
+    }));
+  }, [startDate, startTime, computeDateTime]);
+
+  useEffect(() => {
+    const endDateTime = computeDateTime(endDate, endTime);
+    setEventInfo((prevEventInfo) => ({
+      ...prevEventInfo,
+      end_date: endDateTime,
+    }));
+  }, [endDate, endTime, computeDateTime]);
+
+  const computeEventCategory = useCallback(() => {
+    setEventInfo((prevEventInfo) => ({
+      ...prevEventInfo,
+      category: selectedOption ? [selectedOption.value] : [""],
+    }));
+  }, [selectedOption]);
+
+  useEffect(() => {
+    computeEventCategory();
+  }, [computeEventCategory]);
+
+  const computeEventDescrption = useCallback(() => {
+    setEventInfo((prevEventInfo) => ({
+      ...prevEventInfo,
+      description: quillValue,
+    }));
+  }, [quillValue]);
+
+  useEffect(() => {
+    computeEventDescrption();
+  }, [computeEventDescrption]);
+
+  const hasValues = useMemo(() => {
+    return (
+      eventInfo.organizer.name !== "" &&
+      eventInfo.organizer.phone !== "" &&
+      eventInfo.name !== "" &&
+      eventInfo.description !== "" &&
+      eventInfo.location_type !== 0 &&
+      (eventInfo.location_type === 2 ||
+        (eventInfo.location_type === 1 &&
+          eventInfo.location_details.address !== "" &&
+          eventInfo.location_details.latitude !== "" &&
+          eventInfo.location_details.longitude !== "")) &&
+      eventInfo.start_date !== "" &&
+      eventInfo.end_date !== "" &&
+      eventInfo.timezone !== ""
+    );
+  }, [eventInfo]);
+
+  const checkCompletion = () => {
+    setIsComplete(hasValues);
+    toggleIsCompleteByIndex(0, hasValues);
+  };
+
+  const checkCompletion2 = () => {
+    setIsComplete2(hasValues && eventInfo.medias.length > 0);
+    toggleIsCompleteByIndex(1, hasValues && eventInfo.medias.length > 0);
+  };
+
+  const memoizedEventInfo = useMemo(() => eventInfo, [eventInfo]);
+  useEffect(() => {
+    checkCompletion();
+    checkCompletion2();
+  }, [memoizedEventInfo, creationStatus.details]);
+
   const router = useRouter();
 
-  const nextHandler = () => {
-    storeData("event-creation", [
-      {
-        title: "Basic info",
-        path: "basic-info",
-        isComplete: true,
-        isActive: false,
-      },
-      { title: "Details", path: "details", isComplete: false, isActive: false },
-      {
-        title: "BTickets",
-        path: "ticket",
-        isComplete: false,
-        isActive: false,
-      },
-    ]);
+  const nextHandlerOne = () => {
+    setCreationStatus((prev) => ({
+      ...prev,
+      basicInfo: false,
+      details: true,
+    }));
+  };
 
-    router.push("/create/details");
+  const nextHandlerTwo = () => {
+    setCreationStatus((prev) => ({ ...prev, details: false, ticket: true }));
   };
+
+  const nextHandlerThree = () => {
+    toggleIsCompleteByIndex(2, true);
+  };
+
+  const setActiveStepByIndex = (index: number): Step[] => {
+    return steps.map((step, i) => {
+      if (i === index) {
+        return { ...step, isActive: true };
+      } else {
+        return { ...step, isActive: false };
+      }
+    });
+  };
+
+  useEffect(() => {
+    if (creationStatus.basicInfo) {
+      setSteps(setActiveStepByIndex(0));
+    } else if (creationStatus.details) {
+      setSteps(setActiveStepByIndex(1));
+    } else {
+      setSteps(setActiveStepByIndex(2));
+    }
+  }, [creationStatus.basicInfo, creationStatus.details, creationStatus.ticket]);
+
   const backHandler = () => {
-    router.push("/event");
+    if (creationStatus.basicInfo) {
+      router.push("/event");
+    } else if (creationStatus.details) {
+      setCreationStatus((prev) => ({
+        ...prev,
+        details: false,
+        basicInfo: true,
+      }));
+    } else {
+      setCreationStatus((prev) => ({
+        ...prev,
+        details: true,
+        ticket: false,
+      }));
+    }
   };
+
+  // DETAILS
+  const thumbs = eventPhoto.map((file: any) => (
+    <div key={file.name}>
+      <div>
+        <img
+          src={file.preview}
+          className="w-full h-full object-contain"
+          // Revoke data uri after image is loaded
+          onLoad={() => {
+            URL.revokeObjectURL(file.preview);
+          }}
+        />
+      </div>
+    </div>
+  ));
+
+  useEffect(() => {
+    console.log("eventPhoto", eventPhoto);
+
+    if (eventPhoto.length > 0) {
+      setEventInfo((prev) => ({ ...prev, medias: [thumbs.preview] }));
+    } else if (eventPhoto.length === 0 && eventInfo.medias.length > 0) {
+      setEventInfo((prev) => ({ ...prev, medias: [] }));
+    }
+  }, [eventPhoto]);
 
   return (
-    <div className="w-[94%] mx-auto  mb-20 ">
-      <div>
-        <h2 className="text-[24px] font-semibold">Organizers Information</h2>
-        <p className="text-gray-500 w-[70%] mt-2 mb-9">
-          Please provide your full name, email address, and a phone number where
-          we can reach you.
-        </p>
-        <div className="flex flex-col gap-6 md:flex-row items-center  ">
-          <div className="w-full md:basis-1/2">
-            <label className="text-sm text-gray-800" htmlFor="organizerName">
-              Organizer's name <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              className="h-[56px] text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
-            />
-          </div>
-          <div className="w-full md:basis-1/2">
-            <label className="text-sm text-gray-800" htmlFor="organizerName">
-              Phone Number <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              className="h-[56px] text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
-            />
-          </div>
-        </div>
-      </div>
-
-      <hr className="my-8" />
-
-      <div>
-        <h2 className="text-[24px] font-semibold">Event's Details</h2>
-        <p className="text-gray-500 w-[90%] md:w-[70%] mt-2 mb-9">
-          Please provide your full name, email address, and a phone number where
-          we can reach you.
-        </p>
+    <section>
+      <div className="flex justify-between md:space-x-16 lg:space-x-0">
         <div>
-          <label className="text-sm text-gray-800" htmlFor="organizerName">
-            Event name <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="text"
-            placeholder="Quick description of your Event name"
-            className="h-[56px] text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
-          />
+          <Stepper steps={steps} setSteps={setSteps} />
         </div>
-        <div className="my-6">
-          <label
-            className="text-sm mb-2 block text-gray-800"
-            htmlFor="organizerName"
-          >
-            Event Category <span className="text-red-500">*</span>
-          </label>
-          {/* <input
+        <main className="flex-1 lg:flex-none w-[50%] lg:w-[748px] ">
+          <>
+            <div className="mb-6 md:mb-0">
+              <MobileStepper />
+            </div>
+
+            {creationStatus.basicInfo ? (
+              <div className="w-[94%] mx-auto  mb-20 ">
+                <div>
+                  <h2 className="text-[24px] font-semibold">
+                    Organizers Information
+                  </h2>
+                  <p className="text-gray-500 w-[70%] mt-2 mb-9">
+                    Please provide your full name, email address, and a phone
+                    number where we can reach you.
+                  </p>
+                  <div className="flex flex-col gap-6 md:flex-row items-center  ">
+                    <div className="w-full md:basis-1/2">
+                      <label
+                        className="text-sm text-gray-800"
+                        htmlFor="organizerName"
+                      >
+                        Organizer's name <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        value={eventInfo.organizer.name}
+                        onChange={(e) =>
+                          setEventInfo((prev) => ({
+                            ...prev,
+                            organizer: {
+                              ...prev.organizer,
+                              name: e.target.value,
+                            },
+                          }))
+                        }
+                        type="text"
+                        className="h-[56px] text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
+                      />
+                    </div>
+                    <div className="w-full md:basis-1/2">
+                      <label
+                        className="text-sm text-gray-800"
+                        htmlFor="organizerName"
+                      >
+                        Phone Number <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        value={eventInfo.organizer.phone}
+                        onChange={(e) =>
+                          setEventInfo((prev) => ({
+                            ...prev,
+                            organizer: {
+                              ...prev.organizer,
+                              phone: e.target.value,
+                            },
+                          }))
+                        }
+                        type="tel"
+                        className="h-[56px] text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <hr className="my-8" />
+
+                <div>
+                  <h2 className="text-[24px] font-semibold">Event's Details</h2>
+                  <p className="text-gray-500 w-[90%] md:w-[70%] mt-2 mb-9">
+                    Please provide your full name, email address, and a phone
+                    number where we can reach you.
+                  </p>
+                  <div>
+                    <label
+                      className="text-sm text-gray-800"
+                      htmlFor="organizerName"
+                    >
+                      Event name <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      value={eventInfo.name}
+                      onChange={(e) =>
+                        setEventInfo((prev) => ({
+                          ...prev,
+                          name: e.target.value,
+                        }))
+                      }
+                      type="text"
+                      placeholder="Quick description of your Event name"
+                      className="h-[56px] text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
+                    />
+                  </div>
+                  <div className="my-6">
+                    <label
+                      className="text-sm mb-2 block text-gray-800"
+                      htmlFor="organizerName"
+                    >
+                      Event Category <span className="text-red-500">*</span>
+                    </label>
+                    {/* <input
             type="text"
             placeholder="Select category"
             className="h-[56px] text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
           /> */}
-          <ReactSelectOptions options={options} />
-        </div>
-        <div className="my-6 ">
-          <label
-            className="text-sm block text-gray-800 mb-2"
-            htmlFor="organizerName"
-          >
-            Description of your event <span className="text-red-500">*</span>
-          </label>
-          <ReactQuillEditor />
-        </div>
-      </div>
+                    <ReactSelectOptions
+                      selectedOption={selectedOption}
+                      setSelectedOption={setSelectedOption}
+                      options={options}
+                    />
+                  </div>
+                  <div className="my-6 ">
+                    <label
+                      className="text-sm block text-gray-800 mb-2"
+                      htmlFor="organizerName"
+                    >
+                      Description of your event{" "}
+                      <span className="text-red-500">*</span>
+                    </label>
+                    <ReactQuillEditor
+                      value={quillValue}
+                      setValue={setQuillValue}
+                    />
+                  </div>
+                </div>
 
-      <hr className="my-8 " />
+                <hr className="my-8 " />
 
-      <div>
-        <h2 className="text-[24px] font-semibold">Event's Location</h2>
-        <p className="text-gray-500 w-[70%] mt-2 mb-9">
-          Specify the venue name and address, including any relevant room
-          numbers
-        </p>
-        <div className="mt-9 mb-6 flex items-center space-x-6">
-          <TransparentButton title="Venue" />
-          <TransparentButton title="Online Event" />
-        </div>
-        <label className="text-sm text-gray-800" htmlFor="organizerName">
-          Venue Location <span className="text-red-500">*</span>
-        </label>
-        <div className="flex items-center space-x-2 h-[56px] focus-within:border-2 focus-within:border-primaryPurple text-sm w-full text-gray-600 px-3 mt-2  bg-[#F8F8F8] rounded-lg outline-primaryPurple">
-          <label htmlFor="search">
-            <GoSearch />
-          </label>
-          <input
-            id="search"
-            type="text"
-            placeholder="Location"
-            className="block bg-transparent w-full h-full outline-none border-none"
-          />
-        </div>
-      </div>
+                <div>
+                  <h2 className="text-[24px] font-semibold">
+                    Event's Location
+                  </h2>
+                  <p className="text-gray-500 w-[70%] mt-2 mb-9">
+                    Specify the venue name and address, including any relevant
+                    room numbers
+                  </p>
+                  <div className="mt-9 mb-6 w-full md:w-[80%] flex items-center space-x-6">
+                    <button
+                      onClick={() => {
+                        setIsOnlineEvent(false);
+                        setEventInfo((prev) => ({ ...prev, location_type: 1 }));
+                      }}
+                      className={` ${
+                        !isOnlineEvent
+                          ? "border border-primaryPurple bg-lightPurple text-primaryPurple"
+                          : "border-lightText text-lightText bg-transparent"
+                      } w-full hover:bg-lightPurple transition-all duration-300 ease-in-out h-12 border rounded-lg   flex items-center justify-center`}
+                    >
+                      <p>Venue</p>
+                    </button>
+                    <button
+                      onClick={() => {
+                        setIsOnlineEvent(true);
+                        setEventInfo((prev) => ({ ...prev, location_type: 2 }));
+                      }}
+                      className={` ${
+                        isOnlineEvent
+                          ? "border border-primaryPurple bg-lightPurple text-primaryPurple"
+                          : "border-lightText text-lightText bg-transparent"
+                      }  w-full hover:bg-lightPurple transition-all duration-300 ease-in-out h-12 border rounded-lg   flex items-center justify-center`}
+                    >
+                      <p>Online Event</p>
+                    </button>
+                  </div>
+                  {!isOnlineEvent && (
+                    <GoogleLocationSearch
+                      value={locationValue}
+                      setValue={setLocationValue}
+                      setEventInfo={setEventInfo}
+                    />
+                  )}
+                </div>
 
-      <hr className="my-6" />
+                <hr className="my-6" />
 
-      <div className="mb-12">
-        <h2 className="text-[24px] font-semibold">Date and Time</h2>
-        <p className="text-gray-500 w-[70%] mt-2 mb-9">
-          Indicate the exact date and time your event will take place, including
-          the start and end time
-        </p>
-        <p className="text-sm mt-[36px] mb-6">
-          Think of a special event. It happens once and goes on for many days
-        </p>
-        <div className="flex items-center space-x-6">
-          <div className="basis-1/2">
-            <label
-              className="text-sm mb-2 block text-gray-800"
-              htmlFor="organizerName"
-            >
-              Event start date <span className="text-red-500">*</span>
-            </label>
-            <div>
-              <DatePicker
-                className="outline-green-500"
-                onChange={setStartDate}
-                value={startDate}
-              />
-            </div>
-            {/* <input
+                <div className="mb-12">
+                  <h2 className="text-[24px] font-semibold">Date and Time</h2>
+                  <p className="text-gray-500 w-[70%] mt-2 mb-9">
+                    Indicate the exact date and time your event will take place,
+                    including the start and end time
+                  </p>
+                  <p className="text-sm mt-[36px] mb-6">
+                    Think of a special event. It happens once and goes on for
+                    many days
+                  </p>
+                  <div className="flex items-center space-x-6">
+                    <div className="basis-1/2">
+                      <label
+                        className="text-sm mb-2 block text-gray-800"
+                        htmlFor="organizerName"
+                      >
+                        Event start date <span className="text-red-500">*</span>
+                      </label>
+                      <div>
+                        <DatePicker
+                          className="outline-green-500"
+                          onChange={setStartDate}
+                          value={startDate}
+                        />
+                      </div>
+                      {/* <input
               type="text"
               className="h-[56px] text-sm w-[338px] text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
             /> */}
-          </div>
-          <div className="basis-1/2">
-            <label
-              className="text-sm mb-2 block text-gray-800"
-              htmlFor="organizerName"
-            >
-              Event start time <span className="text-red-500">*</span>
-            </label>
-            <div>
-              <TimePicker onChange={setStartTime} value={startTime} />
-            </div>
+                    </div>
+                    <div className="basis-1/2">
+                      <label
+                        className="text-sm mb-2 block text-gray-800"
+                        htmlFor="organizerName"
+                      >
+                        Event start time <span className="text-red-500">*</span>
+                      </label>
+                      <div>
+                        <TimePicker onChange={setStartTime} value={startTime} />
+                      </div>
 
-            {/* <input
+                      {/* <input
               type="text"
               className="h-[56px] text-sm w-[338px] text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
             /> */}
-          </div>
-        </div>
-        <div className="flex items-center space-x-6 mt-6">
-          <div className="basis-1/2">
-            <label
-              className="text-sm block mb-2 text-gray-800"
-              htmlFor="organizerName"
-            >
-              Event end date <span className="text-red-500">*</span>
-            </label>
-            <div>
-              <DatePicker onChange={setStartDate} value={startDate} />
-            </div>
-            {/* <input
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-6 mt-6">
+                    <div className="basis-1/2">
+                      <label
+                        className="text-sm block mb-2 text-gray-800"
+                        htmlFor="organizerName"
+                      >
+                        Event end date <span className="text-red-500">*</span>
+                      </label>
+                      <div>
+                        <DatePicker onChange={setEndDate} value={endDate} />
+                      </div>
+                      {/* <input
               type="text"
               className="h-[56px] text-sm w-[338px] text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
             /> */}
-          </div>
-          <div className="basis-1/2">
-            <label
-              className="text-sm block mb-2 text-gray-800"
-              htmlFor="organizerName"
-            >
-              Event end time <span className="text-red-500">*</span>
-            </label>
-            <div>
-              <TimePicker onChange={setStartTime} value={startTime} />
-            </div>
-            {/* <input
+                    </div>
+                    <div className="basis-1/2">
+                      <label
+                        className="text-sm block mb-2 text-gray-800"
+                        htmlFor="organizerName"
+                      >
+                        Event end time <span className="text-red-500">*</span>
+                      </label>
+                      <div>
+                        <TimePicker onChange={setEndTime} value={endTime} />
+                      </div>
+                      {/* <input
               type="text"
               className="h-[56px] text-sm w-[338px] text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
             /> */}
-          </div>
-        </div>
-      </div>
-      <div>
-        <h2 className="text-[24px] font-semibold">Registration Requirements</h2>
-        <p className="text-gray-500 w-[70%] mt-2 mb-9">
-          Which fields do you require the event registrants to provide?
-        </p>
-        <div className="grid grid-cols-2 gap-y-9">
-          {regRequirements.map((item) => (
-            <div key={item.title} className="flex space-x-3 ">
-              <div>
-                <input
-                  type="checkbox"
-                  defaultChecked
-                  className="accent-primaryPurple"
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <h2 className="text-[24px] font-semibold">
+                    Registration Requirements
+                  </h2>
+                  <p className="text-gray-500 w-[70%] mt-2 mb-9">
+                    Which fields do you require the event registrants to
+                    provide?
+                  </p>
+                  <div className="grid grid-cols-2 gap-y-9">
+                    {eventInfo.registration_requirements.map((item) => (
+                      <div key={item.name} className="flex space-x-3 ">
+                        <div>
+                          <input
+                            type="checkbox"
+                            // defaultChecked
+                            name={item.name}
+                            checked={item.required}
+                            onChange={(e) => {
+                              const { name, checked } = e.target;
+                              console.log("checked", checked);
+                              setEventInfo((prev) => ({
+                                ...prev,
+                                registration_requirements:
+                                  prev.registration_requirements.map((item) =>
+                                    item.name === name
+                                      ? { ...item, required: checked }
+                                      : item
+                                  ),
+                              }));
+                            }}
+                            className="accent-primaryPurple"
+                          />
+                        </div>
+                        <div>
+                          {item.title}
+                          <p className="text-lightText">
+                            Get attendee {item.title}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <MainFooter
+                  isComplete={isComplete}
+                  nextHandler={nextHandlerOne}
+                  backHandler={backHandler}
                 />
               </div>
+            ) : creationStatus.details ? (
+              <section className="mb-20  w-[94%] mx-auto md:w-full   ">
+                <p className="text-sm w-full text-gray-700 mb-2">
+                  Add a photo of your event{" "}
+                  <span className="text-red-600">*</span>
+                </p>
+                {eventPhoto.length === 0 && (
+                  <div className="w-full relative flex items-center justify-center h-[248px] border border-dashed rounded-lg border-gray-600">
+                    <FileUpload setEventPhoto={setEventPhoto} />
+                  </div>
+                )}
+                {eventPhoto.length > 0 && (
+                  <div className="w-full relative overflow-hidden flex items-center justify-center h-[248px] border rounded-lg border-primaryPurple hover:bg-lightPurple">
+                    <div
+                      onClick={() => setEventPhoto([])}
+                      className="w-[72px] h-[72px] cursor-pointer text-3xl transition-all duration-300 ease-in-out hover:text-red-500 hover:bg-red-100 rounded-full bg-white grid place-content-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+                    >
+                      <RiDeleteBin6Fill onClick={() => setEventPhoto([])} />
+                    </div>
+                    <div>{thumbs}</div>
+                  </div>
+                )}
+                <h3 className="text-2xl font-semibold mb-5 mt-16">Preview</h3>
+
+                {/* Organizer's Information */}
+
+                <div className="">
+                  {!eventDetails.isEditOrganizerInfo ? (
+                    <div className=" w-full py-5 border-[.3px] border-gray-300 px-6 shadow-lg rounded-md relative">
+                      <div
+                        onClick={() =>
+                          setEventDetails((prev) => ({
+                            ...prev,
+                            isEditOrganizerInfo: true,
+                          }))
+                        }
+                        className="absolute -top-3 -right-3 cursor-pointer hover:bg-primaryPurple hover:text-white w-12 h-12 rounded-full text-primaryPurple bg-lightPurple grid place-content-center"
+                      >
+                        <BiPencil />
+                      </div>
+                      <p className="font-semibold ">Organizer's Information</p>
+                      <div className="mt-4  flex items-center justify-between">
+                        <div className="w-[45%]">
+                          <p className="text-sm text-lightText">
+                            Organizer's name
+                          </p>
+                          <p>Christian</p>
+                        </div>
+                        <div className="w-[45%]">
+                          <p className="text-sm text-lightText">Phone</p>
+                          <p>09019089009</p>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="border-[2px] p-6 border-primaryPurple rounded-md">
+                      <div className="flex justify-between items-center">
+                        <h2 className="text-[24px] font-semibold">
+                          Organizers Information
+                        </h2>
+                        <div
+                          onClick={() =>
+                            setEventDetails((prev) => ({
+                              ...prev,
+                              isEditOrganizerInfo: false,
+                            }))
+                          }
+                          className="text-2xl cursor-pointer text-gray-700 hover:text-gray-400"
+                        >
+                          <FaAngleDown />
+                        </div>
+                      </div>
+
+                      <p className="text-gray-500 w-[70%] mt-2 mb-9">
+                        Please provide your full name, email address, and a
+                        phone number where we can reach you.
+                      </p>
+                      <div className="flex items-center space-x-6 ">
+                        <div className="basis-1/2">
+                          <label
+                            className="text-sm text-gray-800"
+                            htmlFor="organizerName"
+                          >
+                            Organizer's name{" "}
+                            <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            value={eventInfo.organizer.name}
+                            onChange={(e) =>
+                              setEventInfo((prev) => ({
+                                ...prev,
+                                organizer: {
+                                  ...prev.organizer,
+                                  name: e.target.value,
+                                },
+                              }))
+                            }
+                            type="text"
+                            className="h-[56px] text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
+                          />
+                        </div>
+                        <div className="basis-1/2">
+                          <label
+                            className="text-sm text-gray-800"
+                            htmlFor="organizerName"
+                          >
+                            Phone Number <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            value={eventInfo.organizer.phone}
+                            onChange={(e) =>
+                              setEventInfo((prev) => ({
+                                ...prev,
+                                organizer: {
+                                  ...prev.organizer,
+                                  phone: e.target.value,
+                                },
+                              }))
+                            }
+                            type="tel"
+                            className="h-[56px] text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Event's Details */}
+
+                <div className="mt-8">
+                  {!eventDetails.isEditEventDetails ? (
+                    <div className=" w-full py-5 border-[.3px] border-gray-300 px-6 shadow-lg rounded-md relative ">
+                      <div
+                        onClick={() =>
+                          setEventDetails((prev) => ({
+                            ...prev,
+                            isEditEventDetails: true,
+                          }))
+                        }
+                        className="absolute -top-3 -right-3 cursor-pointer hover:bg-primaryPurple hover:text-white w-12 h-12 rounded-full text-primaryPurple bg-lightPurple grid place-content-center"
+                      >
+                        <BiPencil />
+                      </div>
+                      <p className="font-semibold ">Event&apos;s details</p>
+                      <div className="mt-4">
+                        <div className="w-[90%]">
+                          <p className="text-sm text-lightText">Event name</p>
+                          <p>
+                            InnovateXpo 2023: Unleashing Creativity and
+                            Technology
+                          </p>
+                        </div>
+                        <div className="w-full my-4">
+                          <p className="text-sm text-lightText">Event Info</p>
+                          <p className="w-full">
+                            Join us at InnovateXpo 2023, where innovation takes
+                            center stage! Immerse yourself in a dynamic blend of
+                            creativity and technology as industry leaders,
+                            visionaries, and tech enthusiasts come together for
+                            a day of groundbreaking ideas and collaborative
+                            exploration. 🚀 Highlights: Engaging Keynote
+                            Speakers: Hear from renowned experts pushing the
+                            boundaries of innovation in technology, business,
+                            and beyond. Interactive Workshops: Dive deep into
+                            hands-on workshops covering the latest trends in AI,
+                            blockchain, augmented reality, and more. Tech
+                            Showcase: Explore cutting-edge products and
+                            solutions from innovative companies shaping the
+                            future. Networking Opportunities: Connect with
+                            like-minded professionals, potential collaborators,
+                            and industry influencers. Innovation Awards:
+                            Celebrate and be inspired by the trailblazers making
+                            a significant impact in the world of technology.
+                          </p>
+                        </div>
+                        <div className="">
+                          <p className="text-sm text-lightText">
+                            Event category
+                          </p>
+                          <p>Business</p>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="border-[2px] p-6 border-primaryPurple rounded-md pb-12">
+                      <div className="flex justify-between items-center">
+                        <h2 className="text-[24px] font-semibold">
+                          Event's Details
+                        </h2>
+                        <div
+                          onClick={() =>
+                            setEventDetails((prev) => ({
+                              ...prev,
+                              isEditEventDetails: false,
+                            }))
+                          }
+                          className="text-2xl cursor-pointer text-gray-700 hover:text-gray-400"
+                        >
+                          <FaAngleDown />
+                        </div>
+                      </div>
+                      <p className="text-gray-500 w-[70%] mt-2 mb-9">
+                        Please provide your full name, email address, and a
+                        phone number where we can reach you.
+                      </p>
+                      <div>
+                        <label
+                          className="text-sm text-gray-800"
+                          htmlFor="organizerName"
+                        >
+                          Event name <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          value={eventInfo.name}
+                          onChange={(e) =>
+                            setEventInfo((prev) => ({
+                              ...prev,
+                              name: e.target.value,
+                            }))
+                          }
+                          type="text"
+                          placeholder="Quick description of your Event name"
+                          className="h-[56px] text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
+                        />
+                      </div>
+                      <div className="my-6">
+                        <label
+                          className="text-sm mb-2 block text-gray-800"
+                          htmlFor="organizerName"
+                        >
+                          Event Category <span className="text-red-500">*</span>
+                        </label>
+                        {/* <input
+              type="text"
+              placeholder="Select category"
+              className="h-[56px] text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
+            /> */}
+                        <ReactSelectOptions
+                          selectedOption={selectedOption}
+                          setSelectedOption={setSelectedOption}
+                          options={options}
+                        />
+                      </div>
+                      <div className="my-6">
+                        <label
+                          className="text-sm block text-gray-800 mb-2"
+                          htmlFor="organizerName"
+                        >
+                          Description of your event{" "}
+                          <span className="text-red-500">*</span>
+                        </label>
+                        <ReactQuillEditor
+                          value={quillValue}
+                          setValue={setQuillValue}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Events Location */}
+
+                <div className="mt-8">
+                  {!eventDetails.isEditEventLocation ? (
+                    <div className=" w-full py-5 border-[.3px] border-gray-300 px-6 shadow-lg rounded-md relative">
+                      <div
+                        onClick={() =>
+                          setEventDetails((prev) => ({
+                            ...prev,
+                            isEditEventLocation: true,
+                          }))
+                        }
+                        className="absolute -top-3 -right-3 cursor-pointer hover:bg-primaryPurple hover:text-white w-12 h-12 rounded-full text-primaryPurple bg-lightPurple grid place-content-center"
+                      >
+                        <BiPencil />
+                      </div>
+                      <p className="font-semibold ">Event&apos;s location</p>
+                      <div className="mt-4">
+                        <div className="">
+                          <p className="text-sm text-lightText">
+                            Venue Address
+                          </p>
+                          <p>Eko Hotel, Landmark centre</p>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="border-[2px] p-6 border-primaryPurple rounded-md">
+                      <div className="flex items-center justify-between">
+                        <h2 className="text-[24px] font-semibold">
+                          Event&apos;s Location
+                        </h2>
+                        <div
+                          onClick={() =>
+                            setEventDetails((prev) => ({
+                              ...prev,
+                              isEditEventLocation: false,
+                            }))
+                          }
+                          className="text-2xl cursor-pointer text-gray-700 hover:text-gray-400"
+                        >
+                          <FaAngleDown />
+                        </div>
+                      </div>
+
+                      <p className="text-gray-500 w-[70%] mt-2 mb-9">
+                        Specify the venue name and address, including any
+                        relevant room numbers
+                      </p>
+                      <div className="mt-9 mb-6 flex items-center space-x-6">
+                        <div className="basis-1/2">
+                          <button
+                            onClick={() => {
+                              setIsOnlineEvent(false);
+                              setEventInfo((prev) => ({
+                                ...prev,
+                                location_type: 1,
+                              }));
+                            }}
+                            className={` ${
+                              !isOnlineEvent
+                                ? "border border-primaryPurple bg-lightPurple text-primaryPurple"
+                                : "border-lightText text-lightText bg-transparent"
+                            } w-full hover:bg-lightPurple transition-all duration-300 ease-in-out h-12 border rounded-lg   flex items-center justify-center`}
+                          >
+                            <p>Venue</p>
+                          </button>
+                        </div>
+                        <div className="basis-1/2">
+                          <button
+                            onClick={() => {
+                              setIsOnlineEvent(true);
+                              setEventInfo((prev) => ({
+                                ...prev,
+                                location_type: 2,
+                              }));
+                            }}
+                            className={` ${
+                              isOnlineEvent
+                                ? "border border-primaryPurple bg-lightPurple text-primaryPurple"
+                                : "border-lightText text-lightText bg-transparent"
+                            }  w-full hover:bg-lightPurple transition-all duration-300 ease-in-out h-12 border rounded-lg   flex items-center justify-center`}
+                          >
+                            <p>Online Event</p>
+                          </button>
+                        </div>
+                      </div>
+
+                      {!isOnlineEvent && (
+                        <GoogleLocationSearch
+                          value={locationValue}
+                          setValue={setLocationValue}
+                          setEventInfo={setEventInfo}
+                        />
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* Date and Time */}
+
+                <div className="mt-8">
+                  {!eventDetails.isEditEventDateAndTime ? (
+                    <div className=" w-full py-5 border-[.3px] border-gray-300 px-6 shadow-lg rounded-md relative">
+                      <div
+                        onClick={() =>
+                          setEventDetails((prev) => ({
+                            ...prev,
+                            isEditEventDateAndTime: true,
+                          }))
+                        }
+                        className="absolute -top-3 -right-3 cursor-pointer hover:bg-primaryPurple hover:text-white w-12 h-12 rounded-full text-primaryPurple bg-lightPurple grid place-content-center"
+                      >
+                        <BiPencil />
+                      </div>
+                      <p className="font-semibold ">Date and time</p>
+                      <div className="mt-4  flex items-center justify-between">
+                        <div className="w-[45%]">
+                          <p className="text-sm text-lightText">
+                            Event start date
+                          </p>
+                          <p>18th December 2023</p>
+                        </div>
+                        <div className="w-[45%]">
+                          <p className="text-sm text-lightText">
+                            Event start time
+                          </p>
+                          <p>10:00am</p>
+                        </div>
+                      </div>
+                      <div className="mt-4  flex items-center justify-between">
+                        <div className="w-[45%]">
+                          <p className="text-sm text-lightText">
+                            Event end date
+                          </p>
+                          <p>25th December 2023</p>
+                        </div>
+                        <div className="w-[45%]">
+                          <p className="text-sm text-lightText">
+                            Event end time
+                          </p>
+                          <p>3:00pm</p>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="mb-12 border-[2px] p-6 border-primaryPurple rounded-md">
+                      <div className="flex items-center justify-between">
+                        <h2 className="text-[24px] font-semibold">
+                          Date and Time
+                        </h2>
+                        <div
+                          onClick={() =>
+                            setEventDetails((prev) => ({
+                              ...prev,
+                              isEditEventDateAndTime: false,
+                            }))
+                          }
+                          className="text-2xl cursor-pointer text-gray-700 hover:text-gray-400"
+                        >
+                          <FaAngleDown />
+                        </div>
+                      </div>
+                      <p className="text-gray-500 w-[70%] mt-2 mb-9">
+                        Indicate the exact date and time your event will take
+                        place, including the start and end time
+                      </p>
+                      <p className="text-sm mt-[36px] mb-6">
+                        Think of a special event. It happens once and goes on
+                        for many days
+                      </p>
+                      <div className="flex items-center space-x-6">
+                        <div className="basis-1/2">
+                          <label
+                            className="text-sm mb-2 block text-gray-800"
+                            htmlFor="organizerName"
+                          >
+                            Event start date{" "}
+                            <span className="text-red-500">*</span>
+                          </label>
+                          <div>
+                            <DatePicker
+                              className="outline-green-500"
+                              onChange={setStartDate}
+                              value={startDate}
+                            />
+                          </div>
+                          {/* <input
+                type="text"
+                className="h-[56px] text-sm w-[338px] text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
+              /> */}
+                        </div>
+                        <div className="basis-1/2">
+                          <label
+                            className="text-sm mb-2 block text-gray-800"
+                            htmlFor="organizerName"
+                          >
+                            Event start time{" "}
+                            <span className="text-red-500">*</span>
+                          </label>
+                          <div>
+                            <TimePicker
+                              onChange={setStartTime}
+                              value={startTime}
+                            />
+                          </div>
+
+                          {/* <input
+                type="text"
+                className="h-[56px] text-sm w-[338px] text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
+              /> */}
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-6 mt-6">
+                        <div className="basis-1/2">
+                          <label
+                            className="text-sm block mb-2 text-gray-800"
+                            htmlFor="organizerName"
+                          >
+                            Event end date{" "}
+                            <span className="text-red-500">*</span>
+                          </label>
+                          <div>
+                            <DatePicker
+                              onChange={setStartDate}
+                              value={startDate}
+                            />
+                          </div>
+                          {/* <input
+                type="text"
+                className="h-[56px] text-sm w-[338px] text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
+              /> */}
+                        </div>
+                        <div className="basis-1/2">
+                          <label
+                            className="text-sm block mb-2 text-gray-800"
+                            htmlFor="organizerName"
+                          >
+                            Event end time{" "}
+                            <span className="text-red-500">*</span>
+                          </label>
+                          <div>
+                            <TimePicker
+                              onChange={setStartTime}
+                              value={startTime}
+                            />
+                          </div>
+                          {/* <input
+                type="text"
+                className="h-[56px] text-sm w-[338px] text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
+              /> */}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                {/* Add FAQ */}
+                <Faq />
+                <MainFooter
+                  isComplete={isComplete2}
+                  backHandler={backHandler}
+                  nextHandler={nextHandlerTwo}
+                />
+              </section>
+            ) : (
               <div>
-                {item.title}
-                <p className="text-lightText">Get attendee {item.title}</p>
+                {isModalOpen && (
+                  <AddTicketType
+                    isModalOpen={isModalOpen}
+                    setIsModalOpen={setIsModalOpen}
+                  />
+                )}
+                {isDeleteModalOpen && (
+                  <ConfirmDeleteModal
+                    setIsDeleteModalOpen={setIsDeleteModalOpen}
+                  />
+                )}
+                <div className="mt-8">
+                  <div className=" w-[94%] mx-auto md:w-full p-6 border-[.1px] flex justify-between border-gray-300 px-6 shadow-md rounded-md">
+                    <div className="flex space-x-4">
+                      <div className="text-[#106BD5] text-2xl  w-8 h-8 grid place-content-center rounded bg-[#EDF4FC]">
+                        <PiCreditCard />
+                      </div>
+                      <div>
+                        <p className="font-semibold text-xl">Free</p>
+                        <p className="text-lightText">Double pass</p>
+                      </div>
+                    </div>
+
+                    <Menu
+                      direction="left"
+                      // arrow
+                      menuButton={
+                        <MenuButton style={{ background: "transparent" }}>
+                          <div className="text-gray-800 text-xl h-11 w-11 rounded-full hover:bg-gray-100 grid place-content-center cursor-pointer">
+                            <IoMdMore />
+                          </div>
+                        </MenuButton>
+                      }
+                      transition
+                    >
+                      {ticketOptions.map((item, index) => (
+                        <MenuItem className="" key={item.title}>
+                          <div
+                            onClick={
+                              index === 0
+                                ? () => setIsModalOpen(true)
+                                : () => setIsDeleteModalOpen(true)
+                            }
+                            className="flex items-center w-full space-x-3 py-1"
+                          >
+                            <div className="text-gray-500 text-lg">
+                              {item.icon}
+                            </div>
+                            <p className="text-lightText">{item.title}</p>
+                          </div>
+                        </MenuItem>
+                      ))}
+                    </Menu>
+                  </div>
+                  {/* Add Ticket Type */}
+                  <div className="w-[94%] mx-auto md:w-full px-6 py-6 mt-9 border border-dashed border-gray-500 rounded-md">
+                    <p className="font-semibold ">Add Ticket type</p>
+                    <p className="text-lightText mt-3 mb-5 ">
+                      Create Your Event Experience: Select Ticket Type and
+                      Submit. You can add multiple ticket types
+                    </p>
+                    <button
+                      onClick={() => setIsModalOpen(true)}
+                      className="bg-lightPurple text-sm flex justify-center items-center space-x-1 text-primaryPurple h-10 w-full"
+                    >
+                      <GoPlus /> <p>Add Ticket type</p>
+                    </button>
+                  </div>
+                </div>
+                <MainFooter
+                  nextHandler={nextHandlerThree}
+                  backHandler={backHandler}
+                />
               </div>
-            </div>
-          ))}
-        </div>
+            )}
+          </>
+        </main>
       </div>
-      <MainFooter nextHandler={nextHandler} backHandler={backHandler} />
-    </div>
+    </section>
   );
 };
 

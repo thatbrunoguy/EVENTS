@@ -4,10 +4,12 @@ import { SolidButton, TransparentButton } from "../buttons/button";
 type Iprops = {
   nextHandler: () => void;
   backHandler: () => void;
+  isComplete?: boolean;
 };
 const MainFooter = ({
   nextHandler = () => {},
   backHandler = () => {},
+  isComplete = true,
 }: Iprops) => {
   return (
     <footer className="h-[70px] fixed bottom-0 left-0 bg-white shadow-lg right-0 px-2 md:pr-9 flex justify-center md:justify-end space-x-6 items-center border-t-[.8px] border-gray-300">
@@ -26,6 +28,7 @@ const MainFooter = ({
 
       <div className="w-1/2 md:w-[160px]">
         <SolidButton
+          isComplete={isComplete}
           onClickHandler={nextHandler}
           title="Next"
           styles={{ height: "41px" }}

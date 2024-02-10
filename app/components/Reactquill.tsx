@@ -6,9 +6,12 @@ import "react-quill/dist/quill.snow.css";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
-function ReactQuillEditor() {
-  const [value, setValue] = useState("");
+type Iprops = {
+  value: string;
+  setValue: React.Dispatch<React.SetStateAction<string>>;
+};
 
+function ReactQuillEditor({ value, setValue }: Iprops) {
   return (
     <ReactQuill
       className="h-52 pb-11 border  hover:border-primaryPurple"
