@@ -29,7 +29,10 @@
     ".next/types/**/*.ts",
     "app/components/select/ReactSelect.jsx",
     "app/components/fileUpload/FileUpload.jsx",
-    "app/components/table/GlobalTable.jsx"
+    "app/components/table/GlobalTable.jsx",
+    "app/utils/endpoints.js",
+    "app/hooks/auth-hook.js",
+    "app/hooks/auth-hook.js"
   ],
   "exclude": ["node_modules"]
 }

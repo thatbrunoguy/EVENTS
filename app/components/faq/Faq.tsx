@@ -1,15 +1,27 @@
 "use client";
 
-import React, { useState } from "react";
+import { EventInfoType } from "@/app/(dashboard)/dashboard/create/basic-info/page";
+import React, { useEffect, useState } from "react";
 import { GoPlus } from "react-icons/go";
 import { RiDeleteBin6Fill } from "react-icons/ri";
 
-type FaqType = {
+export type FaqType = {
   question: string;
   answer: string;
 };
-const Faq = () => {
-  const [faqs, setFaqs] = useState<FaqType[]>([]);
+
+type Iprops = {
+  faqs: FaqType[];
+  setFaqs: React.Dispatch<React.SetStateAction<FaqType[]>>;
+  setEventInfo: React.Dispatch<React.SetStateAction<EventInfoType>>;
+};
+
+const Faq = ({ faqs, setFaqs, setEventInfo }: Iprops) => {
+  useEffect(() => {
+    if (faqs.length > 0) {
+      setEventInfo((prev) => ({ ...prev, faqs: [...faqs] }));
+    }
+  }, [faqs]);
 
   const addToFaqHandler = () => {
     setFaqs([...faqs, { question: "", answer: "" }]);

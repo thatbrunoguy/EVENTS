@@ -12,63 +12,11 @@ export interface Step {
   isActive: boolean;
 }
 
-const MobileStepper = () => {
-  const step: Step[] = [
-    {
-      title: "Basic info",
-      path: "basic-info",
-      isComplete: false,
-      isActive: false,
-    },
-    { title: "Details", path: "details", isComplete: false, isActive: false },
-    {
-      title: "Tickets",
-      path: "ticket",
-      isComplete: false,
-      isActive: false,
-    },
-  ];
+type Iprops = {
+  steps: Step[];
+};
 
-  const [steps, setSteps] = useState<Step[]>(step);
-
-  const activeStepsHandler = (
-    currentPath: string,
-    stepsArray: Step[]
-  ): Step[] => {
-    const currentStepIndex = stepsArray.findIndex(
-      (step) => step.path === currentPath
-    );
-
-    if (currentStepIndex !== -1) {
-      // Deactivate all steps
-      stepsArray.forEach((step) => {
-        step.isActive = false;
-      });
-
-      // Activate the current step
-      stepsArray[currentStepIndex].isActive = true;
-    }
-
-    // Return the updated steps array
-    return [...stepsArray];
-  };
-
-  const currentPath = usePathname().split("/")[2];
-
-  useEffect(() => {
-    // const res = activeStepsHandler(currentPath, steps);
-    const storedStep = getData("event-creation");
-
-    if (storedStep !== null) {
-      setSteps(storedStep);
-      const res = activeStepsHandler(currentPath, storedStep);
-      setSteps(res);
-    } else {
-      const res = activeStepsHandler(currentPath, steps);
-      setSteps(res);
-    }
-  }, [currentPath]);
-
+const MobileStepper = ({ steps }: Iprops) => {
   return (
     <section>
       <div className=" flex-col space-y-5 md:hidden  px-2 items-center rounded-lg relative w-full">

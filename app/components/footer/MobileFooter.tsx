@@ -49,14 +49,20 @@ const MobileFooter = () => {
             {item.path !== "more" ? (
               <Link
                 className={`flex flex-col items-center justify-between text-sm  text-gray-500 rounded-2xl hover:text-primaryPurple hover:font-semibold ${
-                  path.length > 2
-                    ? `${path[1]}/${path[2]}` === item.path &&
-                      " text-primaryPurple font-semibold"
-                    : path[1] === item.path &&
-                      " text-primaryPurple font-semibold"
+                  (path.length < 3 && item.path === "") ||
+                  (path.length > 2 &&
+                    path[2] === "dashboard" &&
+                    item.path === "") ||
+                  (path.length > 2 &&
+                    path[2] !== "dashboard" &&
+                    path[2] === item.path.split("/")[0])
+                    ? "text-primaryPurple font-semibold"
+                    : path.length > 3 &&
+                      `${path[2]}/${path[3]}` === item.path &&
+                      "text-primaryPurple font-semibold"
                 }`}
                 // key={item.title}
-                href={`/${item.path}`}
+                href={`/dashboard/${item.path}`}
               >
                 <div className="text-xl">{item.icon}</div>
                 <p>{item.title}</p>

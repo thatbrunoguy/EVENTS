@@ -55,6 +55,15 @@ export function updateLocalStorageField(key, path, fieldName, newValue) {
     console.error("Error updating localStorage field:", error);
   }
 }
+export const addToLocalStorage = (key, field, value) => {
+  const data = localStorage.getItem(key);
+
+  let parsedData = data ? JSON.parse(data) : {};
+
+  parsedData[field] = value;
+
+  localStorage.setItem(key, JSON.stringify(parsedData));
+};
 
 export const steps = [
   { title: "Basic info", isComplete: false, isActive: true },

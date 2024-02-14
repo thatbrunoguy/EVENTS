@@ -14,48 +14,8 @@ export interface Step {
 
 type Iprops = {
   steps: Step[];
-  setSteps: React.Dispatch<React.SetStateAction<Step[]>>;
 };
-const Stepper = ({ steps, setSteps }: Iprops) => {
-  // const activeStepsHandler = (
-  //   currentPath: string,
-  //   stepsArray: Step[]
-  // ): Step[] => {
-  //   const currentStepIndex = stepsArray.findIndex(
-  //     (step) => step.path === currentPath
-  //   );
-
-  //   if (currentStepIndex !== -1) {
-  //     // Deactivate all steps
-  //     stepsArray.forEach((step) => {
-  //       step.isActive = false;
-  //     });
-
-  //     // Activate the current step
-  //     stepsArray[currentStepIndex].isActive = true;
-  //   }
-
-  //   // Return the updated steps array
-  //   return [...stepsArray];
-  // };
-
-  // const currentPath = usePathname().split("/")[2];
-
-  // useEffect(() => {
-  //   const res = activeStepsHandler(currentPath, steps);
-  //   const storedStep = getData("event-creation");
-
-  //   if (storedStep !== null) {
-  //     setSteps(storedStep);
-  //     const res = activeStepsHandler(currentPath, storedStep);
-  //     setSteps(res);
-  //   }
-  //    else {
-  //   const res = activeStepsHandler(currentPath, steps);
-  //   setSteps(res);
-  //   }
-  // }, [currentPath]);
-
+const Stepper = ({ steps }: Iprops) => {
   return (
     <section>
       <div className="w-[249px] hidden md:flex h-[428px]  px-7 space-x-5 items-center rounded-lg border-[0.5px] border-gray-500 relative">

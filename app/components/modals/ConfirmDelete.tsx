@@ -5,12 +5,14 @@ type Iprops = {
   setIsDeleteModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   title?: string;
   content?: string;
+  deleteTicket?: any;
 };
 
 const ConfirmDeleteModal = ({
   setIsDeleteModalOpen,
+  deleteTicket = () => {},
   title = "Are you sure want to delete this event type",
-  content = "By deleting this event, you will lose all the data or information and this action can't be undone",
+  content = "By deleting this event, you will lose all the data or information and this action cant be undone",
 }: Iprops) => {
   return (
     <>
@@ -43,7 +45,13 @@ const ConfirmDeleteModal = ({
           >
             <p>Cancel</p>
           </button>
-          <button className="h-9 basis-1/2 md:w-[179px] text-sm text-white  bg-[#CC0000] shadow-sm rounded-md flex items-center justify-center">
+          <button
+            onClick={() => {
+              deleteTicket();
+              setIsDeleteModalOpen(false);
+            }}
+            className="h-9 basis-1/2 md:w-[179px] text-sm text-white  bg-[#CC0000] shadow-sm rounded-md flex items-center justify-center"
+          >
             <p>Yes, delete</p>
           </button>
         </footer>

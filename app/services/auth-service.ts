@@ -1,8 +1,8 @@
 import axios from "axios";
 import { Login, Register } from "../types";
 
-const APP_KEY = process.env.NEXT_PUBLIC_APP_KEY;
-const BASE_URL: string = process.env.NEXT_PUBLIC_BASE_URL || "";
+const APP_KEY = process.env.X_APP_KEY;
+const BASE_URL: string = process.env.BASE_URL || "";
 
 class AuthService {
   /**
@@ -26,7 +26,7 @@ class AuthService {
    * @returns
    */
   async login(data: Login) {
-    const res = await axios.post(BASE_URL, {
+    const res = await axios.post(`${BASE_URL}/register`, {
       method: "POST",
       body: JSON.stringify(data),
       headers: {
@@ -38,7 +38,7 @@ class AuthService {
   }
 
   /**
-   *To Add a Post
+   *Register a new User
    * @returns
    */
   async register(data: Register) {

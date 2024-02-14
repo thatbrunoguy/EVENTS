@@ -15,7 +15,7 @@ import {
   geocode,
   RequestType,
 } from "react-geocode";
-import { EventInfoType } from "@/app/create/basic-info/page";
+import { EventInfoType } from "@/app/(dashboard)/dashboard/create/basic-info/page";
 
 type Iprops = {
   setEventInfo: React.Dispatch<React.SetStateAction<EventInfoType>>;
@@ -37,8 +37,8 @@ const GoogleLocationSearch = ({ setEventInfo, value, setValue }: Iprops) => {
             location_details: {
               ...prev.location_details,
               address: value?.value?.description as string,
-              latitude: lat,
-              longitude: lng,
+              latitude: lat.toString() as string,
+              longitude: lng.toString() as string,
             },
           }));
         })

@@ -5,11 +5,13 @@ type Iprops = {
   nextHandler: () => void;
   backHandler: () => void;
   isComplete?: boolean;
+  title?: string;
 };
 const MainFooter = ({
   nextHandler = () => {},
   backHandler = () => {},
   isComplete = true,
+  title = "Next",
 }: Iprops) => {
   return (
     <footer className="h-[70px] fixed bottom-0 left-0 bg-white shadow-lg right-0 px-2 md:pr-9 flex justify-center md:justify-end space-x-6 items-center border-t-[.8px] border-gray-300">
@@ -30,7 +32,7 @@ const MainFooter = ({
         <SolidButton
           isComplete={isComplete}
           onClickHandler={nextHandler}
-          title="Next"
+          title={title}
           styles={{ height: "41px" }}
         />
       </div>

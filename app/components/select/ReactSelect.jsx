@@ -20,6 +20,7 @@ export default function ReactSelectOptions({
         defaultValue={selectedOption}
         onChange={setSelectedOption}
         options={options}
+        value={selectedOption}
         theme={(theme) => ({
           ...theme,
           borderRadius: 4,
