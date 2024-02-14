@@ -186,7 +186,7 @@ const BasicInfo = () => {
     onSuccess: async (data, variables, context) => {
       // Boom baby!
       console.log("data", data);
-      router.push("/event");
+      router.push("/dashboard/event");
     },
   });
 
@@ -198,6 +198,7 @@ const BasicInfo = () => {
         setIsLoadingBanner(true);
         try {
           const res = await uploadImage(data.url, eventPhoto[0]);
+          console.log("res-image", res);
           setIsImageUploadEnabled(false);
           toast.success("Event banner uploaded successfully!!!");
           setImageUrl(extractUrlBeforeQueryString(data.url as string));
