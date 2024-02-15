@@ -1,0 +1,44 @@
+version: 2.1
+orbs:
+  slack: circleci/slack@4.9.3
+
+jobs:
+  Build-Push-Deploy:
+    description: This builds and pushes the docker image to the container registry
+    docker:
+      - image: node:16.20.0
+    steps:
+      - checkout # Checkout SVM
+
+      - run:
+          name: Install dependencies
+          command: |
+            apt update && apt install -y curl git openssh-client openssh-server &&
+            rm -rf node_modules && rm package-lock.json && npm install
+
+      - run:
+          command: echo "export COMMIT_MESSAGE=\"$(git log --pretty='%s' -1 $CIRCLE_SHA1)\"" >> "$BASH_ENV"
+
+      - run:
+          name: Build project
+          command: export CI=false && npm run build
+
+      - run:
+          name: Deploy
+          command: |
+            echo ${DEPLOY_KEY_PEM} | base64 --decode > .pem_file.pem &&
+            chmod 0400 .pem_file.pem &&
+            ssh -i .pem_file.pem -oStrictHostKeyChecking=no ${DEPLOY_USER}@${DEPLOY_SERVER} "rm -rf /var/www/EventsParrot-frontend/*" &&
+            scp -i .pem_file.pem -oStrictHostKeyChecking=no -r build/* ${DEPLOY_USER}@${DEPLOY_SERVER}:/var/www/EventsParrot-frontend/
+
+
+workflows:
+  main-workflow:
+    jobs: 
+      - Build-Push-Deploy:
+          filters:
+            branches: 
+              only: /deev|circleci-project-setup/
+          context:
+            - aws-secrets
+            - slack-secrets
