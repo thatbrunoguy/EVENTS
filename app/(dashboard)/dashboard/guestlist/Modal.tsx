@@ -19,7 +19,7 @@ const GuestlistModal = ({ setIsGuestlistModalOpen }: Iprops) => {
         aria-label="backdrop"
       />
 
-      <div className="w-[482px] h-[95%] rounded-2xl bg-white z-50 fixed top-1/2 transform right-6 -translate-y-1/2">
+      <div className=" w-[98%] md:w-[482px] h-[95%] rounded-2xl bg-white z-50 fixed top-1/2 right-1/2 translate-x-1/2 md:translate-x-0 transform md:right-6 -translate-y-1/2">
         <header className="py-5 px-10 flex items-center justify-between  border-b">
           <h4 className="font-semibold text-xl ">Order #T2LQR0JAYZ</h4>
           <div

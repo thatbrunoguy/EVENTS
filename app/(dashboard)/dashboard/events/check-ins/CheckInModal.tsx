@@ -67,7 +67,7 @@ const CheckInModal = ({ setIsModalOpen }: Iprops) => {
             }}
           />
           <SolidButton
-            onClickHandler={() => router.push("/payment/success")}
+            onClickHandler={() => router.push("/dashboard/payment/success")}
             title="Allow"
             styles={{ width: "160px", height: "41px" }}
           />

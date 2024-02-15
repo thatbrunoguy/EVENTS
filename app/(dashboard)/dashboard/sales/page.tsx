@@ -156,7 +156,7 @@ export default function Guestlist() {
   ];
 
   const ticketRows = tickets.map((ticket: any, index: number) => ({
-    id: index, // assuming you want to use the array index as ID
+    id: index,
     ...ticket,
   }));
 
@@ -258,7 +258,7 @@ export default function Guestlist() {
 
             {/* -------- PAYMENT HISTORY --------- */}
 
-            <div className="w-[95%] mt-12 mx-auto">
+            <div className="w-[95%] mt-12 mb-24 md:mb-5 mx-auto">
               <div className="flex items-center justify-between mt-10 mb-8">
                 <h2 className="font-semibold text-2xl">Payment History</h2>
 
