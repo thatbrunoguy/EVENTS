@@ -21,6 +21,7 @@ import { FaMinus, FaPlus } from "react-icons/fa6";
 import BuyTokenModal from "./BuyTokenModal";
 
 const CreateAdsCampaign = () => {
+  const [selectedOption, setSelectedOption] = useState({});
   const [options, setOptions] = useState([
     {
       title: " Eko convections centre",
@@ -215,7 +216,11 @@ const CreateAdsCampaign = () => {
                 Location <span className="text-red-500">*</span>
               </label>
 
-              <ReactSelectOptions options={[]} />
+              <ReactSelectOptions
+                selectedOption={selectedOption}
+                setSelectedOption={setSelectedOption}
+                options={[]}
+              />
             </div>
             <div className="my-6 basis-1/2">
               <label
@@ -225,7 +230,11 @@ const CreateAdsCampaign = () => {
                 City <span className="text-red-500">*</span>
               </label>
 
-              <ReactSelectOptions options={[]} />
+              <ReactSelectOptions
+                selectedOption={selectedOption}
+                setSelectedOption={setSelectedOption}
+                options={[]}
+              />
             </div>
           </div>
         </div>

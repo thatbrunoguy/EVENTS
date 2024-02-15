@@ -94,7 +94,8 @@ const EventDetails = ({ params }: { params: { slug: string } }) => {
                   Description of the Event
                 </p>
                 <p className="mt-4 font-light w-full text-sm md:text-base md:w-[90%]">
-                  PORT HARCOURT'S BIGGEST FESTIVAL Offering exclusive <br />
+                  PORT HARCOURT&apos;S BIGGEST FESTIVAL Offering exclusive{" "}
+                  <br />
                   performance from over 15 Global Artists.This year&apos;s
                   festival is expanding to a new Venue with more acts and
                   performances.

@@ -8,11 +8,12 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
 import Confetti from "react-confetti";
-type Iprops = {
-  setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-};
 
-const PaymentSuccess = ({ setIsModalOpen }: Iprops) => {
+// type Iprops = {
+//   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+// };
+
+const PaymentSuccess = ({ setIsModalOpen }: any) => {
   const router = useRouter();
   return (
     <>
