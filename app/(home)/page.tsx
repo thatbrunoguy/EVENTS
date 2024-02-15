@@ -18,7 +18,7 @@ const Home = () => {
           <div className="h-full relative w-full rounded-lg overflow-hidden ">
             <Image
               className="object-cover"
-              src="/assets/external-hero-sm.jpeg"
+              src="/assets/external-hero.jpeg"
               alt="Eventparrots Hero Banner"
               fill
               priority

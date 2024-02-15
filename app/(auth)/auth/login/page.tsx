@@ -22,6 +22,7 @@ const Login = () => {
   useLayoutEffect(() => {
     if (status === "authenticated") {
       router.push("/dashboard");
+      storeData(EVENTSPARROT_USER, session.user);
     }
   }, [status]);
 
@@ -45,10 +46,6 @@ const Login = () => {
     if (res?.error) {
       toast.error(res.error as string);
       setIsProcessing(false);
-    }
-
-    if (status == "authenticated") {
-      storeData(EVENTSPARROT_USER, session.user);
     }
   };
   // console.log("status", status);
