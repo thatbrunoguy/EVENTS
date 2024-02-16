@@ -8,8 +8,48 @@ import HomeEvents from "../components/home/Events";
 import VirtualEvents from "../components/home/VirtualEvents";
 import HomeFooter from "../components/home/Footer";
 import LocationSearchBar from "../components/home/LocationSearchBar";
+import { useQuery } from "@tanstack/react-query";
+import { guestFunctions } from "@/app/utils/endpoints";
+import { EventData } from "../(dashboard)/dashboard/event/page";
+import { formatDate, formatDate2, formatTime } from "../helpers";
 
 const Home = () => {
+  const {
+    data: events,
+    isError,
+    isLoading,
+    status,
+  } = useQuery({
+    queryKey: ["events-guest"],
+    queryFn: guestFunctions.getEvents,
+    select: (data) => {
+      const selectedEvents: EventData[] = data.map((event: EventData) => {
+        const startDate = event.start_date
+          ? `${formatDate2(event.start_date)} | ${formatTime(event.start_date)}`
+          : null;
+        const quantity = event.tickets[0]?.stock_qty ?? null;
+        const price = event.tickets[1]?.price ?? null;
+        const desc = event.tickets[0]?.description ?? null;
+        const img = event.medias[0]?.original ?? null;
+        const address = event.locations[0]?.address ?? null;
+
+        return {
+          id: event.id,
+          name: event.name,
+          startDate,
+          quantity,
+          price,
+          desc,
+          img,
+          address,
+        };
+      });
+
+      return selectedEvents;
+    },
+  });
+
+  console.log("events -home", events);
   return (
     <section>
       {/* HERO */}
@@ -35,11 +75,11 @@ const Home = () => {
       </div>
 
       <div className="md:mt-[84px]  md:pb-[84px] w-full bg-white">
-        <HomeEvents />
+        <HomeEvents events={events} />
       </div>
-      <div className=" w-full pb-[84px] bg-[#FBFAFC]">
+      {/* <div className=" w-full pb-[84px] bg-[#FBFAFC]">
         <VirtualEvents />
-      </div>
+      </div> */}
     </section>
   );
 };

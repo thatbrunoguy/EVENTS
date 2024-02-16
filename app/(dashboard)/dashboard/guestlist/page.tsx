@@ -181,35 +181,37 @@ export default function Guestlist() {
               </div>
               <p>Export as CSV</p>
             </button>
-            <div className="">
-              <header className="w-full bg-[#FBFAFC] text-sm grid grid-flow-col  py-3 px-4 ">
-                <p className="col-span-3">Ticket name</p>
-                <p className="">Ticket quantity</p>
-                <p className="col-span-4 justify-self-center">Buyer name</p>
-                <p className="col-span-2">Order number</p>
-                <p className="">Order date</p>
-                <p className="w-1/6"></p>
-              </header>
-              {tickets.map((item: any, index: number) => (
-                <div
-                  key={index}
-                  className="w-full border-b grid grid-flow-col  p-3 py-4 text-sm"
-                >
-                  <h4 className="font-semibold col-span-3">{item.name}</h4>
-                  <p className="text-lightText">{item.quantity}</p>
-                  <p className="text-lightText col-span-4 justify-self-center">
-                    {item.buyerName}
-                  </p>
-                  <div className="col-span-2">{item.orderNumber}</div>
-                  <div className="">{item.date}</div>
+            <div className="w-full overflow-x-scroll">
+              <div className="w-[250vw] lg:w-full ">
+                <header className="w-full bg-[#FBFAFC] text-sm grid grid-flow-col  py-3 px-4 ">
+                  <p className="col-span-3">Ticket name</p>
+                  <p className="">Ticket quantity</p>
+                  <p className="col-span-4 justify-self-center">Buyer name</p>
+                  <p className="col-span-2">Order number</p>
+                  <p className="">Order date</p>
+                  <p className="w-1/6"></p>
+                </header>
+                {tickets.map((item: any, index: number) => (
                   <div
-                    onClick={() => setIsGuestlistModalOpen(true)}
-                    className="text-sm font-semibold text-primaryPurple cursor-pointer"
+                    key={index}
+                    className="w-full border-b grid grid-flow-col  p-3 py-4 text-sm"
                   >
-                    view
+                    <h4 className="font-semibold col-span-3">{item.name}</h4>
+                    <p className="text-lightText">{item.quantity}</p>
+                    <p className="text-lightText col-span-4 justify-self-center">
+                      {item.buyerName}
+                    </p>
+                    <div className="col-span-2">{item.orderNumber}</div>
+                    <div className="">{item.date}</div>
+                    <div
+                      onClick={() => setIsGuestlistModalOpen(true)}
+                      className="text-sm font-semibold text-primaryPurple cursor-pointer"
+                    >
+                      view
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
         )}

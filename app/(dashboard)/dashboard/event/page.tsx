@@ -14,66 +14,76 @@ import PrimaryLoading, {
   PrimaryLoading2,
 } from "../../../components/loaders/PrimaryLoading";
 import { formatDate, formatTime } from "../../../helpers";
+import GlobalTable from "@/app/components/table/GlobalTable";
+
+type Ticket = {
+  id: string;
+  event_id: string;
+  name: string;
+  description: string;
+  price: number;
+  stock: string;
+  stock_qty: number;
+  purchase_limit: number;
+  quantity_limit_per_person: number | null;
+  currency: string;
+  type: number;
+  status: number;
+  created_at: string;
+  updated_at: string;
+};
+
+type Media = {
+  original: string;
+  thumb: string;
+};
+
+type Location = {
+  id: string;
+  event_id: string;
+  type: number;
+  latitude: string;
+  longitude: string;
+  country_code: string | null;
+  country: string | null;
+  city: string | null;
+  zipcode: string | null;
+  address: string;
+  link: string | null;
+  meta: any | null;
+  status: number;
+  created_at: string;
+  updated_at: string;
+};
+
+export type EventData = {
+  id: string;
+  account_id: string;
+  name: string;
+  start_date: string;
+  end_date: string;
+  timezone: string;
+  registration_requirements: {
+    name: string;
+    required: boolean;
+  }[];
+  description: string;
+  medias: Media[];
+  status: number;
+  tickets: Ticket[];
+  locations: Location[];
+};
+type FormattedEvent = {
+  id: string;
+  name: string;
+  startDate: string;
+  quantity: number;
+  price: number;
+  desc: string;
+  img: string;
+};
 
 export default function Event() {
-  const [options, setOptions] = useState<any>([
-    // {
-    //   title: " Eko convections centre",
-    //   desc: "Lekki paradise estate 3, chevron drive",
-    //   date: "Saturday, October 22, 2023 | 7:30pm",
-    //   quantity: "0/10000",
-    //   price: "Free",
-    // },
-    // {
-    //   title: " Eko convections centre",
-    //   desc: "Lekki paradise estate 3, chevron drive",
-    //   date: "Saturday, October 22, 2023 | 7:30pm",
-    //   quantity: "0/10000",
-    //   price: "₦20,000.00 - ₦50,000.00 ",
-    // },
-    // {
-    //   title: " Eko convections centre",
-    //   desc: "Lekki paradise estate 3, chevron drive",
-    //   date: "Saturday, October 22, 2023 | 7:30pm",
-    //   quantity: "0/10000",
-    //   price: "Free",
-    // },
-    // {
-    //   title: " Eko convections centre",
-    //   desc: "Lekki paradise estate 3, chevron drive",
-    //   date: "Saturday, October 22, 2023 | 7:30pm",
-    //   quantity: "0/10000",
-    //   price: "₦20,000.00",
-    // },
-    // {
-    //   title: " Eko convections centre",
-    //   desc: "Lekki paradise estate 3, chevron drive",
-    //   date: "Saturday, October 22, 2023 | 7:30pm",
-    //   quantity: "0/10000",
-    //   price: "Free",
-    // },
-    // {
-    //   title: " Eko convections centre",
-    //   desc: "Lekki paradise estate 3, chevron drive",
-    //   date: "Saturday, October 22, 2023 | 7:30pm",
-    //   quantity: "0/10000",
-    //   price: "₦20,000.00",
-    // },
-    // {
-    //   title: " Eko convections centre",
-    //   desc: "Lekki paradise estate 3, chevron drive",
-    //   date: "Saturday, October 22, 2023 | 7:30pm",
-    //   quantity: "0/10000",
-    //   price: "Free",
-    // },
-    // {
-    //   title: " Eko convections centre",
-    //   desc: "Lekki paradise estate 3, chevron drive",
-    //   date: "Saturday, October 22, 2023 | 7:30pm",
-    //   quantity: "0/10000",
-    //   price: "₦20,000.00 - ₦50,000.00 ",
-    // },
-  ]);
   const {
     data: events,
     isError,
@@ -82,8 +92,39 @@ export default function Event() {
   } = useQuery({
     queryKey: ["events"],
     queryFn: eventsManagamentFunctions.getEvents,
-    // staleTime: Infinity,
+    select: (data) => {
+      const selectedEvents: EventData[] = data.map((event: EventData) => {
+        const startDate = event.start_date
+          ? `${formatDate(event.start_date)} | ${formatTime(event.start_date)}`
+          : null;
+        const quantity =
+          event.tickets[0]?.stock_qty != null
+            ? event.tickets[0].stock_qty
+            : null;
+        const price =
+          event.tickets[0]?.price != null ? event.tickets[0].price : null;
+        const desc = event.tickets[0]?.description || null;
+        const img = event.medias[0]?.original || null;
+        const address = event.locations[0]?.address || "Online";
+
+        return {
+          id: event.id || null,
+          name: event.name || null,
+          startDate,
+          quantity,
+          price,
+          desc,
+          img,
+          address,
+        };
+      });
+
+      return selectedEvents;
+    },
   });
+
+  console.log("events", events);
+  // const newArray = Array(20).fill(events);
   return (
     <section className="flex">
       <Sidebar />
@@ -97,7 +138,7 @@ export default function Event() {
           </div>
         ) : (
           <div className="w-full flex  h-full justify-center items-center ">
-            {events?.length < 1 ? (
+            {events === undefined || events?.length < 1 ? (
               <div className="w-[351px] flex flex-col items-center">
                 <Image
                   src="/assets/one.svg"
@@ -133,45 +174,47 @@ export default function Event() {
                   </div>
                   <p>Create Event</p>
                 </Link>
-                <div className="">
-                  <header className="w-full text-sm flex items-center py-3 px-4 bg-[#FBFAFC]">
-                    <p className="w-[500px]">Ticket name</p>
-                    <p className="w-[400px]">Ticket quantity</p>
-                    <p className="w-[400px]">Ticket price</p>
+                <div className="w-full overflow-x-scroll">
+                  <header className=" w-[130vw] md:w-full text-xs  md:text-sm flex items-center justify-between py-3 px-4 bg-[#FBFAFC]">
+                    <p className="w-[45%]">Ticket name</p>
+                    <p className="">Ticket quantity</p>
+                    <p className="">Ticket price</p>
+                    <p className=""></p>
                   </header>
                   {events?.map((item: any, index: number) => (
                     <div
                       key={item.id}
-                      className="flex w-full border-b items-center justify-between"
+                      className="flex w-[130vw] md:w-full border-b items-center justify-between"
                     >
-                      <div className="flex items-center space-x-5 p-3 ">
-                        <div className="h-[72px] w-[72px] relative rounded overflow-hidden">
-                          <Image
-                            fill
-                            src={item.medias[0].original}
-                            alt={item.name}
-                            className="object-cover"
-                          />
+                      <div className="flex items-center text-xs md:text-sm justify-between space-x-5 p-3  w-full">
+                        <div className="flex items-center w-[45%] space-x-5">
+                          <div className="h-[72px] w-[72px] relative rounded overflow-hidden">
+                            <Image
+                              fill
+                              src={item.img}
+                              alt={item.name}
+                              className="object-cover"
+                            />
+                          </div>
+                          <div className="w-full  text-xs md:text-sm">
+                            <h4 className="font-semibold mb-1">{item.name}</h4>
+                            <p className="text-lightText">{item.address}</p>
+                            <p className="text-lightText">{item.startDate}</p>
+                          </div>
                         </div>
-                        <div className="w-[378px] text-sm">
-                          <h4 className="font-semibold mb-1">{item.name}</h4>
-                          <p className="text-lightText">
-                            {item.tickets[0].description}
-                          </p>
-                          <p className="text-lightText">
-                            {`${formatDate(item.start_date)} | ${formatTime(
-                              item.start_date
-                            )}`}
-                          </p>
-                        </div>
-                        <div className="w-[360px]">
-                          {item.tickets[0].quantity || "unlimited"}
-                        </div>
-                        <div className="w-[310px]">
-                          {item.tickets[0].price || "Free"}
-                        </div>
-                        <div className="text-2xl">
-                          <IoIosMore />
+
+                        <div className="grid grid-cols-3 flex-1 justify-items-end">
+                          <div className=" md:mr-4">
+                            {item.quantity || "unlimited"}
+                          </div>
+                          <div className="">
+                            <p className="relative md:left-5">
+                              {item.price || "Free"}
+                            </p>
+                          </div>
+                          <div className="text-lg md:text-2xl  flex justify-end ">
+                            <IoIosMore />
+                          </div>
                         </div>
                       </div>
                     </div>

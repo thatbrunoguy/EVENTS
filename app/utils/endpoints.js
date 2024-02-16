@@ -217,7 +217,87 @@ export const eventsManagamentFunctions = {
       }
     } catch (error) {
       console.error("Error fetching data:", error.response.data.message);
-      toast.error(error.response.data.message);
+      // toast.error(error.response.data.message);
+      throw error;
+    }
+  },
+};
+
+export const guestFunctions = {
+  getEvents: async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}/events`, {
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+          "X-APP-KEY": APP_KEY,
+        },
+      });
+      console.log("response", response);
+      if (response.data && response.data.status === true) {
+        // toast.success(response.data.message);
+        console.log("res", response?.data.message);
+        return response.data.data.events;
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error.response.data.message);
+      // toast.error(error.response.data.message);
+      throw error;
+    }
+  },
+  getEventsById: async (eventId) => {
+    try {
+      const response = await axios.get(`${BASE_URL}/events/${eventId}`, {
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+          "X-APP-KEY": APP_KEY,
+        },
+      });
+      console.log("response", response);
+      if (response.data && response.data.status === true) {
+        // toast.success(response.data.message);
+        console.log("res", response?.data.message);
+        return response.data.data.event;
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error.response.data.message);
+      // toast.error(error.response.data.message);
+      throw error;
+    }
+  },
+
+  bookEvent: async (myData) => {
+    console.log("data", myData);
+    console.log("eventId", myData?.eventId);
+    try {
+      const response = await axios.post(
+        `${BASE_URL}/events/${eventId}/order`,
+        myData.orders,
+        {
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            "X-APP-KEY": APP_KEY,
+            Authorization: `Bearer ${TOKEN}`,
+          },
+        }
+      );
+      console.log("response", response);
+      if (response.data.status === true) {
+        // toast.success(response.data.message);
+        // console.log("res", response?.data.message);
+        // console.log("res", response?.data.data);
+        console.log("response", response);
+
+        return response;
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error.response.data.message);
+      // toast.error(error.response.data.message);
       throw error;
     }
   },

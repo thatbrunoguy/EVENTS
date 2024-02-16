@@ -21,6 +21,8 @@ export default function GlobalTable({ columns, rows }) {
         sortable: true,
         resizable: true,
       }}
+      enableCellSelect
+      rowGetter={() => {}}
       className="rdg-light h-auto"
       columns={columns}
       rows={rows}
