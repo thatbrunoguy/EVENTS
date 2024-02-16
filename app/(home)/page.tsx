@@ -78,7 +78,7 @@ const Home = () => {
         <HomeEvents events={events} />
       </div>
       {/* <div className=" w-full pb-[84px] bg-[#FBFAFC]">
-        <VirtualEvents />
+        <VirtualEvents events={events} />
       </div> */}
     </section>
   );
