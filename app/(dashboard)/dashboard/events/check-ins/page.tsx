@@ -86,14 +86,20 @@ const CheckIns = () => {
   ]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [selectedEvent, setSelectedEvent] = useState({
+    name: "",
+    ticketId: "",
+  });
   return (
     <div className="flex pb-20 md:pb-0">
       <Sidebar />
       <MobileFooter />
 
       <main className="w-full h-screen overflow-y-scroll">
-        <Header />
+        <Header
+          selectedEvent={selectedEvent}
+          setSelectedEvent={setSelectedEvent}
+        />
         {isModalOpen && <CheckInModal setIsModalOpen={setIsModalOpen} />}
 
         {!options.length ? (
