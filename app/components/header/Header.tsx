@@ -11,7 +11,20 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { IoChevronDown } from "react-icons/io5";
 
-const Header = () => {
+type Iprops = {
+  selectedEvent: {
+    name: string;
+    ticketId: string;
+  };
+  setSelectedEvent: React.Dispatch<
+    React.SetStateAction<{
+      name: string;
+      ticketId: string;
+    }>
+  >;
+};
+
+const Header = ({ selectedEvent, setSelectedEvent }: Iprops) => {
   const [options, setOptions] = useState([
     {
       title: " Eko convections centre",
@@ -34,7 +47,7 @@ const Header = () => {
       date: "Saturday, October 22, 2023 | 7:30pm",
     },
   ]);
-  const [selectedEvent, setSelectedEvent] = useState({ name: "" });
+  // const [selectedEvent, setSelectedEvent] = useState({ name: "" });
   const {
     data: events,
     isError,
@@ -53,7 +66,7 @@ const Header = () => {
         quantity: event.tickets[0].stock_qty,
         price: event.tickets[0].price,
         desc: event.tickets[0].description,
-        img: event.medias[0].thumb,
+        img: event.medias[0].original,
         address: event.locations[0].address,
       }));
 
@@ -62,8 +75,8 @@ const Header = () => {
   });
 
   useEffect(() => {
-    if (events && events.length && selectedEvent.name === "") {
-      setSelectedEvent(events[0]);
+    if (events && events.length && selectedEvent?.name === "") {
+      setSelectedEvent({ name: events[0].name, ticketId: events[0].id });
     }
   }, [events]);
   console.log("events", events);

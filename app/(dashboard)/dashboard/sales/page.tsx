@@ -15,6 +15,11 @@ import { IoMailOpenSharp } from "react-icons/io5";
 import MobileFooter from "../../../components/footer/MobileFooter";
 import GlobalTable from "../../../components/table/GlobalTable";
 export default function Guestlist() {
+  const [selectedEvent, setSelectedEvent] = useState({
+    name: "",
+    ticketId: "",
+  });
+
   const [tickets, setTickets] = useState<any>([
     {
       name: "Aiamond Pass",
@@ -214,7 +219,10 @@ export default function Guestlist() {
       <MobileFooter />
 
       <main className="h-screen overflow-y-scroll flex-1">
-        <Header />
+        <Header
+          selectedEvent={selectedEvent}
+          setSelectedEvent={setSelectedEvent}
+        />
         {!tickets.length ? (
           <div className="flex justify-center items-center w-full h-[80%]">
             <div className="w-[351px] flex flex-col items-center">

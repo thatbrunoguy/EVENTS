@@ -14,6 +14,8 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
 import { IoMailOpenSharp } from "react-icons/io5";
 import MobileFooter from "../../../components/footer/MobileFooter";
+import { useQuery } from "@tanstack/react-query";
+import { eventsManagamentFunctions } from "@/app/utils/endpoints";
 
 export default function Guestlist() {
   const [tickets, setTickets] = useState<any>([
@@ -105,6 +107,52 @@ export default function Guestlist() {
 
   const [isGuestlistModalOpen, setIsGuestlistModalOpen] =
     useState<boolean>(false);
+  const [selectedEvent, setSelectedEvent] = useState({
+    name: "",
+    ticketId: "",
+  });
+
+  console.log("selectedEvent-Guestlist", selectedEvent);
+  const {
+    data: events,
+    isError,
+    isLoading,
+    status,
+  } = useQuery({
+    queryKey: ["events-guestlist"],
+    queryFn: () =>
+      eventsManagamentFunctions.getEventSales(selectedEvent?.ticketId),
+    enabled: selectedEvent.ticketId ? true : false,
+    // select: (data) => {
+    //   const selectedEvents: EventData[] = data.map((event: EventData) => {
+    //     const startDate = event.start_date
+    //       ? `${formatDate(event.start_date)} | ${formatTime(event.start_date)}`
+    //       : null;
+    //     const quantity =
+    //       event.tickets[0]?.stock_qty != null
+    //         ? event.tickets[0].stock_qty
+    //         : null;
+    //     const price =
+    //       event.tickets[0]?.price != null ? event.tickets[0].price : null;
+    //     const desc = event.tickets[0]?.description || null;
+    //     const img = event.medias[0]?.original || null;
+    //     const address = event.locations[0]?.address || "Online";
+
+    //     return {
+    //       id: event.id || null,
+    //       name: event.name || null,
+    //       startDate,
+    //       quantity,
+    //       price,
+    //       desc,
+    //       img,
+    //       address,
+    //     };
+    //   });
+
+    //   return selectedEvents;
+    // },
+  });
 
   const exportCSV = () => {
     toast(
@@ -144,7 +192,10 @@ export default function Guestlist() {
       <MobileFooter />
 
       <main className="h-screen overflow-y-scroll flex-1">
-        <Header />
+        <Header
+          selectedEvent={selectedEvent}
+          setSelectedEvent={setSelectedEvent}
+        />
         {!tickets.length ? (
           <div className="flex justify-center items-center w-full h-[80%]">
             <div className="w-[351px] flex flex-col items-center">

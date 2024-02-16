@@ -46,6 +46,10 @@ const emailCampaign = [
 ];
 
 export default function Dashboard() {
+  const [selectedEvent, setSelectedEvent] = useState({
+    name: "",
+    ticketId: "",
+  });
   const [tickets, setTickets] = useState<any>([
     {
       name: " Diamond Pass",
@@ -177,7 +181,10 @@ export default function Dashboard() {
       <Sidebar />
       <MobileFooter />
       <main className="h-screen pb-24 md:pb-0 overflow-y-scroll flex-1">
-        <Header />
+        <Header
+          selectedEvent={selectedEvent}
+          setSelectedEvent={setSelectedEvent}
+        />
         <h3 className="font-semibold text-2xl ml-4 sm:ml-6 xl:ml-12 mt-6">
           Dashboard
         </h3>

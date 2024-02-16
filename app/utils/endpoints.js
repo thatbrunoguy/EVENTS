@@ -209,6 +209,32 @@ export const eventsManagamentFunctions = {
       );
       console.log("response", response);
       if (response.data && response.data.status === true) {
+        // toast.success(response.data.message);
+        console.log("res", response?.data.message);
+        return response.data.data.events;
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error.response.data.message);
+      // toast.error(error.response.data.message);
+      throw error;
+    }
+  },
+  getEventSales: async (eventId) => {
+    const TOKEN = getData(EVENTSPARROT_USER)?.token;
+    const accountId = getData(EVENTSPARROT_USER)?.account?.id;
+
+    try {
+      const response = await axios.get(`${BASE_URL}/event/${eventId}/order`, {
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+          "X-APP-KEY": APP_KEY,
+          Authorization: `Bearer ${TOKEN}`,
+        },
+      });
+      console.log("response", response);
+      if (response.data && response.data.status === true) {
         toast.success(response.data.message);
         console.log("res", response?.data.message);
         return response.data.data.events;
@@ -269,34 +295,29 @@ export const guestFunctions = {
     }
   },
 
-  bookEvent: async (myData) => {
+  bookEvent: async ({ myData, eventId }) => {
     console.log("data", myData);
-    console.log("eventId", myData?.eventId);
+    console.log("eventId", myData);
     try {
       const response = await axios.post(
         `${BASE_URL}/events/${eventId}/order`,
-        myData.orders,
+        myData,
         {
           headers: {
             "Content-type": "application/json; charset=UTF-8",
             "X-APP-KEY": APP_KEY,
-            Authorization: `Bearer ${TOKEN}`,
           },
         }
       );
-      console.log("response", response);
-      if (response.data.status === true) {
+      console.log("response", response.data.data);
+      if (response) {
         // toast.success(response.data.message);
-        // console.log("res", response?.data.message);
-        // console.log("res", response?.data.data);
-        console.log("response", response);
-
-        return response;
+        return response.data.data.url;
       } else {
         throw new Error(response.data.message);
       }
     } catch (error) {
-      console.error("Error fetching data:", error.response.data.message);
+      console.error("Error fetching data:", "wrong");
       // toast.error(error.response.data.message);
       throw error;
     }

@@ -78,7 +78,9 @@ const CheckoutFinal = ({
       console.log(` ${error}`);
     },
     onSuccess: async (data, variables, context) => {
-      console.log("data", data);
+      console.log("dddddd", data);
+
+      router.push(data);
       //   router.push("/");
     },
   });
@@ -193,8 +195,11 @@ const CheckoutFinal = ({
       </div>
 
       <button
+        disabled={bookEvent.isPending}
         onClick={checkoutHandler}
-        className="bg-purple-700 mt-9 py-[10px] px-5 w-full md:w-[244px] h-12 hover:bg-opacity-70 text-white text-sm rounded-lg grid place-content-center"
+        className={` ${
+          bookEvent.isPending ? "bg-opacity-50 cursor-wait" : ""
+        } bg-purple-700 mt-9 py-[10px] px-5 w-full md:w-[244px] h-12 hover:bg-opacity-70 text-white text-sm rounded-lg grid place-content-center`}
       >
         <p>Checkout</p>
       </button>
