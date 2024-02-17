@@ -49,7 +49,6 @@ const Home = () => {
     },
   });
 
-  console.log("events -home", events);
   return (
     <section>
       {/* HERO */}

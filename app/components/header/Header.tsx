@@ -16,37 +16,36 @@ type Iprops = {
     name: string;
     ticketId: string;
   };
-  setSelectedEvent: React.Dispatch<
-    React.SetStateAction<{
-      name: string;
-      ticketId: string;
-    }>
-  >;
+  isMore?: boolean;
+
+  setSelectedEvent:
+    | React.Dispatch<
+        React.SetStateAction<{
+          name: string;
+          ticketId: string;
+          img?: string;
+          location?: string;
+          date?: string;
+        }>
+      >
+    | any;
 };
 
-const Header = ({ selectedEvent, setSelectedEvent }: Iprops) => {
-  const [options, setOptions] = useState([
-    {
-      title: " Eko convections centre",
-      desc: "Lekki paradise estate 3, chevron drive",
-      date: "Saturday, October 22, 2023 | 7:30pm",
-    },
-    {
-      title: " Kuto convections centre",
-      desc: "Lekki paradise estate 3, chevron drive",
-      date: "Saturday, October 22, 2023 | 7:30pm",
-    },
-    {
-      title: " Kano convections centre",
-      desc: "Lekki paradise estate 3, chevron drive",
-      date: "Saturday, October 22, 2023 | 7:30pm",
-    },
-    {
-      title: " Dubai convections centre",
-      desc: "Lekki paradise estate 3, chevron drive",
-      date: "Saturday, October 22, 2023 | 7:30pm",
-    },
-  ]);
+interface SelectedEventData {
+  id: string;
+  name: string;
+  startDate: string;
+  quantity: number;
+  price: number;
+  desc: string;
+  img: string;
+  address: string;
+}
+const Header = ({
+  selectedEvent,
+  setSelectedEvent,
+  isMore = false,
+}: Iprops) => {
   // const [selectedEvent, setSelectedEvent] = useState({ name: "" });
   const {
     data: events,
@@ -56,8 +55,8 @@ const Header = ({ selectedEvent, setSelectedEvent }: Iprops) => {
   } = useQuery({
     queryKey: ["events"],
     queryFn: eventsManagamentFunctions.getEvents,
-    select: (data) => {
-      const selectedEvents: EventData[] = data.map((event: EventData) => ({
+    select: (data): SelectedEventData[] => {
+      const selectedEvents: any = data.map((event: EventData) => ({
         id: event.id,
         name: event.name,
         startDate: `${formatDate(event.start_date)} | ${formatTime(
@@ -66,7 +65,7 @@ const Header = ({ selectedEvent, setSelectedEvent }: Iprops) => {
         quantity: event.tickets[0].stock_qty,
         price: event.tickets[0].price,
         desc: event.tickets[0].description,
-        img: event.medias[0].original,
+        img: event.medias[0].thumb,
         address: event.locations[0].address,
       }));
 
@@ -76,7 +75,14 @@ const Header = ({ selectedEvent, setSelectedEvent }: Iprops) => {
 
   useEffect(() => {
     if (events && events.length && selectedEvent?.name === "") {
-      setSelectedEvent({ name: events[0].name, ticketId: events[0].id });
+      setSelectedEvent({
+        name: events[0].name,
+        ticketId: events[0].id,
+        img: events[0].img,
+        address: events[0].address,
+        startDate: events[0].startDate,
+        desc: events[0].desc,
+      });
     }
   }, [events]);
   console.log("events", events);
