@@ -221,6 +221,69 @@ export const eventsManagamentFunctions = {
       throw error;
     }
   },
+  toggleEventStatus: async ({ status, eventId }) => {
+    const TOKEN = getData(EVENTSPARROT_USER)?.token;
+    const accountId = getData(EVENTSPARROT_USER)?.account?.id;
+
+    try {
+      const response = await axios.put(
+        `${BASE_URL}/account/${accountId}/event/${eventId} `,
+        { status: status === 1 ? 2 : 1 },
+        {
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            "X-APP-KEY": APP_KEY,
+            Authorization: `Bearer ${TOKEN}`,
+          },
+        }
+      );
+      console.log("response-set-inactive", response);
+      if (response.data && response.data.status === true) {
+        toast.success(
+          `Event has been set to ${status === 1 ? "Inactive" : "Active"}`
+        );
+        console.log("res", response?.data.message);
+        return response.data.data.events;
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error.response.data.message);
+      // toast.error(error.response.data.message);
+      throw error;
+    }
+  },
+
+  deleteEvent: async ({ eventId }) => {
+    const TOKEN = getData(EVENTSPARROT_USER)?.token;
+    const accountId = getData(EVENTSPARROT_USER)?.account?.id;
+
+    try {
+      const response = await axios.delete(
+        `${BASE_URL}/account/${accountId}/event/${eventId} `,
+        {
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            "X-APP-KEY": APP_KEY,
+            Authorization: `Bearer ${TOKEN}`,
+          },
+        }
+      );
+      console.log("response-delete-event", response);
+      if (response.data && response.data.status === true) {
+        toast.success("Event deleted successfully!!");
+        console.log("res", response?.data.message);
+        return response.data.data.events;
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error.response.data.message);
+      // toast.error(error.response.data.message);
+      throw error;
+    }
+  },
+
   getEventSales: async (eventId) => {
     const TOKEN = getData(EVENTSPARROT_USER)?.token;
     const accountId = getData(EVENTSPARROT_USER)?.account?.id;
@@ -238,6 +301,32 @@ export const eventsManagamentFunctions = {
         toast.success(response?.data?.message);
         console.log("res", response?.data.message);
         return response?.data?.data?.orders;
+      } else {
+        throw new Error(response?.data?.message);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error.response?.data?.message);
+      // toast.error(error.response.data.message);
+      throw error;
+    }
+  },
+  getEventSalesAnalytics: async (eventId) => {
+    const TOKEN = getData(EVENTSPARROT_USER)?.token;
+    const accountId = getData(EVENTSPARROT_USER)?.account?.id;
+
+    try {
+      const response = await axios.get(`${BASE_URL}/event/${eventId}/sales`, {
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+          "X-APP-KEY": APP_KEY,
+          Authorization: `Bearer ${TOKEN}`,
+        },
+      });
+      console.log("response - orders", response);
+      if (response?.data && response?.data?.status === true) {
+        toast.success(response?.data?.message);
+        console.log("res", response?.data.message);
+        return response?.data?.data;
       } else {
         throw new Error(response?.data?.message);
       }

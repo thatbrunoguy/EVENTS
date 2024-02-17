@@ -212,7 +212,9 @@ export default function Guestlist() {
                             <h4 className="font-semibold col-span-3">
                               {item.name}
                             </h4>
-                            <p className="text-lightText">{item.quantity}</p>
+                            <p className="text-lightText ml-20">
+                              {item.quantity}
+                            </p>
                             <p className="text-lightText col-span-4 justify-self-center">
                               {item.buyerName}
                             </p>

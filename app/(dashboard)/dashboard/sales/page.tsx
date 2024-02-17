@@ -6,7 +6,7 @@ import Sidebar from "../../../components/sidebar/Sidebar";
 import { HiOutlinePlusSm } from "react-icons/hi";
 import Link from "next/link";
 import { IoIosMore } from "react-icons/io";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { PiShareLight } from "react-icons/pi";
 import DashHeader from "./Header";
 import { ToastContainer, toast } from "react-toastify";
@@ -14,6 +14,30 @@ import "react-toastify/dist/ReactToastify.min.css";
 import { IoMailOpenSharp } from "react-icons/io5";
 import MobileFooter from "../../../components/footer/MobileFooter";
 import GlobalTable from "../../../components/table/GlobalTable";
+import { useQuery } from "@tanstack/react-query";
+import { eventsManagamentFunctions } from "@/app/utils/endpoints";
+import { PrimaryLoading2 } from "@/app/components/loaders/PrimaryLoading";
+
+export type SalesAnalyticsData = {
+  salesData: {
+    ticket: {
+      ticket_id: string;
+      name: string;
+      price: number;
+      type: number;
+    };
+    order_count: number;
+    total_sales_revenue: number;
+    total_sales_fee: number;
+    netSales: number;
+  }[];
+  totalCount: number;
+  type1Count: number;
+  type2Count: number;
+  netSales: number;
+  totalRevenue: number;
+};
+
 export default function Guestlist() {
   const [selectedEvent, setSelectedEvent] = useState({
     name: "",
@@ -178,9 +202,71 @@ export default function Guestlist() {
     ...payment,
   }));
 
-  const [isGuestlistModalOpen, setIsGuestlistModalOpen] =
-    useState<boolean>(false);
+  const {
+    data: salesAnalytics,
+    isError,
+    isLoading,
+    status,
+  } = useQuery({
+    queryKey: ["events-sales-analytics"],
+    queryFn: () =>
+      eventsManagamentFunctions.getEventSalesAnalytics(selectedEvent?.ticketId),
+    enabled: selectedEvent.ticketId ? true : false,
+    select: (data): SalesAnalyticsData => {
+      let type1Count = 0;
+      let type2Count = 0;
+      let totalCount = 0;
+      let netSales = 0;
+      let totalRevenue = 0;
 
+      const salesData = data.map((item: any) => {
+        if (item.ticket.type === 1) {
+          type1Count += item.order_count;
+        } else if (item.ticket.type === 2) {
+          type2Count += item.order_count;
+        }
+        totalCount += item.order_count;
+
+        const netTicketSales = item.total_sales_revenue + item.total_sales_fee;
+        netSales += netTicketSales;
+        totalRevenue += item.total_sales_revenue;
+
+        return {
+          ticket: {
+            ticket_id: item.ticket.ticked_id,
+            name: item.ticket.name,
+            price: item.ticket.price,
+            type: item.ticket.type,
+          },
+          order_count: item.order_count,
+          total_sales_revenue: item.total_sales_revenue,
+          total_sales_fee: item.total_sales_fee,
+          netSales: netTicketSales,
+          totalRevenue: totalRevenue,
+        };
+      });
+
+      return {
+        salesData,
+        totalCount,
+        type1Count,
+        type2Count,
+        netSales,
+        totalRevenue,
+      };
+    },
+  });
+  const salesDataFormatted = useMemo(() => {
+    if (!salesAnalytics) return [];
+
+    return salesAnalytics.salesData.map((item) => ({
+      name: item.ticket.name,
+      quantity: item.order_count,
+      revenue: item.total_sales_revenue,
+      fees: item.total_sales_fee,
+      net: item.netSales,
+    }));
+  }, [salesAnalytics]);
   const exportCSV = () => {
     toast(
       <div className="flex gap-4 p-6 py-4">
@@ -218,75 +304,90 @@ export default function Guestlist() {
       <Sidebar />
       <MobileFooter />
 
-      <main className="h-screen overflow-y-scroll flex-1">
-        <Header
-          selectedEvent={selectedEvent}
-          setSelectedEvent={setSelectedEvent}
-        />
-        {!tickets.length ? (
-          <div className="flex justify-center items-center w-full h-[80%]">
-            <div className="w-[351px] flex flex-col items-center">
-              <Image
-                src="/assets/sales.svg"
-                alt="Eventparrot logo"
-                width={210}
-                height={180}
-                priority
-              />
-              <p className="py-5 text-center w-[60%] text-lightText">
-                Sales and payouts will appear here
-              </p>
-            </div>
-          </div>
-        ) : (
-          <>
-            <div className="w-[95%] mt-6 mx-auto">
-              <div className="w-full mb-9">
-                <DashHeader />
-              </div>
-
-              <div className="flex items-center justify-between mt-10 mb-8">
-                <h2 className="font-semibold text-2xl">Sales</h2>
-
-                <button
-                  onClick={exportCSV}
-                  className="border-primaryPurple border text-primaryPurple py-[10px] px-5 w-auto h-[41px] hover:bg-primaryPurple hover:text-white text-sm rounded-lg flex items-center space-x-[4px]"
-                >
-                  <div>
-                    <PiShareLight />
-                  </div>
-                  <p>Export as CSV</p>
-                </button>
-              </div>
-
-              <div className="h-auto">
-                <GlobalTable columns={ticketColumns} rows={ticketRows} />
+      {isLoading ? (
+        <div>
+          <PrimaryLoading2 />
+        </div>
+      ) : (
+        <main className="h-screen overflow-y-scroll flex-1">
+          <Header
+            selectedEvent={selectedEvent}
+            setSelectedEvent={setSelectedEvent}
+          />
+          {!tickets.length ? (
+            <div className="flex justify-center items-center w-full h-[80%]">
+              <div className="w-[351px] flex flex-col items-center">
+                <Image
+                  src="/assets/sales.svg"
+                  alt="Eventparrot logo"
+                  width={210}
+                  height={180}
+                  priority
+                />
+                <p className="py-5 text-center w-[60%] text-lightText">
+                  Sales and payouts will appear here
+                </p>
               </div>
             </div>
+          ) : (
+            <>
+              <div className="w-[95%] mt-6 mx-auto">
+                <div className="w-full mb-9">
+                  <DashHeader
+                    data={{
+                      totalTicket: salesAnalytics?.totalCount,
+                      totalRevenue: salesAnalytics?.totalRevenue,
+                    }}
+                  />
+                </div>
 
-            {/* -------- PAYMENT HISTORY --------- */}
+                <div className="flex items-center justify-between mt-10 mb-8">
+                  <h2 className="font-semibold text-2xl">Sales</h2>
 
-            <div className="w-[95%] mt-12 mb-24 md:mb-5 mx-auto">
-              <div className="flex items-center justify-between mt-10 mb-8">
-                <h2 className="font-semibold text-2xl">Payment History</h2>
+                  <button
+                    onClick={exportCSV}
+                    className="border-primaryPurple border text-primaryPurple py-[10px] px-5 w-auto h-[41px] hover:bg-primaryPurple hover:text-white text-sm rounded-lg flex items-center space-x-[4px]"
+                  >
+                    <div>
+                      <PiShareLight />
+                    </div>
+                    <p>Export as CSV</p>
+                  </button>
+                </div>
 
-                <button
-                  onClick={exportCSV}
-                  className="border-primaryPurple border text-primaryPurple py-[10px] px-5 w-auto h-[41px] hover:bg-primaryPurple hover:text-white text-sm rounded-lg flex items-center space-x-[4px]"
-                >
-                  <div>
-                    <PiShareLight />
-                  </div>
-                  <p>Export as CSV</p>
-                </button>
-                {/* TABLE */}
+                <div className="h-auto">
+                  <GlobalTable
+                    columns={ticketColumns}
+                    rows={salesDataFormatted}
+                  />
+                </div>
               </div>
 
-              <GlobalTable columns={paymentColumns} rows={paymentRows} />
-            </div>
-          </>
-        )}
-      </main>
+              {/* -------- PAYMENT HISTORY --------- */}
+
+              <div className="w-[95%] mt-12 mb-24 md:mb-5 mx-auto">
+                <div className="flex items-center justify-between mt-10 mb-8">
+                  <h2 className="font-semibold text-2xl">Payment History</h2>
+
+                  <button
+                    onClick={exportCSV}
+                    className="border-primaryPurple border text-primaryPurple py-[10px] px-5 w-auto h-[41px] hover:bg-primaryPurple hover:text-white text-sm rounded-lg flex items-center space-x-[4px]"
+                  >
+                    <div>
+                      <PiShareLight />
+                    </div>
+                    <p>Export as CSV</p>
+                  </button>
+                  {/* TABLE */}
+                </div>
+
+                {/* <GlobalTable columns={paymentColumns} rows={paymentRows} /> */}
+                <GlobalTable columns={paymentColumns} rows={[]} />
+              </div>
+            </>
+          )}
+        </main>
+      )}
     </section>
   );
 }

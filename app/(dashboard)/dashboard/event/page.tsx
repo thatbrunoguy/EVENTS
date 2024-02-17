@@ -3,18 +3,24 @@
 import Image from "next/image";
 import Header from "../../../components/header/Header";
 import Sidebar from "../../../components/sidebar/Sidebar";
-import { HiOutlinePlusSm } from "react-icons/hi";
+import { HiOutlinePlusSm, HiPencil } from "react-icons/hi";
 import Link from "next/link";
-import { IoIosMore } from "react-icons/io";
+import { IoIosCopy, IoIosMore } from "react-icons/io";
 import { useState } from "react";
 import MobileFooter from "../../../components/footer/MobileFooter";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { eventsManagamentFunctions } from "../../../utils/endpoints";
 import PrimaryLoading, {
   PrimaryLoading2,
 } from "../../../components/loaders/PrimaryLoading";
 import { formatDate, formatTime } from "../../../helpers";
 import GlobalTable from "@/app/components/table/GlobalTable";
+import { Menu, MenuButton, MenuGroup, MenuItem } from "@szhsin/react-menu";
+import { MdHideSource } from "react-icons/md";
+import { IoTrash } from "react-icons/io5";
+import { useCopyToClipboard } from "@/app/hooks";
+import toast from "react-hot-toast";
+import ConfirmDeleteModal from "@/app/components/modals/ConfirmDelete";
 
 type Ticket = {
   id: string;
@@ -84,6 +90,54 @@ type FormattedEvent = {
 };
 
 export default function Event() {
+  const [copiedText, copy] = useCopyToClipboard();
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  // const [selectedEvent, setSelectedEvent] = useState({ id: "" });
+
+  const queryClient = useQueryClient();
+
+  const handleCopy = (text: string) => () => {
+    copy(text)
+      .then(() => {
+        console.log("Copied!", { text });
+        toast.success("Event link copied");
+      })
+      .catch((error) => {
+        console.error("Failed to copy!", error);
+      });
+  };
+  const toggleEventStatus = useMutation({
+    mutationFn: eventsManagamentFunctions.toggleEventStatus,
+    onError: async (error, variables, context) => {
+      // An error happened!
+      console.log(` ${error}`);
+    },
+    onSuccess: async (data, variables, context) => {
+      queryClient.invalidateQueries({ queryKey: ["events"] });
+      console.log("data", data);
+    },
+  });
+
+  const deleteEvent = useMutation({
+    mutationFn: eventsManagamentFunctions.deleteEvent,
+    onError: async (error, variables, context) => {
+      // An error happened!
+      console.log(` ${error}`);
+    },
+    onSuccess: async (data, variables, context) => {
+      // Boom baby!
+      console.log("data", data);
+    },
+  });
+
+  const deleteEventHandler = (id: string) => {
+    deleteEvent.mutate({ eventId: id });
+  };
+
+  const handleEventStatusChange = (status: number, id: string) => {
+    toggleEventStatus.mutate({ status: status, eventId: id });
+  };
+
   const {
     data: events,
     isError,
@@ -106,6 +160,7 @@ export default function Event() {
         const desc = event.tickets[0]?.description || null;
         const img = event.medias[0]?.original || null;
         const address = event.locations[0]?.address || "Online";
+        const status = event.status;
 
         return {
           id: event.id || null,
@@ -116,6 +171,7 @@ export default function Event() {
           desc,
           img,
           address,
+          status,
         };
       });
 
@@ -123,8 +179,27 @@ export default function Event() {
     },
   });
 
+  const actionOptions = [
+    {
+      icon: <HiPencil />,
+      title: "Edit event",
+    },
+    {
+      icon: <MdHideSource />,
+      title: "Make event inactive",
+    },
+    {
+      icon: <IoTrash />,
+      title: "Delete event",
+    },
+  ];
+
+  const lastOption = {
+    icon: <IoIosCopy />,
+    title: "Copy event link",
+  };
+
   console.log("events", events);
-  // const newArray = Array(20).fill(events);
   return (
     <section className="flex">
       <Sidebar />
@@ -212,8 +287,117 @@ export default function Event() {
                               {item.price || "Free"}
                             </p>
                           </div>
+
                           <div className="text-lg md:text-2xl  flex justify-end ">
-                            <IoIosMore />
+                            <Menu
+                              direction="left"
+                              menuStyle={{
+                                backgroundColor: "white",
+                                border: "1px solid #E7E4EB",
+                                borderRadius: 8,
+                                width: 200,
+                                height: 204,
+                                padding: 6,
+                                boxShadow:
+                                  "0px 4px 6px -2px #88868A0D, 0px 12px 16px -4px #88868A1A",
+                              }}
+                              // arrow
+                              menuButton={
+                                <MenuButton
+                                  style={{ background: "transparent" }}
+                                >
+                                  <div className="text-gray-800 text-xl h-11 w-11 rounded-full hover:bg-gray-100 grid place-content-center cursor-pointer">
+                                    <IoIosMore />
+                                  </div>
+                                </MenuButton>
+                              }
+                              transition
+                            >
+                              <MenuGroup>
+                                {actionOptions.map((opt, index) => (
+                                  <MenuItem
+                                    className="py-2 cursor-pointer pl-3 hover:bg-lightPurple"
+                                    key={opt.title}
+                                  >
+                                    <div
+                                      onClick={
+                                        index === 0
+                                          ? () => {}
+                                          : index === 1
+                                          ? () => {
+                                              handleEventStatusChange(
+                                                item.status,
+                                                item.id
+                                              );
+                                            }
+                                          : () => {
+                                              setIsDeleteModalOpen(true);
+                                            }
+                                      }
+                                      className="flex items-center w-full space-x-3 py-1"
+                                    >
+                                      {index === 1 ? (
+                                        <>
+                                          <div
+                                            className={`${
+                                              item.status === 2
+                                                ? "text-red-500"
+                                                : "text-[#706D73]"
+                                            } text-base`}
+                                          >
+                                            {opt.icon}
+                                          </div>
+                                          <p
+                                            className={`${
+                                              item.status === 2
+                                                ? "text-red-500 "
+                                                : "text-[#706D73]"
+                                            } text-sm text-center`}
+                                          >
+                                            {item.status === 1
+                                              ? opt.title
+                                              : "Make event active"}
+                                          </p>
+                                        </>
+                                      ) : (
+                                        <>
+                                          <div className="text-gray-500 text-base">
+                                            {opt.icon}
+                                          </div>
+
+                                          <p className="text-[#706D73] text-sm text-center">
+                                            {opt.title}
+                                          </p>
+                                        </>
+                                      )}
+                                    </div>
+                                  </MenuItem>
+                                ))}
+                              </MenuGroup>
+
+                              <MenuItem className="py-2 cursor-pointer pl-4 hover:bg-lightPurple mx-auto border-t">
+                                <div
+                                  onClick={handleCopy(
+                                    `https://eventsparrot.vercel.app/events/${item.id}`
+                                  )}
+                                  className="flex items-center w-full cursor-pointer  space-x-3 py-1"
+                                >
+                                  <div className="text-gray-500 text-base">
+                                    {lastOption.icon}
+                                  </div>
+                                  <p className="text-[#706D73]  text-sm text-center">
+                                    {lastOption.title}
+                                  </p>
+                                </div>
+                              </MenuItem>
+                            </Menu>
+                            {isDeleteModalOpen && (
+                              <ConfirmDeleteModal
+                                title="Are you sure want to delete this event?"
+                                setIsDeleteModalOpen={setIsDeleteModalOpen}
+                                deleteTicket={deleteEventHandler(item.id)}
+                              />
+                            )}
                           </div>
                         </div>
                       </div>

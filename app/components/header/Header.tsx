@@ -16,7 +16,6 @@ type Iprops = {
     name: string;
     ticketId: string;
   };
-  isMore?: boolean;
 
   setSelectedEvent:
     | React.Dispatch<
@@ -41,11 +40,7 @@ interface SelectedEventData {
   img: string;
   address: string;
 }
-const Header = ({
-  selectedEvent,
-  setSelectedEvent,
-  isMore = false,
-}: Iprops) => {
+const Header = ({ selectedEvent, setSelectedEvent }: Iprops) => {
   // const [selectedEvent, setSelectedEvent] = useState({ name: "" });
   const {
     data: events,
