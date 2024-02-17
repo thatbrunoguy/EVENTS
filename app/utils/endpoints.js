@@ -209,7 +209,7 @@ export const eventsManagamentFunctions = {
       );
       console.log("response", response);
       if (response.data && response.data.status === true) {
-        toast.success(response.data.message);
+        // toast.success(response.data.message);
         console.log("res", response?.data.message);
         return response.data.data.events;
       } else {
@@ -217,7 +217,131 @@ export const eventsManagamentFunctions = {
       }
     } catch (error) {
       console.error("Error fetching data:", error.response.data.message);
-      toast.error(error.response.data.message);
+      // toast.error(error.response.data.message);
+      throw error;
+    }
+  },
+  getEventSales: async (eventId) => {
+    const TOKEN = getData(EVENTSPARROT_USER)?.token;
+    const accountId = getData(EVENTSPARROT_USER)?.account?.id;
+
+    try {
+      const response = await axios.get(`${BASE_URL}/event/${eventId}/order`, {
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+          "X-APP-KEY": APP_KEY,
+          Authorization: `Bearer ${TOKEN}`,
+        },
+      });
+      console.log("response - orders", response);
+      if (response?.data && response?.data?.status === true) {
+        toast.success(response?.data?.message);
+        console.log("res", response?.data.message);
+        return response?.data?.data?.orders;
+      } else {
+        throw new Error(response?.data?.message);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error.response?.data?.message);
+      // toast.error(error.response.data.message);
+      throw error;
+    }
+  },
+};
+
+export const guestFunctions = {
+  getEvents: async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}/events`, {
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+          "X-APP-KEY": APP_KEY,
+        },
+      });
+      console.log("response", response);
+      if (response.data && response.data.status === true) {
+        // toast.success(response.data.message);
+        console.log("res", response?.data.message);
+        return response.data.data.events;
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error.response.data.message);
+      // toast.error(error.response.data.message);
+      throw error;
+    }
+  },
+  getEventsById: async (eventId) => {
+    try {
+      const response = await axios.get(`${BASE_URL}/events/${eventId}`, {
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+          "X-APP-KEY": APP_KEY,
+        },
+      });
+      console.log("response", response);
+      if (response.data && response.data.status === true) {
+        // toast.success(response.data.message);
+        console.log("res", response?.data.message);
+        return response.data.data.event;
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error.response.data.message);
+      // toast.error(error.response.data.message);
+      throw error;
+    }
+  },
+
+  bookEvent: async ({ myData, eventId }) => {
+    console.log("data", myData);
+    console.log("eventId", myData);
+    try {
+      const response = await axios.post(
+        `${BASE_URL}/events/${eventId}/order`,
+        myData,
+        {
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            "X-APP-KEY": APP_KEY,
+          },
+        }
+      );
+      console.log("response", response.data.data);
+      if (response) {
+        // toast.success(response.data.message);
+        return response.data.data.url;
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", "wrong");
+      // toast.error(error.response.data.message);
+      throw error;
+    }
+  },
+
+  getEventByCategories: async (category) => {
+    try {
+      const response = await axios.get(`${BASE_URL}/events?=${category}`, {
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+          "X-APP-KEY": APP_KEY,
+        },
+      });
+      console.log("response", response);
+      if (response.data && response.data.status === true) {
+        // toast.success(response.data.message);
+        console.log("res", response?.data.message);
+        return response.data.data.events;
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error.response.data.message);
+      // toast.error(error.response.data.message);
       throw error;
     }
   },

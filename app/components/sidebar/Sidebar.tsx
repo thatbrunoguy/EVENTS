@@ -74,7 +74,6 @@ const Sidebar = () => {
 
   // }
 
-  console.log("path", path);
   return (
     <div className="h-screen min-w-[284px] w-[284px] hidden md:block py-[25px] border-r relative">
       <div className="pl-6">
@@ -121,28 +120,24 @@ const Sidebar = () => {
         ))}
       </div>
 
-      <div className="flex space-x-3 py-6 pl-4 border-t absolute bottom-0 left-0 right-0">
-        <div
-          onClick={handleSignOutClick}
-          className="relative w-[47px] h-[47px] rounded-full overflow-hidden"
-        >
-          <img
-            src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cHJvZmlsZSUyMHBpY3R1cmV8ZW58MHx8MHx8fDA%3D"
-            alt="profile pic"
-            className="object-cover"
-            // width={47}
-            // height={47}
-            // style={{ borderRadius: "50%", objectFit: "cover" }}
-          />
-        </div>
-        {session?.user && (
+      {session?.user && (
+        <div className="flex space-x-3 py-6 pl-4 border-t absolute bottom-0 left-0 right-0">
+          <div
+            onClick={handleSignOutClick}
+            className="relative w-[47px] h-[47px] grid place-content-center bg-lightPurple rounded-full overflow-hidden"
+          >
+            <p className="text-2xl text-primaryPurple font-medium">
+              {/* @ts-ignore */}
+              {session?.user?.user?.first_name.charAt(0).toUpperCase()}
+            </p>
+          </div>
           <div>
             {/* @ts-ignore */}
             <p>{`${session?.user?.user?.first_name} ${session?.user?.user?.last_name}`}</p>
-            <p className="text-sm text-gray-500">Role: Marketer</p>
+            <p className="text-sm text-gray-500">Role: Business</p>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

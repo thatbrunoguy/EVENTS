@@ -5,7 +5,7 @@ import TanstackQuery from "@/app/utils/Providers";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Eventparrot",
+  title: "Eventsparrot",
   description: "Start creating your events today",
 };
 

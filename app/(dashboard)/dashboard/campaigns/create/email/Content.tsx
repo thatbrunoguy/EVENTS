@@ -33,6 +33,7 @@ const CreateEmailCampaignContent = () => {
   ]);
 
   const [eventPhoto, setEventPhoto] = useState<any>([]);
+  const [value, setValue] = useState("");
 
   const thumbs = eventPhoto.map((file: any) => (
     <div key={file.name}>
@@ -112,7 +113,7 @@ const CreateEmailCampaignContent = () => {
           >
             Description of your event <span className="text-red-500">*</span>
           </label>
-          <ReactQuillEditor />
+          <ReactQuillEditor setValue={setValue} value={value} />
         </div>
 
         <h2 className="text-[24px] font-semibold my-9">Header image</h2>

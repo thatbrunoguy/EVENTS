@@ -21,6 +21,7 @@ import { useQuery } from "@tanstack/react-query";
 import { authFunctions } from "../../utils/endpoints";
 import { addToLocalStorage } from "../../utils/localstorage";
 import { EVENTSPARROT_USER } from "../../constants";
+import GlobalTable from "@/app/components/table/GlobalTable";
 
 const emailCampaign = [
   {
@@ -45,6 +46,10 @@ const emailCampaign = [
 ];
 
 export default function Dashboard() {
+  const [selectedEvent, setSelectedEvent] = useState({
+    name: "",
+    ticketId: "",
+  });
   const [tickets, setTickets] = useState<any>([
     {
       name: " Diamond Pass",
@@ -142,6 +147,19 @@ export default function Dashboard() {
     "Send announcements to your registrants ",
   ];
 
+  const salesColumns = [
+    { key: "name", name: "Ticket name" },
+    { key: "quantity", name: "Total Tickets sold" },
+    { key: "revenue", name: "Total Sales revenue" },
+    { key: "fees", name: "Fees" },
+    { key: "net", name: "Net sales revenue" },
+  ];
+
+  const salesRows = tickets.map((ticket: any, index: number) => ({
+    id: index,
+    ...ticket,
+  }));
+
   const {
     data: userAccount,
     isError,
@@ -163,13 +181,18 @@ export default function Dashboard() {
       <Sidebar />
       <MobileFooter />
       <main className="h-screen pb-24 md:pb-0 overflow-y-scroll flex-1">
-        <Header />
-        <h3 className="font-semibold text-2xl ml-12 mt-12">Dashboard</h3>
-        <div className="flex justify-between w-[92%] mx-auto">
+        <Header
+          selectedEvent={selectedEvent}
+          setSelectedEvent={setSelectedEvent}
+        />
+        <h3 className="font-semibold text-2xl ml-4 sm:ml-6 xl:ml-12 mt-6">
+          Dashboard
+        </h3>
+        <div className="flex flex-col xl:flex-row justify-between w-[92%] mx-auto">
           <div className="w-full md:w-[60%]">
-            <h3 className="text-lg mt-4 mb-5 font-medium">Overview</h3>
+            <h3 className="text-lg mt-8 mb-5 font-medium">Overview</h3>
 
-            <div className="flex items-center space-x-2 justify-between">
+            <div className="flex w-full overflow-x-scroll pb-4  md:overflow-x-hidden scrollbar-hide items-center space-x-2 justify-between">
               {emailCampaign.map((item, i) => (
                 <div
                   key={i}
@@ -185,26 +208,32 @@ export default function Dashboard() {
                     {item.icon}
                   </div>
 
-                  <p className="font-semibold text-2xl my-2">{item.value}</p>
+                  <p className="font-medium md:font-semibold text-2xl my-2">
+                    {item.value}
+                  </p>
                   <p className="text-sm text-lightText">{item.title}</p>
                 </div>
               ))}
             </div>
 
-            <div className="my-8 flex items-center space-x-4">
-              <div className="basis-1/2 ">
+            <div className=" my-5 md:my-7 flex flex-col md:flex-row items-center gap-4">
+              <div className=" w-full md:basis-1/2 ">
                 <p className="text-lg font-medium">Payouts</p>
 
-                <div className="flex items-center mt-5">
+                <div className="flex items-center mt-3 md:mt-5">
                   <div className=" bg-white h-[122px] w-full border-[.6px] shadow-lg p-4 rounded-md">
                     <div className="flex space-x-4">
                       <div className="basis-1/2 border-r border-dashed">
-                        <h3 className="font-semibold text-2xl mb-2">₦0.00</h3>
+                        <h3 className="font-medium md:font-semibold text-2xl mb-2">
+                          ₦0.00
+                        </h3>
                         <p className="text-sm text-lightText">Paid</p>
                       </div>
 
                       <div>
-                        <h3 className="font-semibold text-2xl mb-2">₦0.00</h3>
+                        <h3 className="font-medium md:font-semibold text-2xl mb-2">
+                          ₦0.00
+                        </h3>
                         <p className="text-sm text-lightText">Remaining</p>
                       </div>
                     </div>
@@ -217,10 +246,10 @@ export default function Dashboard() {
 
               {/* SHARE */}
 
-              <div className="w-[95%] lg:basis-1/2">
+              <div className="w-full lg:basis-1/2">
                 <p className="text-lg font-medium">Share</p>
 
-                <div className="mt-5 rounded-md bg-white h-[122px] shadow-lg p-4 border-[.6px]">
+                <div className="mt-3 md:mt-5 rounded-md bg-white h-[122px] shadow-lg p-4 border-[.6px]">
                   <p className="text-xs text-lightText mb-1">Event Url</p>
                   <div className="">
                     <div className="w-[90%]  overflow-x-hidden">
@@ -245,7 +274,7 @@ export default function Dashboard() {
           </div>
 
           {/* RIGHT */}
-          <div className="w-[30%] hidden xl:block">
+          <div className="w-full  xl:w-[30%]">
             <h3 className="text-lg mt-4 mb-5 font-medium">Recommended</h3>
 
             <div>
@@ -262,33 +291,20 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
-        <div className="flex items-center justify-between mt-10 mb-8  w-[92%] mx-auto">
-          <h2 className="font-semibold text-2xl">Sales</h2>
+        <div className="flex items-center justify-between mt-4 md:mt-10 mb-8  w-[92%] mx-auto">
+          <h2 className="font-medium md:font-semibold text-xl md:text-2xl">
+            Sales
+          </h2>
 
-          <p className="text-primaryPurple text-sm">View all</p>
+          <Link href="/dashboard/sales">
+            <p className="text-primaryPurple text-xs md:text-sm">View all</p>
+          </Link>
         </div>
 
         <div className="w-[95%] mx-auto">
-          <header className="w-full bg-[#FBFAFC] text-sm grid grid-flow-col  py-3 px-4 ">
-            <p className="col-span-1">Ticket name</p>
-            <p className="">Total Tickets sold</p>
-            <p className="">Total Sales revenue </p>
-            <p className="">Fees</p>
-            <p className="">Net sales revenue</p>
-            {/* <p className="w-1/6"></p> */}
-          </header>
-          {tickets.map((item: any, index: number) => (
-            <div
-              key={index}
-              className="w-full border-b grid grid-flow-col  p-3 py-4 text-sm"
-            >
-              <h4 className="font-semibold">{item.name}</h4>
-              <p className="">{item.quantity}</p>
-              <p className=" ml-16">{item.revenue}</p>
-              <div className="">{item.fees}</div>
-              <div className="">{item.net}</div>
-            </div>
-          ))}
+          <div className="mb-6">
+            <GlobalTable columns={salesColumns} rows={salesRows} />
+          </div>
         </div>
       </main>
     </section>

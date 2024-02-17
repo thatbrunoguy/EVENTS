@@ -15,6 +15,11 @@ import { IoMailOpenSharp } from "react-icons/io5";
 import MobileFooter from "../../../components/footer/MobileFooter";
 
 export default function Guestlist() {
+  const [selectedEvent, setSelectedEvent] = useState({
+    name: "",
+    ticketId: "",
+  });
+
   const paymentHistory: any = [
     {
       recipient: "889e90000e88e9e07889939",
@@ -146,7 +151,10 @@ export default function Guestlist() {
       <MobileFooter />
 
       <main className="h-screen overflow-y-scroll flex-1">
-        <Header />
+        <Header
+          selectedEvent={selectedEvent}
+          setSelectedEvent={setSelectedEvent}
+        />
         {!paymentHistory.length ? (
           <div className="flex justify-center items-center w-full h-[80%]">
             <div className="w-[351px] flex flex-col items-center">

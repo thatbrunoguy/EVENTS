@@ -30,12 +30,19 @@ const tablist_ = [
 ];
 export default function SettingsPage() {
   const [tablist, setTablist] = useState([...tablist_]);
+  const [selectedEvent, setSelectedEvent] = useState({
+    name: "",
+    ticketId: "",
+  });
 
   return (
     <section className="flex">
       <Sidebar />
       <main className="h-screen flex-1 overflow-y-scroll">
-        <Header />
+        <Header
+          selectedEvent={selectedEvent}
+          setSelectedEvent={setSelectedEvent}
+        />
         <h3 className="font-semibold text-2xl ml-12 mt-12">
           Organization settings
         </h3>

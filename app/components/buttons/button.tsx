@@ -33,7 +33,7 @@ export const SolidButton = ({
         isComplete
           ? "bg-primaryPurple"
           : "bg-primaryPurple bg-opacity-20 cursor-wait"
-      } w-full h-12 text-white rounded-lg   flex items-center justify-center`}
+      } w-full h-12 text-white rounded-lg hover:bg-opacity-70 transition-all duration-300 ease-in-out  flex items-center justify-center`}
     >
       {title}
     </button>

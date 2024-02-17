@@ -6,94 +6,35 @@ import FaqComponent from "@/app/components/home/FaqComponent";
 const data = {
   rows: [
     {
-      title: "How can I promote my event on the platform?",
-      content: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. In sed tempor sem. Aenean vel turpis feugiat,
-              ultricies metus at, consequat velit. Curabitur est nibh, varius in tellus nec, mattis pulvinar metus.
-              In maximus cursus lorem, nec laoreet velit eleifend vel. Ut aliquet mauris tortor, sed egestas libero interdum vitae.
-              Fusce sed commodo purus, at tempus turpis.`,
+      title: "How can I promote my event on Eventsparrot?",
+      content: `To promote your event, just sign up to create your account, input all the required details and you are signed in. Just navigate to the Event tab and create your event by filling in the required details about your event, adding eye-catching visuals and relevant tags to enhance visibility. Once submitted, our platform will feature your event for our community to discover.`,
     },
     {
-      title: "What types of events can be promoted on the platform?",
+      title: "How does Eventsparrot work?",
       content:
-        "Nunc maximus, magna at ultricies elementum, risus turpis vulputate quam, vitae convallis ex tortor sed dolor.",
+        "As a vendor, you can list your events and share the link to your events which event attendees can then register for. As an event attendee, you can discover events through our user-friendly search and recommendation features. You can filter events based on location, date, and category. Additionally, our platform sends personalised event recommendations to users based on your interests and past attendance. It's a seamless way for event organizers to connect with their target audience.",
     },
     {
-      title: "How can I boost attendance for my event?",
-      content: `Curabitur laoreet, mauris vel blandit fringilla, leo elit rhoncus nunc, ac sagittis leo elit vel lorem.
-            Fusce tempor lacus ut libero posuere viverra. Nunc velit dolor, tincidunt at varius vel, laoreet vel quam.
-            Sed dolor urna, lobortis in arcu auctor, tincidunt mattis ante. Vivamus venenatis ultricies nibh in volutpat.
-            Cras eu metus quis leo vestibulum feugiat nec sagittis lacus.Mauris vulputate arcu sed massa euismod dignissim. `,
+      title: "Why should I use Eventsparrot for my event?",
+      content: `Eventsparrot gives you the opportunity to reach a wider audience for your events. We provide tools to increase attendance for your event. We provide an easily shareable link so you can also promote your event by sharing your event link on social media or your website. Eventsparrot is available to everyone to create events and sell their tickets seamlessly. `,
     },
     {
-      title:
-        "Is there a cost associated with promoting events on the platform?",
+      title: "Can I sell tickets to all types of events on Eventsparrot?",
       content:
-        "Nunc maximus, magna at ultricies elementum, risus turpis vulputate quam, vitae convallis ex tortor sed dolor.",
+        "Yes. You can sell tickets to both free and paid events on Eventsparrot. Events ranging from local meetups to online webinars, concerts, parties or business events, can be promoted on Eventsparrot. We support all types of events that bring people together.",
     },
     {
-      title: "How can I boost attendance for my event?",
-      content: `Curabitur laoreet, mauris vel blandit fringilla, leo elit rhoncus nunc, ac sagittis leo elit vel lorem.
-            Fusce tempor lacus ut libero posuere viverra. Nunc velit dolor, tincidunt at varius vel, laoreet vel quam.
-            Sed dolor urna, lobortis in arcu auctor, tincidunt mattis ante. Vivamus venenatis ultricies nibh in volutpat.
-            Cras eu metus quis leo vestibulum feugiat nec sagittis lacus.Mauris vulputate arcu sed massa euismod dignissim. `,
+      title: "How do I get the funds from my ticket sales?",
+      content: `To get the funds from your ticket sales, you have to first link a bank account to your Eventsparrot account. You will get your funds within 3 days after your event, which will be sent to your registered bank account. `,
     },
     {
-      title:
-        "Is there a cost associated with promoting events on the platform?",
+      title: "Can I create multiple ticket types on Eventsparrot?",
       content:
-        "Nunc maximus, magna at ultricies elementum, risus turpis vulputate quam, vitae convallis ex tortor sed dolor.",
+        "Yes. Eventsparrot allows you to create multiple ticket types for each event. We are aware that most events allow for multiple ticket options like early bird, regular, VIP, table, based on various budget.",
     },
     {
-      title: "How can I boost attendance for my event?",
-      content: `Curabitur laoreet, mauris vel blandit fringilla, leo elit rhoncus nunc, ac sagittis leo elit vel lorem.
-            Fusce tempor lacus ut libero posuere viverra. Nunc velit dolor, tincidunt at varius vel, laoreet vel quam.
-            Sed dolor urna, lobortis in arcu auctor, tincidunt mattis ante. Vivamus venenatis ultricies nibh in volutpat.
-            Cras eu metus quis leo vestibulum feugiat nec sagittis lacus.Mauris vulputate arcu sed massa euismod dignissim. `,
-    },
-    {
-      title:
-        "Is there a cost associated with promoting events on the platform?",
-      content:
-        "Nunc maximus, magna at ultricies elementum, risus turpis vulputate quam, vitae convallis ex tortor sed dolor.",
-    },
-    {
-      title: "How can I boost attendance for my event?",
-      content: `Curabitur laoreet, mauris vel blandit fringilla, leo elit rhoncus nunc, ac sagittis leo elit vel lorem.
-            Fusce tempor lacus ut libero posuere viverra. Nunc velit dolor, tincidunt at varius vel, laoreet vel quam.
-            Sed dolor urna, lobortis in arcu auctor, tincidunt mattis ante. Vivamus venenatis ultricies nibh in volutpat.
-            Cras eu metus quis leo vestibulum feugiat nec sagittis lacus.Mauris vulputate arcu sed massa euismod dignissim. `,
-    },
-    {
-      title:
-        "Is there a cost associated with promoting events on the platform?",
-      content:
-        "Nunc maximus, magna at ultricies elementum, risus turpis vulputate quam, vitae convallis ex tortor sed dolor.",
-    },
-    {
-      title: "How can I boost attendance for my event?",
-      content: `Curabitur laoreet, mauris vel blandit fringilla, leo elit rhoncus nunc, ac sagittis leo elit vel lorem.
-            Fusce tempor lacus ut libero posuere viverra. Nunc velit dolor, tincidunt at varius vel, laoreet vel quam.
-            Sed dolor urna, lobortis in arcu auctor, tincidunt mattis ante. Vivamus venenatis ultricies nibh in volutpat.
-            Cras eu metus quis leo vestibulum feugiat nec sagittis lacus.Mauris vulputate arcu sed massa euismod dignissim. `,
-    },
-    {
-      title:
-        "Is there a cost associated with promoting events on the platform?",
-      content:
-        "Nunc maximus, magna at ultricies elementum, risus turpis vulputate quam, vitae convallis ex tortor sed dolor.",
-    },
-    {
-      title: "How can I boost attendance for my event?",
-      content: `Curabitur laoreet, mauris vel blandit fringilla, leo elit rhoncus nunc, ac sagittis leo elit vel lorem.
-            Fusce tempor lacus ut libero posuere viverra. Nunc velit dolor, tincidunt at varius vel, laoreet vel quam.
-            Sed dolor urna, lobortis in arcu auctor, tincidunt mattis ante. Vivamus venenatis ultricies nibh in volutpat.
-            Cras eu metus quis leo vestibulum feugiat nec sagittis lacus.Mauris vulputate arcu sed massa euismod dignissim. `,
-    },
-    {
-      title:
-        "Is there a cost associated with promoting events on the platform?",
-      content:
-        "Nunc maximus, magna at ultricies elementum, risus turpis vulputate quam, vitae convallis ex tortor sed dolor.",
+      title: "Can Eventsparrot help in promoting my events?",
+      content: `To get more event attendees, you can make use of Eventsparrot's sponsored promotion option. We will market your event to prospective attendees. `,
     },
   ],
 };

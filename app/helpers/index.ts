@@ -61,6 +61,13 @@ export function extractUrlBeforeQueryString(url: string) {
 export function formatDate(inputDate: string) {
   return moment(inputDate).format("Do MMMM YYYY");
 }
+
+export function formatDate2(inputDate: string) {
+  const date = moment(inputDate);
+  const formattedDate = date.format("ddd, MMM Do YYYY");
+  return formattedDate;
+}
+
 export function formatTime(inputDate: string) {
   return moment(inputDate).format("h:mma");
 }

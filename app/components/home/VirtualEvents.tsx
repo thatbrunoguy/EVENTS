@@ -10,7 +10,20 @@ const options = [
   { title: "Popular" },
 ];
 
-const VirtualEvents = () => {
+type FormattedEvent = {
+  event: {
+    id: string;
+    name: string;
+    startDate: string;
+    quantity: number;
+    price: number;
+    desc: string;
+    img: string;
+    address: string;
+  };
+};
+
+const VirtualEvents = ({ events }: any) => {
   return (
     <div className="w-[94%] md:w-[90%] mx-auto pt-12 md:pt-[84px]">
       <div className="">
@@ -20,7 +33,7 @@ const VirtualEvents = () => {
       </div>
       <div className="mt-7">
         <div className=" grid-cols-1 grid md:grid-cols-2   lg:grid-cols-3 xl:grid-cols-4 gap-8">
-          {cards.map((card, i) => (
+          {events?.map((card: any, i: number) => (
             <Card key={i} event={card} />
           ))}
         </div>

@@ -128,39 +128,59 @@ export const cards = [
   },
 ];
 
-export const Card = ({ event }: any) => {
+type FormattedEvent = {
+  event: {
+    id: string;
+    name: string;
+    startDate: string;
+    quantity: number;
+    price: number;
+    desc: string;
+    img: string;
+    address: string;
+  };
+};
+
+export const Card = ({ event }: FormattedEvent) => {
+  const { name, id, startDate, price, address, img } = event;
   return (
     <div className="w-full md:w-[295px] border-[.6px] rounded-xl hover:shadow-xl  transition-all duration-300 bg-white pt-3">
       <div className="px-3">
         <div className="h-[181px] w-full rounded-xl relative overflow-hidden">
-          <Image
-            className="object-cover"
-            src={`${event.image}`}
-            alt="event thumbnail"
-            fill
-            priority
-          />
+          {img && (
+            <Image
+              className="object-cover"
+              src={`${img}`}
+              alt="event thumbnail"
+              fill
+              priority
+            />
+          )}
         </div>
 
         <div className="mt-4 mb-3">
-          <p className="font-semibold text-xl">{event.name}</p>
+          <p className="font-semibold text-xl">{name}</p>
 
           <div className=" flex items-center gap-3 my-5  font-light">
-            <LuCalendarDays />
+            <div className="text-base">
+              <LuCalendarDays />
+            </div>
 
-            <p>{event.date}</p>
+            <p>{startDate}</p>
           </div>
           <div className=" flex items-center gap-3 my-5 font-light">
-            <MdOutlineLocationOn size={18} />
+            <div className="text-base">
+              <MdOutlineLocationOn />
+            </div>
 
-            <p>{event.location}</p>
+            <p>{address}</p>
           </div>
         </div>
       </div>
 
       <footer className="border-t-[.4px] flex items-center justify-between px-3 py-3 ">
-        <p className="text-lg font-medium">₦18,800</p>
-        <Link href="/events/valentine">
+        <p className="text-lg font-medium">₦{price}</p>
+        <Link href={`/events/${id}`}>
           <button className=" w-[131px] h-9 grid place-content-center border-[.5px]  rounded hover:bg-primaryPurple hover:text-white transition-all duration-300 border-primaryPurple text-primaryPurple">
             <p className="text-sm  ">Get Tickets</p>
           </button>
@@ -170,7 +190,7 @@ export const Card = ({ event }: any) => {
   );
 };
 
-const HomeEvents = () => {
+const HomeEvents = ({ events }: any) => {
   const [activeIndex, setActiveIndex] = useState(0);
   return (
     <div className="w-[94%] md:w-[90%] mx-auto">
@@ -202,7 +222,7 @@ const HomeEvents = () => {
 
         <hr />
         <div className="mt-12 grid-cols-1 grid md:grid-cols-2   lg:grid-cols-3 xl:grid-cols-4 gap-8">
-          {cards.map((card, i) => (
+          {events?.map((card: any, i: number) => (
             <Card key={i} event={card} />
           ))}
         </div>

@@ -1,9 +1,14 @@
 "use client";
 
+import { EventData } from "@/app/(dashboard)/dashboard/event/page";
 import HomeEvents from "@/app/components/home/Events";
 import FaqComponent from "@/app/components/home/FaqComponent";
+import { formatDate, formatDate2, formatTime } from "@/app/helpers";
+import { guestFunctions } from "@/app/utils/endpoints";
+import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
-import React from "react";
+import Link from "next/link";
+import React, { useEffect, useState } from "react";
 import { CiAlarmOn, CiCalendar, CiLocationOn } from "react-icons/ci";
 
 const data = {
@@ -15,52 +20,72 @@ const data = {
                 In maximus cursus lorem, nec laoreet velit eleifend vel. Ut aliquet mauris tortor, sed egestas libero interdum vitae.
                 Fusce sed commodo purus, at tempus turpis.`,
     },
-    {
-      title: "What do I even write about?",
-      content:
-        "Nunc maximus, magna at ultricies elementum, risus turpis vulputate quam, vitae convallis ex tortor sed dolor.",
-    },
-    {
-      title: "How many emails should I send?",
-      content: `Curabitur laoreet, mauris vel blandit fringilla, leo elit rhoncus nunc, ac sagittis leo elit vel lorem.
-              Fusce tempor lacus ut libero posuere viverra. Nunc velit dolor, tincidunt at varius vel, laoreet vel quam.
-              Sed dolor urna, lobortis in arcu auctor, tincidunt mattis ante. Vivamus venenatis ultricies nibh in volutpat.
-              Cras eu metus quis leo vestibulum feugiat nec sagittis lacus.Mauris vulputate arcu sed massa euismod dignissim. `,
-    },
-    {
-      title: "How do I make my emails look good?",
-      content:
-        "Nunc maximus, magna at ultricies elementum, risus turpis vulputate quam, vitae convallis ex tortor sed dolor.",
-    },
-    {
-      title: "Where can I create my email campaigns?",
-      content: `Curabitur laoreet, mauris vel blandit fringilla, leo elit rhoncus nunc, ac sagittis leo elit vel lorem.
-              Fusce tempor lacus ut libero posuere viverra. Nunc velit dolor, tincidunt at varius vel, laoreet vel quam.
-              Sed dolor urna, lobortis in arcu auctor, tincidunt mattis ante. Vivamus venenatis ultricies nibh in volutpat.
-              Cras eu metus quis leo vestibulum feugiat nec sagittis lacus.Mauris vulputate arcu sed massa euismod dignissim. `,
-    },
   ],
 };
 
 const EventDetails = ({ params }: { params: { slug: string } }) => {
+  const [faqs, setFaqs] = useState<any>(null);
+  const {
+    data: event,
+    isError,
+    isLoading,
+    status,
+  } = useQuery({
+    queryKey: ["events-guest", params.slug],
+    queryFn: () => guestFunctions.getEventsById(params.slug),
+    select: (data) => {
+      const faqs = data?.faqs || [];
+
+      const modifiedEvent = {
+        ...data,
+        faqs: faqs.map((faq: any) => ({
+          title: faq.question || "",
+          content: faq.answer || "",
+        })),
+      };
+
+      return modifiedEvent;
+    },
+  });
+
+  if (event && status === "success") {
+    (() => {
+      const faqs = event.faqs;
+
+      if (!faqs || !Array.isArray(faqs)) {
+        return { rows: [] };
+      }
+
+      const rows = faqs.map((faq) => ({
+        title: faq.question || "",
+        content: faq.answer || "",
+      }));
+      return { rows };
+    })();
+  }
+
+  console.log("events", event);
+
   return (
     <div>
       <div className="w-full py-6">
         <div className="w-[92%] mx-auto relative overflow-hidden rounded-2xl h-[60vh]">
-          <Image
-            className="object-cover"
-            src="/assets/banner-detail.png"
-            alt="Eventparrots Hero Banner"
-            fill
-            priority
-          />
+          {event && event?.medias[0]?.original && (
+            <Image
+              className="object-cover"
+              src={event?.medias[0].original}
+              alt={event?.name}
+              fill
+              priority
+            />
+          )}
         </div>
         <div className="mt-[84px] pb-[84px] w-full flex items-center">
           <div className="w-[90%] mx-auto flex justify-between">
             {/* LEFT */}
             <div className="w-[95%] md:w-[55%]">
               <p className="text-xl md:text-5xl font-semibold">
-                Study Abroad Fair in Lagos Mainland 2024
+                {/* {events?.name} */}
               </p>
               <div className="mt-9  ">
                 <p className="text-xl md:text-2xl font-semibold">
@@ -72,20 +97,24 @@ const EventDetails = ({ params }: { params: { slug: string } }) => {
                       <CiCalendar size={36} />
                     </div>
                     <p>
-                      Wednesday, December 20 2023 - Friday, December 22 2023
+                      {formatDate2(event?.start_date)} -{" "}
+                      {formatDate2(event?.end_date)}
                     </p>
                   </div>
                   <div className="flex items-center gap-6 my-4">
                     <div className="min-w-16 h-16 hover:bg-primaryPurple transition-all duration-300 ease-linear hover:text-white rounded-full grid place-content-center text-primaryPurple bg-lightPurple">
                       <CiAlarmOn size={36} />
                     </div>
-                    <p>3:00 PM - 9:30 PM WAT</p>
+                    <p>
+                      {formatTime(event?.start_date)} WAT -{" "}
+                      {formatTime(event?.end_date)} WAT
+                    </p>
                   </div>
                   <div className="flex items-center gap-6">
                     <div className="min-w-16 h-16 hover:bg-primaryPurple transition-all duration-300 ease-linear hover:text-white rounded-full grid place-content-center text-primaryPurple bg-lightPurple">
                       <CiLocationOn size={36} />
                     </div>
-                    <p>Car Park of All Souls Church, Lekki Phase 1</p>
+                    <p>{event?.locations[0]?.address || "Online"}</p>
                   </div>
                 </div>
               </div>
@@ -93,19 +122,21 @@ const EventDetails = ({ params }: { params: { slug: string } }) => {
                 <p className="text-xl md:text-2xl font-semibold ">
                   Description of the Event
                 </p>
-                <p className="mt-4 font-light w-full text-sm md:text-base md:w-[90%]">
-                  PORT HARCOURT'S BIGGEST FESTIVAL Offering exclusive <br />
-                  performance from over 15 Global Artists.This year&apos;s
-                  festival is expanding to a new Venue with more acts and
-                  performances.
-                </p>
+                <div className="mt-4 font-light w-full text-sm md:text-base md:w-[90%]">
+                  <div
+                    className="w-full"
+                    dangerouslySetInnerHTML={{
+                      __html: event?.description,
+                    }}
+                  ></div>
+                </div>
               </div>
               <div className="my-9">
                 <p className="text-xl md:text-2xl font-semibold">
                   Faqs of the Event
                 </p>
                 <div className="mt-4">
-                  <FaqComponent data={data} />
+                  <FaqComponent data={{ rows: event?.faqs }} />
                 </div>
               </div>
 
@@ -114,21 +145,16 @@ const EventDetails = ({ params }: { params: { slug: string } }) => {
                   Organizer of the Event
                 </p>
                 <div className=" bg-white rounded-lg w-full h-[300px] flex flex-col shadow-2xl items-center justify-center">
-                  <div className="relative w-[113px] h-[113px] rounded-full overflow-hidden">
-                    <img
-                      src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cHJvZmlsZSUyMHBpY3R1cmV8ZW58MHx8MHx8fDA%3D"
-                      alt="profile pic"
-                      className="object-cover"
-                      // width={47}
-                      // height={47}
-                      // style={{ borderRadius: "50%", objectFit: "cover" }}
-                    />
+                  <div className="relative w-[113px] bg-lightPurple h-[113px] grid place-content-center rounded-full overflow-hidden">
+                    <p className="text-4xl text-primaryPurple font-medium">
+                      {event?.organizer?.name.charAt(0).toUpperCase()}
+                    </p>
                   </div>
                   <div className="mt-4 text-center">
                     <p className="text-lg md:text-2xl mb-3">
-                      Israel Adegbulugbe
+                      {event?.organizer?.name}
                     </p>
-                    <p className="font-light">09019089009</p>
+                    <p className="font-light">{event?.organizer?.phone}</p>
                   </div>
                 </div>
               </div>
@@ -141,9 +167,12 @@ const EventDetails = ({ params }: { params: { slug: string } }) => {
               <p className="text-[24px] hidden md:block mb-6">
                 Checkout page of the Event
               </p>
-              <button className="text-white hidden md:grid hover:bg-opacity-60 rounded-lg transition-all duration-300 ease-linear bg-primaryPurple w-full h-12  place-content-center">
-                <p>Get a Ticket</p>
-              </button>
+
+              <Link href={`${params.slug}/checkout`}>
+                <button className="text-white hidden md:grid hover:bg-opacity-60 rounded-lg transition-all duration-300 ease-linear bg-primaryPurple w-full h-12  place-content-center">
+                  <p>Get a Ticket</p>
+                </button>
+              </Link>
             </div>
           </div>
         </div>

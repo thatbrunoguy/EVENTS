@@ -26,7 +26,7 @@ const Right = () => {
   );
 };
 
-const DashHeader = () => {
+const DashHeader = ({ stat }: any) => {
   const list: ListItem[] = [
     { title: "Diamond pass", total: 300 },
     { title: "Diamond pass", total: 300 },
@@ -47,10 +47,10 @@ const DashHeader = () => {
       leftIcon={<Right />}
       className="w-full max-h-[120px] overflow-y-clip border-t-[3px]  gap-16 border-[#FF8548] p-4 py-8 shadow-lg rounded bg-white"
     >
-      {list.map((item: ListItem, i) => (
+      {stat?.map((item: any, i: number) => (
         <div key={i} className="mx-10">
-          <h1 className="font-semibold text-4xl text-center">{item.total}</h1>
-          <p className="text-lightText">{item.title}</p>
+          <h1 className="font-semibold text-4xl text-center">{item.count}</h1>
+          <p className="text-lightText">{item.ticketName}</p>
         </div>
       ))}
     </ScrollingCarousel>

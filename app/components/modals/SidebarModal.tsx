@@ -14,6 +14,7 @@ import { IoMdClose, IoMdWallet } from "react-icons/io";
 import { TbCalendarTime } from "react-icons/tb";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { signOut, useSession } from "next-auth/react";
 
 const routes = [
   {
@@ -54,7 +55,7 @@ const routes = [
   {
     title: "Event Check ins",
     icon: <TbCalendarTime />,
-    path: "event/check-ins",
+    path: "events/check-ins",
   },
 ];
 
@@ -64,7 +65,14 @@ type Iprops = {
 
 const SidebarModal = ({ setIsSidebarOpen }: Iprops) => {
   const path = usePathname().split("/");
-  console.log("path", path);
+  const { data: session, status } = useSession();
+  const handleSignOutClick = async () => {
+    try {
+      await signOut({ callbackUrl: "/auth/login" });
+    } catch (error) {
+      console.error("Error during sign-out:", error);
+    }
+  };
   return (
     <>
       <div
@@ -92,7 +100,7 @@ const SidebarModal = ({ setIsSidebarOpen }: Iprops) => {
         <div className="px-6  flex-col gap-2 space-y-2 justify-center mt-12 ">
           {routes.map((item) => (
             <Link
-              className={`flex items-center space-x-3 text-base px-4 py-3 text-gray-500 rounded-2xl hover:bg-lightPurple hover:text-primaryPurple hover:font-semibold ${
+              className={`flex items-center space-x-3 text-sm px-4 py-3 text-gray-500 rounded-2xl hover:bg-lightPurple hover:text-primaryPurple hover:font-medium ${
                 (path.length < 3 && item.path === "") ||
                 (path.length > 2 &&
                   path[2] === "dashboard" &&
@@ -100,36 +108,38 @@ const SidebarModal = ({ setIsSidebarOpen }: Iprops) => {
                 (path.length > 2 &&
                   path[2] !== "dashboard" &&
                   path[2] === item.path.split("/")[0])
-                  ? "bg-lightPurple text-primaryPurple font-semibold"
+                  ? "bg-lightPurple text-primaryPurple font-medium"
                   : path.length > 3 &&
                     `${path[2]}/${path[3]}` === item.path &&
-                    "bg-lightPurple text-primaryPurple font-semibold"
+                    "bg-lightPurple text-primaryPurple font-medium"
               }`}
               key={item.title}
               href={`/dashboard/${item.path}`}
             >
-              <div className="text-2xl">{item.icon}</div>
+              <div className="text-xl">{item.icon}</div>
               <p>{item.title}</p>
             </Link>
           ))}
         </div>
 
-        <div className="flex space-x-3 py-6 pl-4 border-t absolute bottom-0 left-0 right-0">
-          <div className="relative w-[47px] h-[47px] rounded-full overflow-hidden">
-            <img
-              src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cHJvZmlsZSUyMHBpY3R1cmV8ZW58MHx8MHx8fDA%3D"
-              alt="profile pic"
-              className="object-cover"
-              // width={47}
-              // height={47}
-              // style={{ borderRadius: "50%", objectFit: "cover" }}
-            />
+        {session?.user && (
+          <div className="flex space-x-3 py-6 pl-4 border-t absolute bottom-0 left-0 right-0">
+            <div
+              onClick={handleSignOutClick}
+              className="relative w-[47px] h-[47px] grid place-content-center bg-lightPurple rounded-full overflow-hidden"
+            >
+              <p className="text-xl text-primaryPurple font-medium">
+                {/* @ts-ignore */}
+                {session?.user?.user?.first_name.charAt(0).toUpperCase()}
+              </p>
+            </div>
+            <div>
+              {/* @ts-ignore */}
+              <p>{`${session?.user?.user?.first_name} ${session?.user?.user?.last_name}`}</p>
+              <p className="text-xs mt-1 text-gray-500">Role: Business</p>
+            </div>
           </div>
-          <div>
-            <p>Christian Peters</p>
-            <p className="text-sm text-gray-500">Role: Marketer</p>
-          </div>
-        </div>
+        )}
       </div>
     </>
   );

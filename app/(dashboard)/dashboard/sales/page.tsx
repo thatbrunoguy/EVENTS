@@ -15,6 +15,11 @@ import { IoMailOpenSharp } from "react-icons/io5";
 import MobileFooter from "../../../components/footer/MobileFooter";
 import GlobalTable from "../../../components/table/GlobalTable";
 export default function Guestlist() {
+  const [selectedEvent, setSelectedEvent] = useState({
+    name: "",
+    ticketId: "",
+  });
+
   const [tickets, setTickets] = useState<any>([
     {
       name: "Aiamond Pass",
@@ -156,7 +161,7 @@ export default function Guestlist() {
   ];
 
   const ticketRows = tickets.map((ticket: any, index: number) => ({
-    id: index, // assuming you want to use the array index as ID
+    id: index,
     ...ticket,
   }));
 
@@ -214,7 +219,10 @@ export default function Guestlist() {
       <MobileFooter />
 
       <main className="h-screen overflow-y-scroll flex-1">
-        <Header />
+        <Header
+          selectedEvent={selectedEvent}
+          setSelectedEvent={setSelectedEvent}
+        />
         {!tickets.length ? (
           <div className="flex justify-center items-center w-full h-[80%]">
             <div className="w-[351px] flex flex-col items-center">
@@ -258,7 +266,7 @@ export default function Guestlist() {
 
             {/* -------- PAYMENT HISTORY --------- */}
 
-            <div className="w-[95%] mt-12 mx-auto">
+            <div className="w-[95%] mt-12 mb-24 md:mb-5 mx-auto">
               <div className="flex items-center justify-between mt-10 mb-8">
                 <h2 className="font-semibold text-2xl">Payment History</h2>
 
