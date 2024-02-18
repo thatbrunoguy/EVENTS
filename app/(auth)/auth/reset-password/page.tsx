@@ -112,7 +112,7 @@ const ResetPassword = () => {
               className="text-sm text-gray-800 mb-2 block"
               htmlFor="organizerName"
             >
-              Enter password <span className="text-red-500">*</span>
+              Enter new password <span className="text-red-500">*</span>
             </label>
 
             <div className="h-[56px] w-full flex items-center rounded-lg pr-4 bg-[#F8F8F8] focus-within:border-[2px]  focus-within:border-purple-600 ">
