@@ -1,10 +1,10 @@
 "use client";
 
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { authFunctions } from "@/app/utils/endpoints";
@@ -14,6 +14,7 @@ const SignUp = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
 
+  const [isGoogleAuth, setIsGoogleAuth] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isProgressed, setIsProgressed] = useState(false);
   const [userCredentials, setUserCredentials] = useState({
@@ -22,6 +23,24 @@ const SignUp = () => {
     last_name: "",
     password: "",
   });
+
+  const {
+    data: googleURL,
+    isError,
+    isLoading,
+    status,
+  } = useQuery({
+    queryKey: ["google-auth"],
+    queryFn: authFunctions.googleAuth,
+    enabled: isGoogleAuth,
+    staleTime: Infinity,
+  });
+
+  useEffect(() => {
+    if (googleURL && status === "success") {
+      router.push(googleURL);
+    }
+  }, [googleURL]);
 
   const createRegisterMutation = useMutation({
     mutationFn: authFunctions.register,
@@ -185,7 +204,10 @@ const SignUp = () => {
             <div className="basis-1/2 h-[.8px] bg-[#E7E4EB]" />
           </div>
 
-          <div className="border rounded-lg h-12 flex items-center justify-center space-x-3">
+          <div
+            // onClick={() => setIsGoogleAuth(true)}
+            className="border rounded-lg h-12 flex items-center justify-center space-x-3 cursor-pointer hover:border hover:border-gray-400"
+          >
             <div className="text-2xl">
               <FcGoogle />
             </div>

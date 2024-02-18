@@ -295,7 +295,7 @@ export default function Event() {
                                 backgroundColor: "white",
                                 border: "1px solid #E7E4EB",
                                 borderRadius: 8,
-                                width: 200,
+                                width: 230,
                                 height: 204,
                                 padding: 6,
                                 boxShadow:

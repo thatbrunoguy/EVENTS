@@ -8,6 +8,8 @@ import Image from "next/image";
 import { HiOutlinePlusSm } from "react-icons/hi";
 import CheckInModal from "./CheckInModal";
 import MobileFooter from "@/app/components/footer/MobileFooter";
+import { useMutation } from "@tanstack/react-query";
+import { eventsManagamentFunctions } from "@/app/utils/endpoints";
 
 const CheckIns = () => {
   const [options, setOptions] = useState<any>([
@@ -85,11 +87,21 @@ const CheckIns = () => {
     },
   ]);
 
+  const [customerId, setCustomerId] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState({
     name: "",
     ticketId: "",
   });
+
+  const checkInAttendee = useMutation({
+    mutationFn: eventsManagamentFunctions.checkInAttendee,
+    onError: async (error, variables, context) => {},
+    onSuccess: async (data, variables, context) => {
+      console.log("checkin-attendee", data);
+    },
+  });
+
   return (
     <div className="flex pb-20 md:pb-0">
       <Sidebar />
@@ -138,12 +150,20 @@ const CheckIns = () => {
                   Customer ID <span className="text-red-500">*</span>
                 </label>
                 <input
+                  value={customerId}
+                  onChange={(e) => setCustomerId(e.target.value)}
                   type="text"
                   className="h-[56px] text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
                 />
               </div>
               <button
-                onClick={() => setIsModalOpen(true)}
+                onClick={() => {
+                  setIsModalOpen(true);
+                  checkInAttendee.mutate({
+                    id: customerId,
+                    eventId: selectedEvent.ticketId,
+                  });
+                }}
                 className="w-full h-12 grid place-content-center bg-primaryPurple text-sm text-white rounded-md hover:bg-opacity-70 "
               >
                 <p>Add</p>

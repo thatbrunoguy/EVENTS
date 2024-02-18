@@ -437,7 +437,7 @@ const BasicInfo = () => {
       <div>
         <img
           src={imageUrl ? imageUrl : file.preview}
-          className="w-full h-full object-contain"
+          className="w-full h-[248px] object-cover"
           // Revoke data uri after image is loaded
           onLoad={() => {
             console.log("file-from-me", file);

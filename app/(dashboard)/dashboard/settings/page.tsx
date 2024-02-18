@@ -1,18 +1,21 @@
 "use client";
 
-import Image from "next/image";
 import Header from "../../../components/header/Header";
 import Sidebar from "../../../components/sidebar/Sidebar";
-import { HiOutlinePlusSm } from "react-icons/hi";
-import Link from "next/link";
-import TabsComponent, { TabsComponent2 } from "../../../components/tabs/Tabs";
+
+import { TabsComponent2 } from "../../../components/tabs/Tabs";
 import { useState } from "react";
-import FileUpload from "../../../components/fileUpload/FileUpload";
-import { RiDeleteBin6Fill } from "react-icons/ri";
-import ReactSelectOptions from "../../../components/select/ReactSelect";
+
 import OrganizationProfile from "./Profile";
 import TeamManagement from "./TeamManagement";
 import PlanManagement from "./PlanManagement";
+
+export type AccountInfo = {
+  name: string;
+  country: string;
+  website: string;
+  avatar: string;
+};
 
 const tablist_ = [
   {
@@ -35,6 +38,16 @@ export default function SettingsPage() {
     ticketId: "",
   });
 
+  const [accountInfo, setAccountInfo] = useState<AccountInfo>({
+    name: "",
+    country: "",
+    website: "",
+    avatar: "",
+  });
+
+  const [accountPhoto, setAccountPhoto] = useState<any>([]);
+  const [imageUrl, setImageUrl] = useState("");
+
   return (
     <section className="flex">
       <Sidebar />
@@ -54,7 +67,14 @@ export default function SettingsPage() {
 
           {tablist[0].isActive ? (
             <div>
-              <OrganizationProfile />
+              <OrganizationProfile
+                accountInfo={accountInfo}
+                setAccountInfo={setAccountInfo}
+                accountPhoto={accountPhoto}
+                setAccountPhoto={setAccountPhoto}
+                imageUrl={imageUrl}
+                setImageUrl={setImageUrl}
+              />
             </div>
           ) : tablist[1].isActive ? (
             <div>

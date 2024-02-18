@@ -340,7 +340,7 @@ export default function Dashboard() {
 
                         <div>
                           <h3 className="font-medium md:font-semibold text-2xl mb-2">
-                            ₦0.00
+                            ₦{salesAnalytics?.totalRevenue || 0}
                           </h3>
                           <p className="text-sm text-lightText">Remaining</p>
                         </div>

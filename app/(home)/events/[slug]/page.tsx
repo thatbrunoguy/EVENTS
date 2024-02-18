@@ -35,6 +35,12 @@ const EventDetails = ({ params }: { params: { slug: string } }) => {
     queryFn: () => guestFunctions.getEventsById(params.slug),
     select: (data) => {
       const faqs = data?.faqs || [];
+      const lowestPrice = Math.min(
+        ...data.tickets.map((ticket: any) => ticket.price)
+      );
+      const highestPrice = Math.max(
+        ...data.tickets.map((ticket: any) => ticket.price)
+      );
 
       const modifiedEvent = {
         ...data,
@@ -42,6 +48,8 @@ const EventDetails = ({ params }: { params: { slug: string } }) => {
           title: faq.question || "",
           content: faq.answer || "",
         })),
+        lowestTicketPrice: lowestPrice,
+        highestTicketPrice: highestPrice,
       };
 
       return modifiedEvent;
@@ -161,8 +169,23 @@ const EventDetails = ({ params }: { params: { slug: string } }) => {
             </div>
             {/* RIGHT */}
             <div className="w-[25%] hidden md:block ">
-              <div className="w-[80px] text-sm md:text-base ml-auto mb-12 grid place-content-center h-8 bg-[#FCEDF6] text-[#CB1C6F] rounded">
-                Free
+              <div className="min-w-[80px] max-w-[50%] text-sm md:text-base ml-auto mb-12 grid place-content-center h-8 bg-green-100  rounded">
+                {event?.lowestTicketPrice === event?.highestTicketPrice ? (
+                  <span>
+                    {" "}
+                    {`${
+                      event?.lowestTicketPrice === 0
+                        ? "Free"
+                        : "₦" + event?.lowestTicketPrice
+                    }`}
+                  </span>
+                ) : (
+                  <div className="flex items-center gap-3">
+                    <div>From</div>
+                    {"   "} ₦{event?.lowestTicketPrice} - ₦
+                    {event?.highestTicketPrice}
+                  </div>
+                )}
               </div>
               <p className="text-[24px] hidden md:block mb-6">
                 Checkout page of the Event
