@@ -43,21 +43,21 @@ const HomeHeader = () => {
           ))}
         </div>
 
-        <div className="hidden md:flex items-center gap-9 font-light">
+        <div className="flex items-center gap-9 font-light">
           <Link
-            className="hover:underline underline-offset-4 decoration-primaryPurple"
+            className="hover:underline hover:text-primaryPurple text-xs  md:text-base underline-offset-4 decoration-primaryPurple"
             href="/auth/login"
           >
             Login
           </Link>
-          <button className="h-[44px] w-[141px] transition-all duration-300 ease-linear hover:bg-opacity-60 bg-primaryPurple rounded-md text-white ">
+          <button className="h-[36px] w-[80px] text-xs md:text-base  md:h-[44px] md:w-[141px] transition-all duration-300 ease-linear hover:bg-opacity-60 bg-primaryPurple rounded-md text-white ">
             <Link href="/auth/sign-up">
               <p>Sign up</p>
             </Link>
           </button>
         </div>
 
-        <div className="block md:hidden text-2xl">
+        <div className="hidden text-2xl">
           <HiOutlineMenuAlt4 />
         </div>
       </div>
