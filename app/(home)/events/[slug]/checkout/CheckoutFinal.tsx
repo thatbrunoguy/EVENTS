@@ -35,7 +35,7 @@ const CheckoutFinal = ({
     onSuccess: async (data, variables, context) => {
       console.log("dddddd", data);
 
-      //   router.push(data);
+      router.push(data);
       //   router.push("/");
     },
   });
