@@ -26,7 +26,7 @@ const Right = () => {
   );
 };
 
-const DashHeader = () => {
+const DashHeader = ({ data }: any) => {
   const list: ListItem[] = [
     { title: "Tickets sold", total: 704 },
     { title: "Sales revenue", total: "₦1,377,900.00" },
@@ -42,12 +42,16 @@ const DashHeader = () => {
         <React.Fragment key={i}>
           <div className="md:mx-10">
             <h1 className="font-semibold text-2xl md:text-4xl text-center">
-              {item.total}
+              {i === 0
+                ? data?.totalTicket || 0
+                : i === 1
+                ? `₦${data?.totalRevenue || 0}`
+                : `₦${data?.totalRevenue || 0}`}
             </h1>
             <p className="text-lightText text-center">{item.title}</p>
           </div>
           {i === 2 && (
-            <button className="py-[10px] px-3 md:px-5 rounded-md text-sm text-white h-10 bg-primaryPurple grid place-content-center">
+            <button className="py-[10px] hover:bg-opacity-50 px-3 md:px-5 rounded-md text-sm text-white h-10 bg-primaryPurple grid place-content-center">
               Payout Now
             </button>
           )}

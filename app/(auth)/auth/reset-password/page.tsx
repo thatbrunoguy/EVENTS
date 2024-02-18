@@ -13,55 +13,40 @@ import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { storeData } from "@/app/utils/localstorage";
 import { EVENTSPARROT_USER } from "@/app/constants";
+import { authFunctions } from "@/app/utils/endpoints";
+import { useMutation } from "@tanstack/react-query";
 
-const Login = () => {
+const ResetPassword = () => {
   const router = useRouter();
-  const { data: session, status } = useSession();
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const [isProcessing, setIsProcessing] = useState(false);
-  useLayoutEffect(() => {
-    if (status === "authenticated") {
-      router.push("/dashboard");
-      storeData(EVENTSPARROT_USER, session.user);
-    }
-  }, [status]);
 
-  const [loginCredential, setLoginCredential] = useState<Login>({
+  const [loginCredential, setLoginCredential] = useState<{
+    email: string;
+    password: string;
+    code: string;
+  }>({
     email: "",
     password: "",
+    code: "",
+  });
+
+  const resetPassword = useMutation({
+    mutationFn: authFunctions.resetPassword,
+    onError: async (error, variables, context) => {},
+    onSuccess: async (data, variables, context) => {
+      console.log("reset-password", data);
+      router.push("/auth/login");
+    },
   });
 
   const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsProcessing(true);
-    const res = await signIn("credentials", {
-      ...loginCredential,
-      redirect: false,
-      // callbackUrl: "/",
-    });
-    if (res?.ok) {
-      setIsProcessing(false);
-    }
-    console.log("res", res);
-    if (res?.error) {
-      toast.error(res.error as string);
-      setIsProcessing(false);
-    }
+
+    resetPassword.mutate(loginCredential);
   };
-
-  // console.log("status", status);
-  // console.log("session", session);
-
-  // if (status === "authenticated") {
-  //   return <p>Signed in as {session.user.email}</p>
-  // }
-  if (status === "loading") {
-    return <PrimaryLoading />;
-  }
 
   return (
     <section className="w-screen h-screen flex items-center justify-between p-3 md:p-6">
-      {/* {status === "loading" && <PrimaryLoading />} */}
       <Toaster position="top-right" reverseOrder={false} />
 
       {/* LEFT */}
@@ -81,7 +66,30 @@ const Login = () => {
             </h3>
           </header>
 
+          <div className="my-5 text-sm text-red-500 text-center">
+            Enter code sent to your email
+          </div>
+
           <div>
+            <label className="text-sm text-gray-800" htmlFor="code">
+              Code <span className="text-red-500">*</span>
+            </label>
+            <input
+              value={loginCredential.code}
+              onChange={(e) =>
+                setLoginCredential((prev) => ({
+                  ...prev,
+                  code: e.target.value,
+                }))
+              }
+              id="code"
+              type="text"
+              required
+              className="h-[56px] text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
+            />
+          </div>
+
+          <div className="mt-5">
             <label className="text-sm text-gray-800" htmlFor="organizerName">
               Email <span className="text-red-500">*</span>
             </label>
@@ -128,37 +136,18 @@ const Login = () => {
                 {isPasswordVisible ? <FiEye /> : <FiEyeOff />}
               </div>
             </div>
-            <Link href="/auth/forgot-password">
-              <p className="text-xs text-red-600 mt-2 hover:underline underline-offset-4 cursor-pointer">
-                forgot password
-              </p>
-            </Link>
           </div>
 
-          {/* <Link href="/auth/otp"> */}
           <button
-            disabled={isProcessing}
+            disabled={resetPassword.isPending}
             type="submit"
             className={`${
-              isProcessing ? "bg-opacity-50 cursor-wait" : ""
+              resetPassword.isPending ? "bg-opacity-50 cursor-wait" : ""
             } bg-primaryPurple w-full h-14 hover:bg-opacity-70 rounded-md text-sm text-white`}
           >
             <p>Continue</p>
           </button>
           {/* </Link> */}
-
-          <div className="flex items-center space-x-4 my-5">
-            <div className="basis-1/2 h-[.8px] bg-[#E7E4EB]" />
-            <p className="text-sm text-[#706D73] ">or</p>
-            <div className="basis-1/2 h-[.8px] bg-[#E7E4EB]" />
-          </div>
-
-          <div className="border rounded-lg h-12 flex items-center justify-center space-x-3">
-            <div className="text-2xl">
-              <FcGoogle />
-            </div>
-            <p>Sign in with Google</p>
-          </div>
 
           <div className="mt-11 text-sm">
             <p>
@@ -190,4 +179,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default ResetPassword;

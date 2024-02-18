@@ -79,6 +79,82 @@ export const authFunctions = {
       throw error;
     }
   },
+  forgotPassword: async (email) => {
+    const TOKEN = getData(EVENTSPARROT_USER)?.token;
+    try {
+      const response = await axios.post(
+        `${BASE_URL}/password/send-reset-mail`,
+        email,
+        {
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            "X-APP-KEY": APP_KEY,
+            Authorization: `Bearer ${TOKEN}`,
+          },
+        }
+      );
+      console.log("response", response);
+      if (response.data && response.data.status === true) {
+        toast.success(response.data.message);
+        console.log("res", response?.data.message);
+        return response.data.data;
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error.response.data.message);
+      toast.error(error.response.data.message);
+      throw error;
+    }
+  },
+  resetPassword: async (email) => {
+    const TOKEN = getData(EVENTSPARROT_USER)?.token;
+    try {
+      const response = await axios.post(`${BASE_URL}/password/reset`, email, {
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+          "X-APP-KEY": APP_KEY,
+          Authorization: `Bearer ${TOKEN}`,
+        },
+      });
+      console.log("response", response);
+      if (response.data && response.data.status === true) {
+        toast.success(response.data.message);
+        console.log("res", response?.data.message);
+        return response.data.data;
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error.response.data.message);
+      toast.error(error.response.data.message);
+      throw error;
+    }
+  },
+  googleAuth: async () => {
+    const TOKEN = getData(EVENTSPARROT_USER)?.token;
+    try {
+      const response = await axios.get(`${BASE_URL}/auth/google`, {
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+          "X-APP-KEY": APP_KEY,
+          Authorization: `Bearer ${TOKEN}`,
+        },
+      });
+      console.log("response", response);
+      if (response?.data && response?.data?.status === true) {
+        toast.success(response.data.message);
+        console.log("res", response?.data.message);
+        return response?.data?.data?.redirect;
+      } else {
+        throw new Error(response?.data?.message);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error.response?.data?.message);
+      toast.error(error.response?.data?.message);
+      throw error;
+    }
+  },
   getUserAccount: async () => {
     const TOKEN = getData(EVENTSPARROT_USER)?.token;
     try {
@@ -90,6 +166,61 @@ export const authFunctions = {
         },
       });
       console.log("response", response);
+      if (response.data && response.data.status === true) {
+        toast.success(response.data.message);
+        console.log("res", response?.data.message);
+        return response.data.data;
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error.response.data.message);
+      toast.error(error.response.data.message);
+      throw error;
+    }
+  },
+  updateAccount: async (data) => {
+    const TOKEN = getData(EVENTSPARROT_USER)?.token;
+    const accountId = getData(EVENTSPARROT_USER)?.account?.id;
+    try {
+      const response = await axios.put(
+        `${BASE_URL}/account/${accountId}`,
+        data,
+        {
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            "X-APP-KEY": APP_KEY,
+            Authorization: `Bearer ${TOKEN}`,
+          },
+        }
+      );
+      console.log("response - account", response);
+      if (response.data && response.data.status === true) {
+        toast.success(response.data.message);
+        console.log("res", response?.data.message);
+        return response.data.data;
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error.response.data.message);
+      toast.error(error.response.data.message);
+      throw error;
+    }
+  },
+
+  getAccountInfo: async () => {
+    const TOKEN = getData(EVENTSPARROT_USER)?.token;
+    const accountId = getData(EVENTSPARROT_USER)?.account?.id;
+    try {
+      const response = await axios.get(`${BASE_URL}/account/${accountId}`, {
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+          "X-APP-KEY": APP_KEY,
+          Authorization: `Bearer ${TOKEN}`,
+        },
+      });
+      console.log("response - account", response);
       if (response.data && response.data.status === true) {
         toast.success(response.data.message);
         console.log("res", response?.data.message);
@@ -221,6 +352,69 @@ export const eventsManagamentFunctions = {
       throw error;
     }
   },
+  toggleEventStatus: async ({ status, eventId }) => {
+    const TOKEN = getData(EVENTSPARROT_USER)?.token;
+    const accountId = getData(EVENTSPARROT_USER)?.account?.id;
+
+    try {
+      const response = await axios.put(
+        `${BASE_URL}/account/${accountId}/event/${eventId} `,
+        { status: status === 1 ? 2 : 1 },
+        {
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            "X-APP-KEY": APP_KEY,
+            Authorization: `Bearer ${TOKEN}`,
+          },
+        }
+      );
+      console.log("response-set-inactive", response);
+      if (response.data && response.data.status === true) {
+        toast.success(
+          `Event has been set to ${status === 1 ? "Inactive" : "Active"}`
+        );
+        console.log("res", response?.data.message);
+        return response.data.data.events;
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error.response.data.message);
+      // toast.error(error.response.data.message);
+      throw error;
+    }
+  },
+
+  deleteEvent: async ({ eventId }) => {
+    const TOKEN = getData(EVENTSPARROT_USER)?.token;
+    const accountId = getData(EVENTSPARROT_USER)?.account?.id;
+
+    try {
+      const response = await axios.delete(
+        `${BASE_URL}/account/${accountId}/event/${eventId} `,
+        {
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            "X-APP-KEY": APP_KEY,
+            Authorization: `Bearer ${TOKEN}`,
+          },
+        }
+      );
+      console.log("response-delete-event", response);
+      if (response.data && response.data.status === true) {
+        toast.success("Event deleted successfully!!");
+        console.log("res", response?.data.message);
+        return response.data.data.events;
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error.response.data.message);
+      // toast.error(error.response.data.message);
+      throw error;
+    }
+  },
+
   getEventSales: async (eventId) => {
     const TOKEN = getData(EVENTSPARROT_USER)?.token;
     const accountId = getData(EVENTSPARROT_USER)?.account?.id;
@@ -244,6 +438,62 @@ export const eventsManagamentFunctions = {
     } catch (error) {
       console.error("Error fetching data:", error.response?.data?.message);
       // toast.error(error.response.data.message);
+      throw error;
+    }
+  },
+  getEventSalesAnalytics: async (eventId) => {
+    const TOKEN = getData(EVENTSPARROT_USER)?.token;
+    const accountId = getData(EVENTSPARROT_USER)?.account?.id;
+
+    try {
+      const response = await axios.get(`${BASE_URL}/event/${eventId}/sales`, {
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+          "X-APP-KEY": APP_KEY,
+          Authorization: `Bearer ${TOKEN}`,
+        },
+      });
+      console.log("response - orders", response);
+      if (response?.data && response?.data?.status === true) {
+        toast.success(response?.data?.message);
+        console.log("res", response?.data.message);
+        return response?.data?.data;
+      } else {
+        throw new Error(response?.data?.message);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error.response?.data?.message);
+      // toast.error(error.response.data.message);
+      throw error;
+    }
+  },
+  checkInAttendee: async ({ id, eventId }) => {
+    const TOKEN = getData(EVENTSPARROT_USER)?.token;
+    const accountId = getData(EVENTSPARROT_USER)?.account?.id;
+    console.log("userAccountId", accountId);
+    try {
+      const response = await axios.post(
+        `${BASE_URL}/event/${eventId}/check-in`,
+        id,
+        {
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            "X-APP-KEY": APP_KEY,
+            Authorization: `Bearer ${TOKEN}`,
+          },
+        }
+      );
+      console.log("response", response);
+      if (response.data && response.data.status === true) {
+        toast.success(response.data.message);
+        console.log("res", response?.data.message);
+        return response.data.data;
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error.response.data.message);
+      toast.error(error.response.data.message);
       throw error;
     }
   },

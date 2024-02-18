@@ -138,11 +138,22 @@ type FormattedEvent = {
     desc: string;
     img: string;
     address: string;
+    lowestPrice: number;
+    highestPrice: number;
   };
 };
 
 export const Card = ({ event }: FormattedEvent) => {
-  const { name, id, startDate, price, address, img } = event;
+  const {
+    name,
+    id,
+    startDate,
+    price,
+    address,
+    img,
+    lowestPrice,
+    highestPrice,
+  } = event;
   return (
     <div className="w-full md:w-[295px] border-[.6px] rounded-xl hover:shadow-xl  transition-all duration-300 bg-white pt-3">
       <div className="px-3">
@@ -179,7 +190,15 @@ export const Card = ({ event }: FormattedEvent) => {
       </div>
 
       <footer className="border-t-[.4px] flex items-center justify-between px-3 py-3 ">
-        <p className="text-lg font-medium">₦{price}</p>
+        <p className="text-sm text-gray-600 font-medium">
+          {highestPrice === lowestPrice ? (
+            <span> ₦{lowestPrice}</span>
+          ) : (
+            <>
+              <span>From</span> ₦{lowestPrice} - ₦{highestPrice}
+            </>
+          )}
+        </p>
         <Link href={`/events/${id}`}>
           <button className=" w-[131px] h-9 grid place-content-center border-[.5px]  rounded hover:bg-primaryPurple hover:text-white transition-all duration-300 border-primaryPurple text-primaryPurple">
             <p className="text-sm  ">Get Tickets</p>

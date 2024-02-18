@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import { FaMinus, FaPlus } from "react-icons/fa6";
 import CheckoutFinal from "./CheckoutFinal";
@@ -51,6 +51,16 @@ const Checkout = ({ params }: { params: { slug: string } }) => {
       email: "",
     },
   });
+
+  const totalCost = useMemo(() => {
+    return tickets.reduce((acc: number, ticket: any) => {
+      let ticketCost = ticket.quantity * ticket.price;
+      if (ticketCost > 2000) {
+        ticketCost = ticketCost * 1.05 + 100;
+      }
+      return acc + ticketCost;
+    }, 0);
+  }, [tickets]);
 
   const handleMovetoFinalCheckout = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -122,36 +132,6 @@ const Checkout = ({ params }: { params: { slug: string } }) => {
                 />
               </div>
             </div>
-
-            {/* <div className="my-6">
-              <label className="text-sm text-gray-800" htmlFor="organizerName">
-                Order Ticket <span className="text-red-500">*</span>
-              </label>
-              <div className="flex items-center w-full space-x-6 ">
-                <div className="bg-[#F8F8F8] flex items-center justify-between px-7 h-14 flex-1">
-                  <p>{tokens}</p>
-                  <p>Tickets</p>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <button
-                    onClick={() => setTokens((prev) => (prev += 1))}
-                    className="w-14 h-14 bg-lightPurple hover:bg-primaryPurple hover:text-white text-primaryPurple rounded-md grid place-content-center"
-                  >
-                    <p>
-                      <FaPlus />
-                    </p>
-                  </button>
-                  <button
-                    onClick={() => setTokens((prev) => (prev -= 1))}
-                    className="w-14 h-14 bg-lightPurple hover:bg-primaryPurple hover:text-white text-primaryPurple rounded-md grid place-content-center"
-                  >
-                    <p>
-                      <FaMinus />
-                    </p>
-                  </button>
-                </div>
-              </div>
-            </div> */}
 
             <div className="my-6">
               <label className="text-sm text-gray-800" htmlFor="organizerName">
@@ -289,23 +269,22 @@ const Checkout = ({ params }: { params: { slug: string } }) => {
                     <p className="">Orders</p>
                     <p className="">{item.quantity}</p>
                   </div>
-                  <div className="flex items-center justify-between text-lightText py-4 border-b">
+                  <div className="flex items-center justify-between text-lightText py-4 border-b border-primaryPurple">
                     <p className="">Ticket fee</p>
                     <p className="">
-                      {item.price >= 2000
-                        ? `₦${item.price * 0.05 + 100}`
-                        : item.price < 2000
-                        ? `₦${item.price * 0.05}`
-                        : item.price === 0
+                      {item.price === 0
                         ? "Free"
-                        : ""}
+                        : `₦${
+                            item.price * item.quantity * 0.05 +
+                            (item.price > 2000 ? 100 : 0)
+                          }`}
                     </p>
                   </div>
                 </div>
               ))}
               <div className="flex items-center justify-between  py-6 ">
                 <p className="">Total</p>
-                <p className="">₦0.00</p>
+                <p className="">₦{totalCost}</p>
               </div>
             </div>
           )}

@@ -6,62 +6,9 @@ import { useMutation } from "@tanstack/react-query";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { AiOutlineClose } from "react-icons/ai";
 import { FaMinus, FaPlus } from "react-icons/fa6";
-
-const dummyTickets = [
-  {
-    name: "Single  pass",
-    type: "Paid",
-    endDate: "Nov 9 2024",
-    quantity: 0,
-  },
-  {
-    name: "Single  pass",
-    type: "Paid",
-    endDate: "Nov 9 2024",
-    quantity: 0,
-  },
-  {
-    name: "Single  pass",
-    type: "Paid",
-    endDate: "Nov 9 2024",
-    quantity: 0,
-  },
-  {
-    name: "Single  pass",
-    type: "Paid",
-    endDate: "Nov 9 2024",
-    quantity: 0,
-  },
-];
-
-type Attendee = {
-  first_name: string;
-  last_name: string;
-  email: string;
-};
-
-type Ticket = {
-  created_at: string;
-  description: string;
-  id: string;
-  name: string;
-  price: number;
-  status: number;
-  type: number;
-};
-
-type TicketWithCheckoutInfo = Ticket & {
-  quantity: number;
-  attendee: Attendee;
-};
-
-type UserCheckoutInfo = {
-  ticket_id: string;
-  quantity: number;
-  attendee: Attendee;
-};
 
 const CheckoutFinal = ({
   ticketsData,
@@ -75,31 +22,23 @@ const CheckoutFinal = ({
   const bookEvent = useMutation({
     mutationFn: guestFunctions.bookEvent,
     onError: async (error, variables, context) => {
+      if (
+        error.message.includes(
+          "Cannot read properties of undefined (reading 'url')"
+        )
+      ) {
+        toast.success("You have successfully registered for the Free ticket");
+        router.push(`/events/${eventId}`);
+      }
       console.log(` ${error}`);
     },
     onSuccess: async (data, variables, context) => {
       console.log("dddddd", data);
 
-      router.push(data);
+      //   router.push(data);
       //   router.push("/");
     },
   });
-
-  const calculateTotalPrice = () => {
-    let totalPrice = 0;
-
-    tickets.forEach((ticket: any) => {
-      if (ticket.price >= 2000) {
-        totalPrice += ticket.price * 0.05 + 100;
-      } else if (ticket.price < 2000) {
-        totalPrice += ticket.price * 0.05;
-      } else if (ticket.price === 0) {
-        totalPrice += 0;
-      }
-    });
-
-    return totalPrice;
-  };
 
   useEffect(() => {
     const updatedTickets = ticketsData?.tickets.map((ticket: any) => ({
@@ -135,24 +74,30 @@ const CheckoutFinal = ({
     // console.log("Total", res);
 
     function filterOrderFields() {
-      return tickets.map((ticket: any) => {
-        const {
-          ticket_id,
-          quantity,
-          attendee: { first_name, last_name, email },
-        } = ticket;
-        return {
-          ticket_id,
-          quantity,
-          attendee: { first_name, last_name, email },
-        };
-      });
+      return tickets
+        .filter((ticket: any) => ticket.quantity > 0)
+        .map((ticket: any) => {
+          const {
+            ticket_id,
+            quantity,
+            attendee: { first_name, last_name, email },
+          } = ticket;
+          return {
+            ticket_id,
+            quantity,
+            attendee: { first_name, last_name, email },
+          };
+        });
     }
 
     const finalOrder = filterOrderFields();
     console.log("finalOrder", { orders: finalOrder });
     const myData = { orders: finalOrder };
-    bookEvent.mutate({ myData, eventId });
+    if (finalOrder.length) {
+      bookEvent.mutate({ myData, eventId });
+    } else {
+      toast.error("Kindly select a ticket at least to checkout");
+    }
   };
 
   return (

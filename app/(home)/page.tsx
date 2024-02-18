@@ -24,11 +24,32 @@ const Home = () => {
     queryFn: guestFunctions.getEvents,
     select: (data) => {
       const selectedEvents: EventData[] = data.map((event: EventData) => {
+        let lowestPrice = Number.MAX_VALUE;
+        let highestPrice = 0;
+
         const startDate = event.start_date
           ? `${formatDate2(event.start_date)} | ${formatTime(event.start_date)}`
           : null;
         const quantity = event.tickets[0]?.stock_qty ?? null;
-        const price = event.tickets[1]?.price ?? null;
+        const tickets = event.tickets.map((ticket: any) => {
+          lowestPrice = Math.min(lowestPrice, ticket.price);
+          highestPrice = Math.max(highestPrice, ticket.price);
+
+          return {
+            id: ticket.id,
+            name: ticket.name,
+            price: ticket.price,
+            stock_qty: ticket.stock_qty,
+            purchase_limit: ticket.purchase_limit,
+            quantity_limit_per_person: ticket.quantity_limit_per_person,
+            currency: ticket.currency,
+            type: ticket.type,
+            status: ticket.status,
+            created_at: ticket.created_at,
+            updated_at: ticket.updated_at,
+          };
+        });
+
         const desc = event.tickets[0]?.description ?? null;
         const img = event.medias[0]?.original ?? null;
         const address = event.locations[0]?.address ?? null;
@@ -38,7 +59,9 @@ const Home = () => {
           name: event.name,
           startDate,
           quantity,
-          price,
+          tickets,
+          lowestPrice,
+          highestPrice,
           desc,
           img,
           address,
