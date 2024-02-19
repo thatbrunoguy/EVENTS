@@ -7,6 +7,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Eventsparrot",
   description: "Start creating your events today",
+  metadataBase: new URL("https://eventsparrot.vercel.app"),
 };
 
 export default function RootLayout({
