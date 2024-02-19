@@ -184,21 +184,20 @@ const BasicInfo = () => {
       console.log(` ${error}`);
     },
     onSuccess: async (data, variables, context) => {
-      // Boom baby!
-      console.log("data", data);
+      // console.log("data", data);
       router.push("/dashboard/event");
     },
   });
 
   useEffect(() => {
-    console.log("data", data);
+    // console.log("data", data);
 
     if (data?.url && status === "success" && !imageUrl) {
       const imageUpploadFinalHandler = async () => {
         setIsLoadingBanner(true);
         try {
           const res = await uploadImage(data.url, eventPhoto[0]);
-          console.log("res-image", res);
+          // console.log("res-image", res);
           setIsImageUploadEnabled(false);
           toast.success("Event banner uploaded successfully!!!");
           setImageUrl(extractUrlBeforeQueryString(data.url as string));
@@ -239,7 +238,7 @@ const BasicInfo = () => {
     organizer: { name: "", phone: "" },
     name: "",
     description: "",
-    location_type: 0,
+    location_type: 1,
     start_date: "",
     end_date: "",
     timezone: "Africa/Lagos",
@@ -264,7 +263,7 @@ const BasicInfo = () => {
   });
 
   const computeDateTime = useCallback((date: any, time: any) => {
-    console.log("Date", date, "Time", time);
+    // console.log("Date", date, "Time", time);
     const dateString = date.toISOString().split("T")[0];
     const dateTimeString = `${dateString}T${time}`;
     return dateTimeString;
@@ -371,7 +370,7 @@ const BasicInfo = () => {
 
   const nextHandlerTwo = () => {
     setCreationStatus((prev) => ({ ...prev, details: false, ticket: true }));
-    console.log("EventInfo:", eventInfo);
+    // console.log("EventInfo:", eventInfo);
   };
 
   const nextHandlerThree = () => {
@@ -440,9 +439,9 @@ const BasicInfo = () => {
           className="w-full h-[248px] object-cover"
           // Revoke data uri after image is loaded
           onLoad={() => {
-            console.log("file-from-me", file);
-            console.log("status-from-me", status);
-            console.log("isError", isError);
+            // console.log("file-from-me", file);
+            // console.log("status-from-me", status);
+            // console.log("isError", isError);
 
             setIsImageUploadEnabled(true);
             URL.revokeObjectURL(file.preview);
@@ -457,7 +456,7 @@ const BasicInfo = () => {
     }
   }, [viewTicketIndex]);
   useEffect(() => {
-    console.log("eventPhoto", eventPhoto);
+    // console.log("eventPhoto", eventPhoto);
 
     if (eventPhoto.length > 0) {
       setEventInfo((prev) => ({ ...prev, medias: [thumbs.preview] }));
@@ -748,7 +747,14 @@ const BasicInfo = () => {
                             checked={item.required}
                             onChange={(e) => {
                               const { name, checked } = e.target;
-                              console.log("checked", checked);
+                              if (
+                                name === "firstName" ||
+                                name === "lastName" ||
+                                name === "email"
+                              ) {
+                                return; // Prevent unchecking these fields
+                              }
+
                               setEventInfo((prev) => ({
                                 ...prev,
                                 registration_requirements:
@@ -966,7 +972,7 @@ const BasicInfo = () => {
                           <p className="text-sm text-lightText">
                             Event category
                           </p>
-                          <p>{eventInfo.categories[0]}</p>
+                          <p>{selectedOption?.label}</p>
                         </div>
                       </div>
                     </div>
@@ -1423,12 +1429,21 @@ const BasicInfo = () => {
                     </button>
                   </div>
                 </div>
-                <MainFooter
-                  title="Publish"
-                  nextHandler={nextHandlerThree}
-                  backHandler={backHandler}
-                  isComplete={isComplete3 || !createEvent.isPending}
-                />
+                {createEvent?.isPending ? (
+                  <MainFooter
+                    title="Publish"
+                    nextHandler={nextHandlerThree}
+                    backHandler={backHandler}
+                    isComplete={false}
+                  />
+                ) : (
+                  <MainFooter
+                    title="Publish"
+                    nextHandler={nextHandlerThree}
+                    backHandler={backHandler}
+                    isComplete={isComplete3}
+                  />
+                )}
               </div>
             )}
           </>

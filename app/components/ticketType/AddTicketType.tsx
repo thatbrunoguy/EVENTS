@@ -96,17 +96,19 @@ const AddTicketType = ({
     if (type === 1) {
       // For type 1, only name, stock, and description are required
       return (
-        name.trim() !== "" && stock.trim() !== "" && description.trim() !== ""
+        name.trim() !== "" && stock.trim() !== ""
+        // && description.trim() !== ""
       );
     } else if (type === 2) {
       // For type 2, all fields are required
       return (
         name.trim() !== "" &&
         stock.trim() !== "" &&
-        stock_qty !== 0 &&
+        // stock_qty !== 0 &&
         purchase_limit !== 0 &&
-        price !== 0 &&
-        description.trim() !== ""
+        price !== 0
+        // &&
+        // description.trim() !== ""
       );
     } else {
       // Invalid type
@@ -221,7 +223,8 @@ const AddTicketType = ({
                 className="text-sm text-gray-800"
                 htmlFor="ticketStockCount"
               >
-                How many ticket stock? <span className="text-red-500">*</span>
+                How many ticket stock?{" "}
+                <span className="text-red-500">{/* * */}</span>
               </label>
               <input
                 value={ticketInfo.stock_qty}
@@ -239,24 +242,28 @@ const AddTicketType = ({
               />
             </div>
             {ticketInfo.type === 2 && (
-              <div className="basis-1/2">
+              <div className="basis-1/2 relative">
                 <label className="text-sm text-gray-800" htmlFor="ticketPrice">
                   Ticket price <span className="text-red-500">*</span>
                 </label>
-                <input
-                  value={ticketInfo.price}
-                  onChange={(e) => {
-                    if (/^\d*$/.test(e.target.value)) {
-                      setTicketInfo((prev) => ({
-                        ...prev,
-                        price: Number(e.target.value),
-                      }));
-                    }
-                  }}
-                  id="ticketPrice"
-                  type="tel"
-                  className="h-12 text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
-                />
+
+                <div className="w-full pl-4 h-12 flex items-center gap-1 bg-[#F8F8F8] rounded-lg text-gray-600  mt-2 focus-within:ring-2 ring-purple-600">
+                  <p className="">₦</p>
+                  <input
+                    value={ticketInfo.price}
+                    onChange={(e) => {
+                      if (/^\d*$/.test(e.target.value)) {
+                        setTicketInfo((prev) => ({
+                          ...prev,
+                          price: Number(e.target.value),
+                        }));
+                      }
+                    }}
+                    id="ticketPrice"
+                    type="tel"
+                    className="h-full bg-transparent text-sm w-full  block  px-2 outline-none border-none "
+                  />
+                </div>
               </div>
             )}
           </div>
@@ -295,7 +302,7 @@ const AddTicketType = ({
               className="text-sm text-gray-800"
               htmlFor="ticketDescription"
             >
-              Ticket description <span className="text-red-500">*</span>
+              Ticket description <span className="text-red-500">{/* * */}</span>
             </label>
             <textarea
               value={ticketInfo.description}

@@ -72,7 +72,7 @@ const EventDetails = ({ params }: { params: { slug: string } }) => {
     })();
   }
 
-  console.log("events", event);
+  // console.log("events", event);
 
   return (
     <div>
@@ -162,7 +162,8 @@ const EventDetails = ({ params }: { params: { slug: string } }) => {
                     <p className="text-lg md:text-2xl mb-3">
                       {event?.organizer?.name}
                     </p>
-                    <p className="font-light">{event?.organizer?.phone}</p>
+                    {/* <p className="font-light">{event?.organizer?.phone}</p>
+                     */}
                   </div>
                 </div>
               </div>
@@ -182,8 +183,7 @@ const EventDetails = ({ params }: { params: { slug: string } }) => {
                 ) : (
                   <div className="flex items-center gap-3">
                     <div>From</div>
-                    {"   "} ₦{event?.lowestTicketPrice} - ₦
-                    {event?.highestTicketPrice}
+                    {"   "} ₦{event?.lowestTicketPrice}
                   </div>
                 )}
               </div>
