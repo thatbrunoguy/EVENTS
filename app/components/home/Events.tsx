@@ -155,39 +155,44 @@ export const Card = ({ event }: FormattedEvent) => {
     highestPrice,
   } = event;
   return (
-    <div className="w-full md:w-[295px] border-[.6px] rounded-xl hover:shadow-xl  transition-all duration-300 bg-white pt-3">
-      <div className="px-3">
-        <div className="h-[181px] w-full rounded-xl relative overflow-hidden">
-          {img && (
-            <Image
-              className="object-cover"
-              src={`${img}`}
-              alt="event thumbnail"
-              fill
-              priority
-            />
-          )}
-        </div>
-
-        <div className="mt-4 mb-3">
-          <p className="font-semibold text-xl">{name}</p>
-
-          <div className=" flex items-center gap-3 my-5  font-light">
-            <div className="text-base">
-              <LuCalendarDays />
-            </div>
-
-            <p>{startDate}</p>
+    <div className="w-full md:w-[295px] cursor-pointer border-[.6px] rounded-xl hover:shadow-xl  transition-all duration-300 bg-white pt-3">
+      <Link href={`/events/${id}`} className=" w-auto h-auto block">
+        <div className="px-3">
+          <div className="h-[181px] w-full rounded-xl relative overflow-hidden">
+            {img && (
+              <Image
+                className="object-cover"
+                src={`${img}`}
+                alt="event thumbnail"
+                fill
+                priority
+              />
+            )}
           </div>
-          <div className=" flex items-center gap-3 my-5 font-light">
-            <div className="text-base">
-              <MdOutlineLocationOn />
-            </div>
 
-            <p>{address}</p>
+          <div className="mt-4 mb-3">
+            <p className="font-semibold text-xl">{name}</p>
+
+            <div className=" flex items-center gap-3 my-5  font-light">
+              <div className="text-base">
+                <LuCalendarDays />
+              </div>
+
+              <p>{startDate}</p>
+            </div>
+            <div className=" flex items-center gap-3 my-5 font-light">
+              <div className="text-base">
+                <MdOutlineLocationOn />
+              </div>
+
+              <p className="hover:underline underline-offset-2 decoration-gray-400">
+                {" "}
+                {address}
+              </p>
+            </div>
           </div>
         </div>
-      </div>
+      </Link>
 
       <footer className="border-t-[.4px] flex items-center justify-between px-3 py-3 ">
         <p className="text-sm text-gray-600 font-medium">
