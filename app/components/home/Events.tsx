@@ -155,7 +155,7 @@ export const Card = ({ event }: FormattedEvent) => {
     highestPrice,
   } = event;
   return (
-    <div className="w-full md:w-[295px] cursor-pointer border-[.6px] rounded-xl hover:shadow-xl  transition-all duration-300 bg-white pt-3">
+    <div className="w-[95%] mx-auto md:mx-0 md:w-[295px] cursor-pointer border-[.6px] rounded-xl hover:shadow-xl  transition-all duration-300 bg-white pt-3">
       <Link href={`/events/${id}`} className=" w-auto h-auto block">
         <div className="px-3">
           <div className="h-[181px] w-full rounded-xl relative overflow-hidden">

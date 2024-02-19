@@ -88,13 +88,15 @@ const SidebarModal = ({ setIsSidebarOpen }: Iprops) => {
           <IoMdClose />
         </div>
         <div className="pl-6">
-          <Image
-            src="/assets/eventparrot-logo.svg"
-            alt="Eventparrot logo"
-            width={152}
-            height={32}
-            priority
-          />
+          <Link href="/">
+            <Image
+              src="/assets/eventparrot-logo.svg"
+              alt="Eventparrot logo"
+              width={152}
+              height={32}
+              priority
+            />
+          </Link>
         </div>
 
         <div className="px-6  flex-col gap-2 space-y-2 justify-center mt-12 ">

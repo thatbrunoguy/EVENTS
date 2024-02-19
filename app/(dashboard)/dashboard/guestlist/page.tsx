@@ -36,7 +36,7 @@ export default function Guestlist() {
     useState<boolean>(false);
   const [selectedEvent, setSelectedEvent] = useState({
     name: "",
-    ticketId: "",
+    eventId: "",
     location: "",
     date: "",
     img: "",
@@ -51,10 +51,10 @@ export default function Guestlist() {
     isLoading,
     status,
   } = useQuery({
-    queryKey: ["events-guestlist-order"],
+    queryKey: ["events-guestlist-order", selectedEvent.eventId],
     queryFn: () =>
-      eventsManagamentFunctions.getEventSales(selectedEvent?.ticketId),
-    enabled: selectedEvent.ticketId ? true : false,
+      eventsManagamentFunctions.getEventSales(selectedEvent?.eventId),
+    enabled: selectedEvent.eventId ? true : false,
     select: (data): OrderData[] => {
       return data.map((item: any) => {
         const { user, ticket, order_number, created_at, quantity } = item;

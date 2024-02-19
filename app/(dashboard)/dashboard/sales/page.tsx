@@ -41,7 +41,7 @@ export type SalesAnalyticsData = {
 export default function Guestlist() {
   const [selectedEvent, setSelectedEvent] = useState({
     name: "",
-    ticketId: "",
+    eventId: "",
   });
 
   const [tickets, setTickets] = useState<any>([
@@ -208,10 +208,10 @@ export default function Guestlist() {
     isLoading,
     status,
   } = useQuery({
-    queryKey: ["events-sales-analytics"],
+    queryKey: ["events-sales-analytics", selectedEvent.eventId],
     queryFn: () =>
-      eventsManagamentFunctions.getEventSalesAnalytics(selectedEvent?.ticketId),
-    enabled: selectedEvent.ticketId ? true : false,
+      eventsManagamentFunctions.getEventSalesAnalytics(selectedEvent?.eventId),
+    enabled: selectedEvent.eventId ? true : false,
     select: (data): SalesAnalyticsData => {
       let type1Count = 0;
       let type2Count = 0;

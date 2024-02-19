@@ -17,7 +17,7 @@ import MobileFooter from "../../../components/footer/MobileFooter";
 export default function Guestlist() {
   const [selectedEvent, setSelectedEvent] = useState({
     name: "",
-    ticketId: "",
+    eventId: "",
   });
 
   const paymentHistory: any = [

@@ -14,14 +14,14 @@ import { IoChevronDown } from "react-icons/io5";
 type Iprops = {
   selectedEvent: {
     name: string;
-    ticketId: string;
+    eventId: string;
   };
 
   setSelectedEvent:
     | React.Dispatch<
         React.SetStateAction<{
           name: string;
-          ticketId: string;
+          eventId: string;
           img?: string;
           location?: string;
           date?: string;
@@ -60,7 +60,7 @@ const Header = ({ selectedEvent, setSelectedEvent }: Iprops) => {
         quantity: event.tickets[0].stock_qty,
         price: event.tickets[0].price,
         desc: event.tickets[0].description,
-        img: event.medias[0].thumb,
+        img: event.medias[0].original,
         address: event.locations[0].address,
       }));
 
@@ -72,7 +72,7 @@ const Header = ({ selectedEvent, setSelectedEvent }: Iprops) => {
     if (events && events.length && selectedEvent?.name === "") {
       setSelectedEvent({
         name: events[0].name,
-        ticketId: events[0].id,
+        eventId: events[0].id,
         img: events[0].img,
         address: events[0].address,
         startDate: events[0].startDate,
@@ -80,7 +80,7 @@ const Header = ({ selectedEvent, setSelectedEvent }: Iprops) => {
       });
     }
   }, [events]);
-  console.log("events", events);
+  // console.log("events", events);
 
   return (
     <div className="w-full flex justify-center md:justify-end md:pr-7 border-b ">
@@ -107,7 +107,14 @@ const Header = ({ selectedEvent, setSelectedEvent }: Iprops) => {
         >
           {events?.map((item: any, index) => (
             <MenuItem
-              onClick={() => setSelectedEvent(item)}
+              onClick={() =>
+                setSelectedEvent({
+                  name: item.name,
+                  eventId: item.id,
+                  img: item.img,
+                  address: item.address,
+                })
+              }
               className="hover:bg-lightPurple"
               key={index}
             >

@@ -152,7 +152,7 @@ const EventDetails = ({ params }: { params: { slug: string } }) => {
                 <p className="text-lg md:text-2xl text-center md:text-left font-medium md:font-semibold mb-8">
                   Organizer of the Event
                 </p>
-                <div className=" bg-white rounded-lg w-full h-[300px] flex flex-col shadow-2xl items-center justify-center">
+                <div className=" bg-white rounded-lg w-[90%] mx-auto md:mx-0 md:w-full h-[300px] flex flex-col shadow-2xl items-center justify-center">
                   <div className="relative w-[113px] bg-lightPurple h-[113px] grid place-content-center rounded-full overflow-hidden">
                     <p className="text-4xl text-primaryPurple font-medium">
                       {event?.organizer?.name.charAt(0).toUpperCase()}

@@ -32,7 +32,7 @@ export default function Campaigns() {
   const [tablist, setTablist] = useState([...tablist_]);
   const [selectedEvent, setSelectedEvent] = useState({
     name: "",
-    ticketId: "",
+    eventId: "",
   });
   return (
     <section className="flex pb-20 md:pb-0">

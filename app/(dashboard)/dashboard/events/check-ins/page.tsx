@@ -91,7 +91,7 @@ const CheckIns = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState({
     name: "",
-    ticketId: "",
+    eventId: "",
   });
 
   const checkInAttendee = useMutation({
@@ -161,7 +161,7 @@ const CheckIns = () => {
                   setIsModalOpen(true);
                   checkInAttendee.mutate({
                     id: customerId,
-                    eventId: selectedEvent.ticketId,
+                    eventId: selectedEvent.eventId,
                   });
                 }}
                 className="w-full h-12 grid place-content-center bg-primaryPurple text-sm text-white rounded-md hover:bg-opacity-70 "

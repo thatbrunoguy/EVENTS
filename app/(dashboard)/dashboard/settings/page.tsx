@@ -35,7 +35,7 @@ export default function SettingsPage() {
   const [tablist, setTablist] = useState([...tablist_]);
   const [selectedEvent, setSelectedEvent] = useState({
     name: "",
-    ticketId: "",
+    eventId: "",
   });
 
   const [accountInfo, setAccountInfo] = useState<AccountInfo>({
