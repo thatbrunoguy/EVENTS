@@ -77,7 +77,7 @@ const EventDetails = ({ params }: { params: { slug: string } }) => {
   return (
     <div>
       <div className="w-full py-6">
-        <div className="w-[92%] mx-auto relative overflow-hidden rounded-2xl h-[60vh]">
+        <div className="w-[92%] mx-auto relative overflow-hidden rounded-2xl h-[36vh] md:h-[60vh]">
           {event && event?.medias[0]?.original && (
             <Image
               className="object-cover"
@@ -88,15 +88,15 @@ const EventDetails = ({ params }: { params: { slug: string } }) => {
             />
           )}
         </div>
-        <div className="mt-[84px] pb-[84px] w-full flex items-center">
-          <div className="w-[90%] mx-auto flex justify-between">
+        <div className="md:mt-[84px] pb-[84px] w-full flex items-center">
+          <div className=" w-[94%] md:w-[90%] mx-auto flex justify-between">
             {/* LEFT */}
-            <div className="w-[95%] md:w-[55%]">
+            <div className="w-full mx-auto md:mx-0 md:w-[55%]">
               <p className="text-xl md:text-5xl font-semibold">
                 {/* {events?.name} */}
               </p>
               <div className="mt-9  ">
-                <p className="text-xl md:text-2xl font-semibold">
+                <p className="text-lg md:text-2xl font-medium md:font-semibold">
                   Details of the event
                 </p>
                 <div className="mt-5 mb-9 font-light">
@@ -126,8 +126,8 @@ const EventDetails = ({ params }: { params: { slug: string } }) => {
                   </div>
                 </div>
               </div>
-              <div>
-                <p className="text-xl md:text-2xl font-semibold ">
+              <div className="">
+                <p className="text-lg md:text-2xl font-medium md:font-semibold ">
                   Description of the Event
                 </p>
                 <div className="mt-4 font-light w-full text-sm md:text-base md:w-[90%]">
@@ -140,7 +140,7 @@ const EventDetails = ({ params }: { params: { slug: string } }) => {
                 </div>
               </div>
               <div className="my-9">
-                <p className="text-xl md:text-2xl font-semibold">
+                <p className="text-lg md:text-2xl font-medium md:font-semibold">
                   Faqs of the Event
                 </p>
                 <div className="mt-4">
@@ -148,8 +148,8 @@ const EventDetails = ({ params }: { params: { slug: string } }) => {
                 </div>
               </div>
 
-              <div>
-                <p className="text-xl md:text-2xl font-semibold mb-8">
+              <div className="">
+                <p className="text-lg md:text-2xl text-center md:text-left font-medium md:font-semibold mb-8">
                   Organizer of the Event
                 </p>
                 <div className=" bg-white rounded-lg w-full h-[300px] flex flex-col shadow-2xl items-center justify-center">
@@ -170,25 +170,21 @@ const EventDetails = ({ params }: { params: { slug: string } }) => {
             </div>
             {/* RIGHT */}
             <div className="w-[25%] hidden md:block ">
-              <div className="min-w-[80px] max-w-[50%] text-sm md:text-base ml-auto mb-12 grid place-content-center h-8 bg-green-100  rounded">
+              <p className="text-sm md:text-lg hidden md:block mb-6">
                 {event?.lowestTicketPrice === event?.highestTicketPrice ? (
                   <span>
-                    {" "}
                     {`${
                       event?.lowestTicketPrice === 0
                         ? "Free"
-                        : "₦" + event?.lowestTicketPrice
+                        : `₦${event?.lowestTicketPrice || 0}`
                     }`}
                   </span>
                 ) : (
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 ">
                     <div>From</div>
-                    {"   "} ₦{event?.lowestTicketPrice}
+                    {"   "} ₦{event?.lowestTicketPrice || 0}
                   </div>
                 )}
-              </div>
-              <p className="text-[24px] hidden md:block mb-6">
-                Checkout page of the Event
               </p>
 
               <Link href={`${params.slug}/checkout`}>

@@ -171,21 +171,23 @@ export const Card = ({ event }: FormattedEvent) => {
           </div>
 
           <div className="mt-4 mb-3">
-            <p className="font-semibold text-xl">{name}</p>
+            <p className="font-medium md:font-semibold text-lg md:text-xl">
+              {name}
+            </p>
 
             <div className=" flex items-center gap-3 my-5  font-light">
               <div className="text-base">
                 <LuCalendarDays />
               </div>
 
-              <p>{startDate}</p>
+              <p className="text-sm md:text-base">{startDate}</p>
             </div>
             <div className=" flex items-center gap-3 my-5 font-light">
               <div className="text-base">
                 <MdOutlineLocationOn />
               </div>
 
-              <p className="hover:underline underline-offset-2 decoration-gray-400">
+              <p className="hover:underline text-sm md:text-base underline-offset-2 decoration-gray-400">
                 {" "}
                 {address}
               </p>
