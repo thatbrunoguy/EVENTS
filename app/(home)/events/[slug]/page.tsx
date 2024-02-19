@@ -101,28 +101,30 @@ const EventDetails = ({ params }: { params: { slug: string } }) => {
                 </p>
                 <div className="mt-5 mb-9 font-light">
                   <div className="flex items-center gap-6">
-                    <div className="min-w-16 h-16 hover:bg-primaryPurple transition-all duration-300 ease-linear hover:text-white rounded-full grid place-content-center text-primaryPurple bg-lightPurple">
-                      <CiCalendar size={36} />
+                    <div className="min-w-12 h-12 text-lg md:text-4xl md:min-w-16 md:h-16 hover:bg-primaryPurple transition-all duration-300 ease-linear hover:text-white rounded-full grid place-content-center text-primaryPurple bg-lightPurple">
+                      <CiCalendar />
                     </div>
-                    <p>
+                    <p className="text-sm">
                       {formatDate2(event?.start_date)} -{" "}
                       {formatDate2(event?.end_date)}
                     </p>
                   </div>
                   <div className="flex items-center gap-6 my-4">
-                    <div className="min-w-16 h-16 hover:bg-primaryPurple transition-all duration-300 ease-linear hover:text-white rounded-full grid place-content-center text-primaryPurple bg-lightPurple">
-                      <CiAlarmOn size={36} />
+                    <div className="min-w-12 h-12 text-lg md:text-4xl md:min-w-16 md:h-16 hover:bg-primaryPurple transition-all duration-300 ease-linear hover:text-white rounded-full grid place-content-center text-primaryPurple bg-lightPurple">
+                      <CiAlarmOn />
                     </div>
-                    <p>
+                    <p className="text-sm">
                       {formatTime(event?.start_date)} WAT -{" "}
                       {formatTime(event?.end_date)} WAT
                     </p>
                   </div>
                   <div className="flex items-center gap-6">
-                    <div className="min-w-16 h-16 hover:bg-primaryPurple transition-all duration-300 ease-linear hover:text-white rounded-full grid place-content-center text-primaryPurple bg-lightPurple">
-                      <CiLocationOn size={36} />
+                    <div className="min-w-12 h-12 text-lg md:text-4xl md:min-w-16 md:h-16 hover:bg-primaryPurple transition-all duration-300 ease-linear hover:text-white rounded-full grid place-content-center text-primaryPurple bg-lightPurple">
+                      <CiLocationOn />
                     </div>
-                    <p>{event?.locations[0]?.address || "Online"}</p>
+                    <p className="text-sm">
+                      {event?.locations[0]?.address || "Online"}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -190,6 +192,13 @@ const EventDetails = ({ params }: { params: { slug: string } }) => {
               <Link href={`${params.slug}/checkout`}>
                 <button className="text-white hidden md:grid hover:bg-opacity-60 rounded-lg transition-all duration-300 ease-linear bg-primaryPurple w-full h-12  place-content-center">
                   <p>Get a Ticket</p>
+                </button>
+              </Link>
+            </div>
+            <div className=" md:hidden   h-24 fixed left-0 right-0 bg-white border-t flex items-center justify-center bottom-0">
+              <Link href={`${params.slug}/checkout`}>
+                <button className="h-10 w-[186px] rounded-md bg-primaryPurple hover:bg-opacity-50 text-sm text-white  grid place-content-center">
+                  <p>Get a ticket</p>
                 </button>
               </Link>
             </div>
