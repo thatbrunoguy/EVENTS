@@ -155,8 +155,14 @@ export default function Event() {
           event.tickets[0]?.stock_qty != null
             ? event.tickets[0].stock_qty
             : null;
-        const price =
-          event.tickets[0]?.price != null ? event.tickets[0].price : null;
+        // const price =
+        //   event.tickets[0]?.price != null ? event.tickets[0].price : null;
+        const lowestPrice = Math.min(
+          ...event.tickets.map((ticket: any) => ticket.price)
+        );
+        const highestPrice = Math.max(
+          ...event.tickets.map((ticket: any) => ticket.price)
+        );
         const desc = event.tickets[0]?.description || null;
         const img = event.medias[0]?.original || null;
         const address = event.locations[0]?.address || "Online";
@@ -167,11 +173,13 @@ export default function Event() {
           name: event.name || null,
           startDate,
           quantity,
-          price,
+          // price,
           desc,
           img,
           address,
           status,
+          lowestPrice,
+          highestPrice,
         };
       });
 
@@ -284,7 +292,9 @@ export default function Event() {
                           </div>
                           <div className="">
                             <p className="relative md:left-5">
-                              {item.price || "Free"}
+                              {item.highestPrice === item.lowestPrice
+                                ? `₦${item.lowestPrice}`
+                                : "Multiple"}
                             </p>
                           </div>
 

@@ -96,7 +96,7 @@ const Home = () => {
         <HomeCategories />
       </div>
 
-      <div className="md:mt-[84px]  md:pb-[84px] w-full bg-white">
+      <div className="md:mt-[84px] mb-16 md:mb-0 md:pb-[84px] w-full bg-white">
         <HomeEvents events={events} />
       </div>
       {/* <div className=" w-full pb-[84px] bg-[#FBFAFC]">

@@ -192,10 +192,10 @@ export const Card = ({ event }: FormattedEvent) => {
       <footer className="border-t-[.4px] flex items-center justify-between px-3 py-3 ">
         <p className="text-sm text-gray-600 font-medium">
           {highestPrice === lowestPrice ? (
-            <span> ₦{lowestPrice}</span>
+            <span>From ₦{lowestPrice}</span>
           ) : (
             <>
-              <span>From</span> ₦{lowestPrice} - ₦{highestPrice}
+              <span>From</span> ₦{lowestPrice}
             </>
           )}
         </p>

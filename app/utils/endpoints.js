@@ -472,8 +472,8 @@ export const eventsManagamentFunctions = {
     const accountId = getData(EVENTSPARROT_USER)?.account?.id;
     console.log("userAccountId", accountId);
     try {
-      const response = await axios.post(
-        `${BASE_URL}/event/${eventId}/check-in`,
+      const response = await axios.get(
+        `${BASE_URL}/event/${eventId}/check-in?${accountId}`,
         id,
         {
           headers: {
