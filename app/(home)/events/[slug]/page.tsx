@@ -104,7 +104,7 @@ const EventDetails = ({ params }: { params: { slug: string } }) => {
                     <div className="min-w-12 h-12 text-lg md:text-4xl md:min-w-16 md:h-16 hover:bg-primaryPurple transition-all duration-300 ease-linear hover:text-white rounded-full grid place-content-center text-primaryPurple bg-lightPurple">
                       <CiCalendar />
                     </div>
-                    <p className="text-sm">
+                    <p className="text-sm md:text-base">
                       {formatDate2(event?.start_date)} -{" "}
                       {formatDate2(event?.end_date)}
                     </p>
@@ -113,7 +113,7 @@ const EventDetails = ({ params }: { params: { slug: string } }) => {
                     <div className="min-w-12 h-12 text-lg md:text-4xl md:min-w-16 md:h-16 hover:bg-primaryPurple transition-all duration-300 ease-linear hover:text-white rounded-full grid place-content-center text-primaryPurple bg-lightPurple">
                       <CiAlarmOn />
                     </div>
-                    <p className="text-sm">
+                    <p className="text-sm md:text-base">
                       {formatTime(event?.start_date)} WAT -{" "}
                       {formatTime(event?.end_date)} WAT
                     </p>
@@ -122,7 +122,7 @@ const EventDetails = ({ params }: { params: { slug: string } }) => {
                     <div className="min-w-12 h-12 text-lg md:text-4xl md:min-w-16 md:h-16 hover:bg-primaryPurple transition-all duration-300 ease-linear hover:text-white rounded-full grid place-content-center text-primaryPurple bg-lightPurple">
                       <CiLocationOn />
                     </div>
-                    <p className="text-sm">
+                    <p className="text-sm md:text-base">
                       {event?.locations[0]?.address || "Online"}
                     </p>
                   </div>
@@ -172,7 +172,7 @@ const EventDetails = ({ params }: { params: { slug: string } }) => {
             </div>
             {/* RIGHT */}
             <div className="w-[25%] hidden md:block ">
-              <p className="text-sm md:text-lg hidden md:block mb-6">
+              <div className="text-sm md:text-lg hidden md:block mb-6">
                 {event?.lowestTicketPrice === event?.highestTicketPrice ? (
                   <span>
                     {`${
@@ -187,7 +187,7 @@ const EventDetails = ({ params }: { params: { slug: string } }) => {
                     {"   "} ₦{event?.lowestTicketPrice || 0}
                   </div>
                 )}
-              </p>
+              </div>
 
               <Link href={`${params.slug}/checkout`}>
                 <button className="text-white hidden md:grid hover:bg-opacity-60 rounded-lg transition-all duration-300 ease-linear bg-primaryPurple w-full h-12  place-content-center">
