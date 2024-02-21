@@ -109,7 +109,8 @@ const Checkout = ({ params }: { params: { slug: string } }) => {
     },
   });
 
-  const checkoutHandler = () => {
+  const checkoutHandler = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     console.log("tickets", tickets);
     // const res = calculateTotalPrice();
     // console.log("Total", res);
@@ -181,7 +182,7 @@ const Checkout = ({ params }: { params: { slug: string } }) => {
       <main className="flex flex-col items-center md:items-stretch md:flex-row justify-between md:pr-8 mb-6 md:mb-0 ">
         {isFirst ? (
           <form
-            onSubmit={handleMovetoFinalCheckout}
+            onSubmit={checkoutHandler}
             className="mt-8 w-[94%] md:w-[50%] md:pl-8"
           >
             <div className="flex items-center space-x-6 ">
@@ -293,7 +294,7 @@ const Checkout = ({ params }: { params: { slug: string } }) => {
             <button
               disabled={bookEvent.isPending}
               type="submit"
-              onClick={checkoutHandler}
+              // onClick={checkoutHandler}
               className={` ${
                 bookEvent.isPending ? "bg-opacity-50 cursor-wait" : ""
               } bg-purple-700 mt-9  py-[10px] px-5 w-full md:w-[244px] h-12 hover:bg-opacity-70 text-white text-sm rounded-lg hidden md:grid place-content-center`}
@@ -349,7 +350,7 @@ const Checkout = ({ params }: { params: { slug: string } }) => {
               <button
                 disabled={bookEvent.isPending}
                 type="submit"
-                onClick={checkoutHandler}
+                // onClick={checkoutHandler}
                 className={` ${
                   bookEvent.isPending ? "bg-opacity-50 cursor-wait" : ""
                 } bg-purple-700 h-12 w-[186px] hover:bg-opacity-70 text-white text-sm rounded-lg grid place-content-center`}
