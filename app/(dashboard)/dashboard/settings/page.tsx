@@ -77,13 +77,9 @@ export default function SettingsPage() {
               />
             </div>
           ) : tablist[1].isActive ? (
-            <div>
-              <TeamManagement />
-            </div>
+            <div>{/* <TeamManagement /> */}</div>
           ) : (
-            <div>
-              <PlanManagement />
-            </div>
+            <div>{/* <PlanManagement /> */}</div>
           )}
         </div>
       </main>

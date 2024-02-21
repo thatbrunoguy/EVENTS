@@ -13,78 +13,78 @@ import { eventsManagamentFunctions } from "@/app/utils/endpoints";
 
 const CheckIns = () => {
   const [options, setOptions] = useState<any>([
-    {
-      team: "Timilehin Adegbulugbe",
-      status: "Free Ticket",
-    },
-    {
-      team: "Timilehin Adegbulugbe",
-      status: "Free Ticket",
-    },
-    {
-      team: "Timilehin Adegbulugbe",
-      status: "Paid Ticket",
-    },
-    {
-      team: "Timilehin Adegbulugbe",
-      status: "Free Ticket",
-    },
-    {
-      team: "Timilehin Adegbulugbe",
-      status: "Free Ticket",
-    },
-    {
-      team: "Timilehin Adegbulugbe",
-      status: "Paid Ticket",
-    },
-    {
-      team: "Timilehin Adegbulugbe",
-      status: "Free Ticket",
-    },
-    {
-      team: "Timilehin Adegbulugbe",
-      status: "Paid Ticket",
-    },
-    {
-      team: "Timilehin Adegbulugbe",
-      status: "Free Ticket",
-    },
-    {
-      team: "Timilehin Adegbulugbe",
-      status: "Paid Ticket",
-    },
-    {
-      team: "Timilehin Adegbulugbe",
-      status: "Free Ticket",
-    },
-    {
-      team: "Timilehin Adegbulugbe",
-      status: "Paid Ticket",
-    },
-    {
-      team: "Timilehin Adegbulugbe",
-      status: "Free Ticket",
-    },
-    {
-      team: "Timilehin Adegbulugbe",
-      status: "Paid Ticket",
-    },
-    {
-      team: "Timilehin Adegbulugbe",
-      status: "Free Ticket",
-    },
-    {
-      team: "Timilehin Adegbulugbe",
-      status: "Paid Ticket",
-    },
-    {
-      team: "Timilehin Adegbulugbe",
-      status: "Free Ticket",
-    },
-    {
-      team: "Timilehin Adegbulugbe",
-      status: "Paid Ticket",
-    },
+    // {
+    //   team: "Timilehin Adegbulugbe",
+    //   status: "Free Ticket",
+    // },
+    // {
+    //   team: "Timilehin Adegbulugbe",
+    //   status: "Free Ticket",
+    // },
+    // {
+    //   team: "Timilehin Adegbulugbe",
+    //   status: "Paid Ticket",
+    // },
+    // {
+    //   team: "Timilehin Adegbulugbe",
+    //   status: "Free Ticket",
+    // },
+    // {
+    //   team: "Timilehin Adegbulugbe",
+    //   status: "Free Ticket",
+    // },
+    // {
+    //   team: "Timilehin Adegbulugbe",
+    //   status: "Paid Ticket",
+    // },
+    // {
+    //   team: "Timilehin Adegbulugbe",
+    //   status: "Free Ticket",
+    // },
+    // {
+    //   team: "Timilehin Adegbulugbe",
+    //   status: "Paid Ticket",
+    // },
+    // {
+    //   team: "Timilehin Adegbulugbe",
+    //   status: "Free Ticket",
+    // },
+    // {
+    //   team: "Timilehin Adegbulugbe",
+    //   status: "Paid Ticket",
+    // },
+    // {
+    //   team: "Timilehin Adegbulugbe",
+    //   status: "Free Ticket",
+    // },
+    // {
+    //   team: "Timilehin Adegbulugbe",
+    //   status: "Paid Ticket",
+    // },
+    // {
+    //   team: "Timilehin Adegbulugbe",
+    //   status: "Free Ticket",
+    // },
+    // {
+    //   team: "Timilehin Adegbulugbe",
+    //   status: "Paid Ticket",
+    // },
+    // {
+    //   team: "Timilehin Adegbulugbe",
+    //   status: "Free Ticket",
+    // },
+    // {
+    //   team: "Timilehin Adegbulugbe",
+    //   status: "Paid Ticket",
+    // },
+    // {
+    //   team: "Timilehin Adegbulugbe",
+    //   status: "Free Ticket",
+    // },
+    // {
+    //   team: "Timilehin Adegbulugbe",
+    //   status: "Paid Ticket",
+    // },
   ]);
 
   const [customerId, setCustomerId] = useState("");

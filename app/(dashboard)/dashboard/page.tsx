@@ -56,7 +56,7 @@ export default function Dashboard() {
     eventId: "",
   });
   const [copiedText, copy] = useCopyToClipboard();
-  const eventURL = `  https://eventsparrot.vercel.app/events/${selectedEvent.eventId}`;
+  const eventURL = `  https://eventsparrot.com/events/${selectedEvent.eventId}`;
   const handleCopy = (text: string) => () => {
     copy(text)
       .then(() => {
