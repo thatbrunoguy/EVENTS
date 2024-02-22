@@ -8,6 +8,7 @@ import { guestFunctions } from "@/app/utils/endpoints";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { CiAlarmOn, CiCalendar, CiLocationOn } from "react-icons/ci";
 
@@ -24,6 +25,7 @@ const data = {
 };
 
 const EventDetails = ({ params }: { params: { slug: string } }) => {
+  const router = useRouter();
   const [faqs, setFaqs] = useState<any>(null);
   const {
     data: event,
@@ -55,6 +57,12 @@ const EventDetails = ({ params }: { params: { slug: string } }) => {
       return modifiedEvent;
     },
   });
+
+  useEffect(() => {
+    if (params.slug === "uisu_variety_night_mr_and_miss_ui") {
+      router.push("/events/9b5e11ae-9719-46a8-a2a7-610fd4ade13d");
+    }
+  }, [params.slug]);
 
   if (event && status === "success") {
     (() => {
