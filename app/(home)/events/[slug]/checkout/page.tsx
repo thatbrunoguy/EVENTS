@@ -90,6 +90,7 @@ const Checkout = ({ params }: { params: { slug: string } }) => {
 
   const bookEvent = useMutation({
     mutationFn: guestFunctions.bookEvent,
+    retry: 8,
     onError: async (error, variables, context) => {
       if (
         error.message.includes(
