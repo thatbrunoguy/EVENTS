@@ -7,10 +7,10 @@ import { GrDown } from "react-icons/gr";
 import Link from "next/link";
 const options = [
   { title: "All" },
-  { title: "Free" },
-  { title: "Paid" },
-  { title: "Virtual" },
-  { title: "Popular" },
+  // { title: "Free" },
+  // { title: "Paid" },
+  // { title: "Virtual" },
+  // { title: "Popular" },
 ];
 
 type FormattedEvent = {
@@ -40,7 +40,7 @@ export const Card = ({ event }: FormattedEvent) => {
     highestPrice,
   } = event;
   return (
-    <div className="w-[95%] mx-auto md:mx-0 md:w-[295px] cursor-pointer border-[.6px] rounded-xl hover:shadow-xl  transition-all duration-300 bg-white md:pt-3">
+    <div className="w-[95%] mx-auto md:mx-0 md:w-[295px] cursor-pointer border-[.6px] rounded-xl hover:shadow-xl  transition-all duration-300 bg-white pt-3">
       <Link href={`/events/${id}`} className=" w-auto h-auto block">
         <div className="px-3">
           <div className="h-[181px] w-full rounded-xl relative overflow-hidden">
@@ -107,7 +107,7 @@ const HomeEvents = ({ events }: any) => {
     <div className="w-[94%] md:w-[90%] mx-auto">
       <div className="flex items-center gap-24">
         <p className="text-lg font-semibold   md:text-3xl">
-          Browse Events in <span className="text-primaryPurple">Lagos</span>
+          Browse Events in <span className="text-primaryPurple">Ibadan</span>
         </p>
         <div className="text-base md:text-[20px]">
           <GrDown />

@@ -365,7 +365,7 @@ const BasicInfo = () => {
       basicInfo: false,
       details: true,
     }));
-    console.log("EventInfo:", eventInfo);
+    // console.log("EventInfo:", eventInfo);
   };
 
   const nextHandlerTwo = () => {
@@ -381,7 +381,7 @@ const BasicInfo = () => {
         ? { ...rest, tickets: [...tickets] }
         : { ...eventInfo, tickets: [...tickets] };
     createEvent.mutate({ data: updatedEventInfo });
-    console.log("EventInfo:", updatedEventInfo);
+    // console.log("EventInfo:", updatedEventInfo);
   };
 
   const setActiveStepByIndex = (index: number): Step[] => {

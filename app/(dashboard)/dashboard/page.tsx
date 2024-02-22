@@ -11,8 +11,15 @@ import {
   FaInstagram,
   FaLinkedin,
   FaMoneyBills,
+  FaTelegram,
   FaXTwitter,
 } from "react-icons/fa6";
+import {
+  FacebookShareButton,
+  LinkedinShareButton,
+  TelegramShareButton,
+  TwitterShareButton,
+} from "react-share";
 import MobileFooter from "../../components/footer/MobileFooter";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -101,7 +108,7 @@ export default function Dashboard() {
     // console.log("userAccount", userAccount[0]);
     addToLocalStorage(EVENTSPARROT_USER, "account", userAccount[0]);
   }
-  console.log("selectedEvent changed", selectedEvent);
+  // console.log("selectedEvent changed", selectedEvent);
   const {
     data: salesAnalytics,
     isError: isSalesError,
@@ -281,10 +288,35 @@ export default function Dashboard() {
                     <div className="mt-3 ">
                       <p className="text-xs text-lightText mb-1">Share on</p>
                       <div className="flex items-center space-x-6 text-2xl text-gray-500">
-                        <FaFacebook />
-                        <FaXTwitter />
-                        <FaLinkedin />
-                        <FaInstagram />
+                        <FacebookShareButton
+                          url={eventURL}
+                          title={`Hi, Checkout out our latest event ${selectedEvent?.name} on Eventsparrot`}
+                          hashtag={`#${selectedEvent?.name}`}
+                        >
+                          <FaFacebook className="hover:text-[#0866FF]" />
+                        </FacebookShareButton>
+
+                        <LinkedinShareButton
+                          url={eventURL}
+                          title={`Hi, Checkout out our latest event ${selectedEvent?.name} on Eventsparrot`}
+                        >
+                          <FaLinkedin className="hover:text-[#0077B5]" />
+                        </LinkedinShareButton>
+
+                        <TwitterShareButton
+                          url={eventURL}
+                          hashtags={[`#${selectedEvent.name}`, `#Eventsparrot`]}
+                          title={`Hi, Checkout out our latest event ${selectedEvent?.name} on Eventsparrot`}
+                        >
+                          <FaXTwitter className="hover:text-black" />
+                        </TwitterShareButton>
+
+                        <TelegramShareButton
+                          url={eventURL}
+                          title={`Hi, Checkout out our latest event ${selectedEvent?.name} on Eventsparrot`}
+                        >
+                          <FaTelegram className="hover:text-[#27A7E7]" />
+                        </TelegramShareButton>
                       </div>
                     </div>
                   </div>

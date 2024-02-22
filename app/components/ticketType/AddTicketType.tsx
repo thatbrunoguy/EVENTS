@@ -53,7 +53,7 @@ const AddTicketType = ({
 
   const [isComplete, setIsComplete] = useState(false);
   const saveTicket = () => {
-    console.log("TicketInfo", ticketInfo);
+    // console.log("TicketInfo", ticketInfo);
     setTickets((prevTickets: any) => {
       if (
         viewTicketIndex !== null &&
