@@ -83,7 +83,7 @@ const Checkout = ({ params }: { params: { slug: string } }) => {
 
   const handleMovetoFinalCheckout = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("userCheckoutInfo", userCheckoutInfo);
+    // console.log("userCheckoutInfo", userCheckoutInfo);
 
     setIsFirst(true);
   };
@@ -100,10 +100,10 @@ const Checkout = ({ params }: { params: { slug: string } }) => {
         toast.success("You have successfully registered for the Free ticket");
         router.push(`/events/${params.slug}`);
       }
-      console.log(` ${error}`);
+      // console.log(` ${error}`);
     },
     onSuccess: async (data, variables, context) => {
-      console.log("dddddd", data);
+      // console.log("dddddd", data);
 
       router.push(data);
       //   router.push("/");
@@ -112,7 +112,7 @@ const Checkout = ({ params }: { params: { slug: string } }) => {
 
   const checkoutHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("tickets", tickets);
+    // console.log("tickets", tickets);
     // const res = calculateTotalPrice();
     // console.log("Total", res);
 
@@ -141,7 +141,7 @@ const Checkout = ({ params }: { params: { slug: string } }) => {
     };
 
     const finalOrder = filterOrderFields();
-    console.log("finalOrder", { orders: finalOrder });
+    // console.log("finalOrder", { orders: finalOrder });
     const myData = { orders: finalOrder };
     if (finalOrder.length) {
       bookEvent.mutate({ myData, eventId: params?.slug });
@@ -166,7 +166,7 @@ const Checkout = ({ params }: { params: { slug: string } }) => {
       ticket_id: ticket.id,
     }));
     setTickets(updatedTickets);
-    console.log("updatedTickets", updatedTickets);
+    // console.log("updatedTickets", updatedTickets);
   }, [ticket]);
   return (
     <section className="mb-16 mt-8">

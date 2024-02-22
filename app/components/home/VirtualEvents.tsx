@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { GrDown } from "react-icons/gr";
-import { Card, cards } from "./Events";
+import { Card } from "./Events";
 const options = [
   { title: "All" },
   { title: "Free" },

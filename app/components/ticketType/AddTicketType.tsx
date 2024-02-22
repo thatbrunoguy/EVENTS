@@ -65,7 +65,7 @@ const AddTicketType = ({
         updatedTickets[viewTicketIndex] = {
           ...ticketInfo,
         };
-        console.log("returned", updatedTickets);
+        // console.log("returned", updatedTickets);
         return updatedTickets;
       } else {
         return [...prevTickets, { ...ticketInfo }];

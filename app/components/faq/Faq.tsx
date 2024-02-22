@@ -28,7 +28,7 @@ const Faq = ({ faqs, setFaqs, setEventInfo }: Iprops) => {
   };
 
   const deleteFaqHandler = (index: number) => {
-    console.log("index", index);
+    // console.log("index", index);
     setFaqs((prevFaqs) => {
       const updatedFaqs = prevFaqs.filter((faq, i) => i !== index);
 

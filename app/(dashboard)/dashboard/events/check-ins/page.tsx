@@ -98,7 +98,7 @@ const CheckIns = () => {
     mutationFn: eventsManagamentFunctions.checkInAttendee,
     onError: async (error, variables, context) => {},
     onSuccess: async (data, variables, context) => {
-      console.log("checkin-attendee", data);
+      // console.log("checkin-attendee", data);
     },
   });
 

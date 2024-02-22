@@ -13,121 +13,6 @@ const options = [
   { title: "Popular" },
 ];
 
-export const cards = [
-  {
-    id: "1",
-    name: "Study Abroad Fair in Lagos Mainland 2024",
-    date: "Sat, Feb 10th 2024 | 5pm",
-    location: "The Good Village, VI",
-    image: "/assets/event-card.png",
-  },
-  {
-    id: "2",
-    name: "Study Abroad Fair in Lagos Mainland 2024",
-    date: "Sat, Feb 10th 2024 | 5pm",
-    location: "The Good Village, VI",
-    image: "/assets/event-card.png",
-  },
-  {
-    id: "3",
-    name: "Study Abroad Fair in Lagos Mainland 2024",
-    date: "Sat, Feb 10th 2024 | 5pm",
-    location: "The Good Village, VI",
-    image: "/assets/event-card.png",
-  },
-  {
-    id: "4",
-    name: "Study Abroad Fair in Lagos Mainland 2024",
-    date: "Sat, Feb 10th 2024 | 5pm",
-    location: "The Good Village, VI",
-    image: "/assets/event-card.png",
-  },
-  {
-    id: "5",
-    name: "Study Abroad Fair in Lagos Mainland 2024",
-    date: "Sat, Feb 10th 2024 | 5pm",
-    location: "The Good Village, VI",
-    image: "/assets/event-card.png",
-  },
-  {
-    id: "6",
-    name: "Study Abroad Fair in Lagos Mainland 2024",
-    date: "Sat, Feb 10th 2024 | 5pm",
-    location: "The Good Village, VI",
-    image: "/assets/event-card.png",
-  },
-  {
-    id: "1",
-    name: "Study Abroad Fair in Lagos Mainland 2024",
-    date: "Sat, Feb 10th 2024 | 5pm",
-    location: "The Good Village, VI",
-    image: "/assets/event-card.png",
-  },
-  {
-    id: "2",
-    name: "Study Abroad Fair in Lagos Mainland 2024",
-    date: "Sat, Feb 10th 2024 | 5pm",
-    location: "The Good Village, VI",
-    image: "/assets/event-card.png",
-  },
-  {
-    id: "3",
-    name: "Study Abroad Fair in Lagos Mainland 2024",
-    date: "Sat, Feb 10th 2024 | 5pm",
-    location: "The Good Village, VI",
-    image: "/assets/event-card.png",
-  },
-  {
-    id: "4",
-    name: "Study Abroad Fair in Lagos Mainland 2024",
-    date: "Sat, Feb 10th 2024 | 5pm",
-    location: "The Good Village, VI",
-    image: "/assets/event-card.png",
-  },
-  {
-    id: "5",
-    name: "Study Abroad Fair in Lagos Mainland 2024",
-    date: "Sat, Feb 10th 2024 | 5pm",
-    location: "The Good Village, VI",
-    image: "/assets/event-card.png",
-  },
-  {
-    id: "6",
-    name: "Study Abroad Fair in Lagos Mainland 2024",
-    date: "Sat, Feb 10th 2024 | 5pm",
-    location: "The Good Village, VI",
-    image: "/assets/event-card.png",
-  },
-  {
-    id: "1",
-    name: "Study Abroad Fair in Lagos Mainland 2024",
-    date: "Sat, Feb 10th 2024 | 5pm",
-    location: "The Good Village, VI",
-    image: "/assets/event-card.png",
-  },
-  {
-    id: "2",
-    name: "Study Abroad Fair in Lagos Mainland 2024",
-    date: "Sat, Feb 10th 2024 | 5pm",
-    location: "The Good Village, VI",
-    image: "/assets/event-card.png",
-  },
-  {
-    id: "3",
-    name: "Study Abroad Fair in Lagos Mainland 2024",
-    date: "Sat, Feb 10th 2024 | 5pm",
-    location: "The Good Village, VI",
-    image: "/assets/event-card.png",
-  },
-  {
-    id: "4",
-    name: "Study Abroad Fair in Lagos Mainland 2024",
-    date: "Sat, Feb 10th 2024 | 5pm",
-    location: "The Good Village, VI",
-    image: "/assets/event-card.png",
-  },
-];
-
 type FormattedEvent = {
   event: {
     id: string;
@@ -247,11 +132,21 @@ const HomeEvents = ({ events }: any) => {
         </div>
 
         <hr />
-        <div className="mt-12 grid-cols-1 grid md:grid-cols-2   lg:grid-cols-3 xl:grid-cols-4 gap-8">
-          {events?.map((card: any, i: number) => (
-            <Card key={i} event={card} />
-          ))}
-        </div>
+
+        {events?.length ? (
+          <div className="mt-12 grid-cols-1 grid md:grid-cols-2   lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            {events?.map((card: any, i: number) => (
+              <Card key={i} event={card} />
+            ))}
+          </div>
+        ) : (
+          <div className="text-gray-600 mt-12 text-xs text-center md:text-base">
+            <p>
+              <span className="text-primaryPurple">Oops!!!</span> No Events
+              found for your search query
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

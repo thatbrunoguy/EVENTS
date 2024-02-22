@@ -39,7 +39,7 @@ const authOptions: NextAuthOptions = {
           }),
         });
         const user = await res.json();
-        console.log("user", user.data);
+        // console.log("user", user.data);
         if (res.ok && user.status === true) {
           // Any object returned will be saved in `user` property of the JWT
           return user.data;

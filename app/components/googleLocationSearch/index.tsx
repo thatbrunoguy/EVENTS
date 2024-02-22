@@ -31,7 +31,7 @@ const GoogleLocationSearch = ({ setEventInfo, value, setValue }: Iprops) => {
       fromPlaceId(value?.value?.place_id as string)
         .then(({ results }) => {
           const { lat, lng } = results[0].geometry.location;
-          console.log(lat, lng);
+          // console.log(lat, lng);
           setEventInfo((prev) => ({
             ...prev,
             location_details: {
@@ -44,8 +44,8 @@ const GoogleLocationSearch = ({ setEventInfo, value, setValue }: Iprops) => {
         })
         .catch(console.error);
     }
-    console.log("value--", value?.value?.place_id as string);
-    console.log("res", value);
+    // console.log("value--", value?.value?.place_id as string);
+    // console.log("res", value);
   }, [value]);
 
   return (

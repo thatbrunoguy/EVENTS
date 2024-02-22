@@ -24,7 +24,7 @@ const ForgotPassword = () => {
     mutationFn: authFunctions.forgotPassword,
     onError: async (error, variables, context) => {},
     onSuccess: async (data, variables, context) => {
-      console.log("forgot-password", data);
+      // console.log("forgot-password", data);
       router.push("/auth/reset-password");
     },
   });

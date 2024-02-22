@@ -46,11 +46,11 @@ const SignUp = () => {
     mutationFn: authFunctions.register,
     onError: async (error, variables, context) => {
       // An error happened!
-      console.log(`rolling back optimistic update with id ${error}`);
+      // console.log(`rolling back optimistic update with id ${error}`);
     },
     onSuccess: async (data, variables, context) => {
       // Boom baby!
-      console.log("data", data);
+      // console.log("data", data);
       router.push("/auth/otp");
     },
   });

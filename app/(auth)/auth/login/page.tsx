@@ -42,7 +42,7 @@ const Login = () => {
     if (res?.ok) {
       setIsProcessing(false);
     }
-    console.log("res", res);
+    // console.log("res", res);
     if (res?.error) {
       toast.error(res.error as string);
       setIsProcessing(false);

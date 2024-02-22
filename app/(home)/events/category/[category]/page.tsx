@@ -44,7 +44,7 @@ const EventCategory = ({ params }: { params: { category: string } }) => {
     },
   });
 
-  console.log("events - category", events);
+  // console.log("events - category", events);
 
   return (
     <div>

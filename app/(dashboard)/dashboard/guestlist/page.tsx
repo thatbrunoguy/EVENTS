@@ -44,7 +44,7 @@ export default function Guestlist() {
 
   const [selectedOrder, setSelectedOrder] = useState<OrderData>();
 
-  console.log("selectedEvent-Guestlist", selectedEvent);
+  // console.log("selectedEvent-Guestlist", selectedEvent);
   const {
     data: guestlistOrders,
     isError,
@@ -101,7 +101,7 @@ export default function Guestlist() {
     },
   });
 
-  console.log("guestlistOrders-with stat", guestlistOrders);
+  // console.log("guestlistOrders-with stat", guestlistOrders);
 
   const exportCSV = () => {
     toast(
