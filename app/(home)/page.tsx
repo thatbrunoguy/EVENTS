@@ -95,7 +95,7 @@ const Home = () => {
     <section>
       {/* HERO */}
       <div className="w-[98%] mx-auto">
-        <div className="relative h-[50vh] md:h-[56vh] mt-6">
+        <div className="relative h-[46vh] md:h-[56vh] mt-1 md:mt-6">
           <div className="h-full relative w-full rounded-lg overflow-hidden ">
             <Image
               className="object-cover"
