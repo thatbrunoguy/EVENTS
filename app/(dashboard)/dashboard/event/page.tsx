@@ -21,6 +21,7 @@ import { IoTrash } from "react-icons/io5";
 import { useCopyToClipboard } from "@/app/hooks";
 import toast from "react-hot-toast";
 import ConfirmDeleteModal from "@/app/components/modals/ConfirmDelete";
+import { useRouter } from "next/navigation";
 
 type Ticket = {
   id: string;
@@ -206,7 +207,7 @@ export default function Event() {
     icon: <IoIosCopy />,
     title: "Copy event link",
   };
-
+  const router = useRouter();
   // console.log("events", events);
   return (
     <section className="flex">
@@ -305,6 +306,7 @@ export default function Event() {
                                 backgroundColor: "white",
                                 border: "1px solid #E7E4EB",
                                 borderRadius: 8,
+                                zIndex: 50,
                                 width: 230,
                                 height: 204,
                                 padding: 6,
@@ -332,7 +334,11 @@ export default function Event() {
                                     <div
                                       onClick={
                                         index === 0
-                                          ? () => {}
+                                          ? () => {
+                                              router.push(
+                                                `/dashboard/event/edit/${item.id}`
+                                              );
+                                            }
                                           : index === 1
                                           ? () => {
                                               handleEventStatusChange(

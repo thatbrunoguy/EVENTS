@@ -23,11 +23,11 @@ const LocationSearchBar = ({
     const filteredResults = event.target.value
       ? guestEvents?.filter(
           (item) =>
-            item.name
-              .toLowerCase()
-              .includes(event.target.value.toLowerCase()) ||
-            item.address
-              .toLowerCase()
+            item?.name
+              ?.toLowerCase()
+              ?.includes(event.target.value.toLowerCase()) ||
+            item?.address
+              ?.toLowerCase()
               .includes(event.target.value.toLowerCase())
         )
       : guestEvents;
