@@ -490,7 +490,7 @@ export const eventsManagamentFunctions = {
       if (response?.data && response?.data?.status === true) {
         toast.success(response?.data?.message);
         // console.log("res", response?.data.message);
-        return response?.data?.data?.events;
+        return response?.data?.data?.orders;
       } else {
         throw new Error(response?.data?.message);
       }

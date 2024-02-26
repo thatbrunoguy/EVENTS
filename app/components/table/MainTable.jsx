@@ -2,8 +2,14 @@ import "react-tabulator/lib/styles.css"; // required styles
 import "react-tabulator/lib/css/tabulator_materialize.min.css"; // theme
 import { ReactTabulator } from "react-tabulator";
 const columns = [
-  { title: "Name", field: "name", width: 150 },
-  { title: "Age", field: "age", hozAlign: "left", formatter: "" },
+  { title: "Name", field: "name", minWidth: 150 },
+  {
+    title: "Age",
+    field: "age",
+    hozAlign: "left",
+    formatter: "",
+    minWidth: 150,
+  },
   { title: "Favourite Color", field: "col" },
   { title: "Date Of Birth", field: "dob", hozAlign: "center" },
   { title: "Rating", field: "rating", hozAlign: "center", formatter: "" },

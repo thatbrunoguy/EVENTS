@@ -17,6 +17,7 @@ import MobileFooter from "../../../components/footer/MobileFooter";
 import { useQuery } from "@tanstack/react-query";
 import { eventsManagamentFunctions } from "@/app/utils/endpoints";
 import { PrimaryLoading2 } from "@/app/components/loaders/PrimaryLoading";
+import { formatDate, formatDate2, formatTime } from "@/app/helpers";
 
 export interface OrderData {
   name: string;
@@ -61,12 +62,12 @@ export default function Guestlist() {
         const amount = ticket.price * quantity;
         let fees = 0;
 
-        if (amount === 0) {
+        if (ticket.price === 0) {
           fees = 0;
-        } else if (amount >= 2000) {
-          fees = amount * 0.05 + 100;
-        } else if (amount < 2000) {
-          fees = amount * 0.05;
+        } else if (ticket.price >= 2000) {
+          fees = (ticket.price * 0.05 + 100) * item.quantity;
+        } else if (ticket.price < 2000) {
+          fees = ticket.price * 0.05 * item.quantity;
         }
 
         const ticketCounts: { [ticketName: string]: number } = {};
@@ -86,10 +87,10 @@ export default function Guestlist() {
 
         return {
           name: ticket.name,
-          quantity: ticket.stock_qty,
-          buyerName: `${user.first_name} ${user.last_name}`,
+          quantity: item.quantity,
+          buyerName: user.full_name,
           orderNumber: order_number,
-          date: new Date(created_at).toLocaleDateString(),
+          date: item.order_date,
           email: user.email,
           price: ticket.price,
           stockQuantity: ticket.stock_qty,
@@ -219,7 +220,9 @@ export default function Guestlist() {
                               {item.buyerName}
                             </p>
                             <div className="col-span-2">{item.orderNumber}</div>
-                            <div className="">{item.date}</div>
+                            <div className="">{` ${formatDate(
+                              item.date
+                            )} `}</div>
                             <div
                               onClick={() => {
                                 setSelectedOrder(item);
