@@ -51,9 +51,9 @@ export default function Guestlist() {
     isLoading,
     status,
   } = useQuery({
-    queryKey: ["events-guestlist-order", selectedEvent.eventId],
+    queryKey: ["event-guestlist", selectedEvent.eventId],
     queryFn: () =>
-      eventsManagamentFunctions.getEventSales(selectedEvent?.eventId),
+      eventsManagamentFunctions.getEventGuestlist(selectedEvent?.eventId),
     enabled: selectedEvent.eventId ? true : false,
     select: (data): OrderData[] => {
       return data.map((item: any) => {

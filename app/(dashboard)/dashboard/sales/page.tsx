@@ -17,7 +17,7 @@ import GlobalTable from "../../../components/table/GlobalTable";
 import { useQuery } from "@tanstack/react-query";
 import { eventsManagamentFunctions } from "@/app/utils/endpoints";
 import { PrimaryLoading2 } from "@/app/components/loaders/PrimaryLoading";
-
+import MainTable from "@/app/components/table/MainTable";
 export type SalesAnalyticsData = {
   salesData: {
     ticket: {
@@ -190,11 +190,11 @@ export default function Guestlist() {
   }));
 
   const paymentColumns = [
-    { key: "recipient", name: "Recipient" },
-    { key: "account", name: "Account" },
-    { key: "transferFee", name: "Transfer Fee" },
-    { key: "payout", name: "Payout" },
-    { key: "date", name: "Date" },
+    { key: "recipient", name: "Recipient", minWidth: 100 },
+    { key: "account", name: "Account", minWidth: 100 },
+    { key: "transferFee", name: "Transfer Fee", minWidth: 100 },
+    { key: "payout", name: "Payout", minWidth: 100 },
+    { key: "date", name: "Date", minWidth: 100 },
   ];
 
   const paymentRows = paymentHistory.map((payment, index) => ({
@@ -383,6 +383,7 @@ export default function Guestlist() {
 
                 {/* <GlobalTable columns={paymentColumns} rows={paymentRows} /> */}
                 <GlobalTable columns={paymentColumns} rows={[]} />
+                {/* <MainTable /> */}
               </div>
             </>
           )}

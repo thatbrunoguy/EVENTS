@@ -68,7 +68,7 @@ const Home = () => {
 
         const desc = event.tickets[0]?.description ?? null;
         const img = event.medias[0]?.original ?? null;
-        const address = event.locations[0]?.address ?? null;
+        const address = event.locations[0]?.address ?? "Online";
 
         return {
           id: event.id,

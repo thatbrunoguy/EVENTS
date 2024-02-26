@@ -156,7 +156,7 @@ const BasicInfo = () => {
     price: 0,
     description: "",
   });
-
+  console.log("startDate", startDate);
   // DETAILS
   const { data, isError, isLoading, status } = useQuery({
     queryKey: ["event-banner"],
@@ -168,7 +168,7 @@ const BasicInfo = () => {
   const { data: eventCategoriesOptions } = useQuery({
     queryKey: ["event-categories"],
     queryFn: eventsManagamentFunctions.getCategories,
-    staleTime: Infinity,
+    // staleTime: Infinity,
     select(data: any) {
       return data.data.events.map((event: { id: ""; name: "" }) => ({
         value: event.id,

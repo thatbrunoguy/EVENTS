@@ -330,7 +330,6 @@ const BasicInfoEdit = ({ params }: { params: { slug: string } }) => {
       });
     });
   };
-
   const [eventInfo, setEventInfo] = useState<EventInfoType>({
     organizer: { name: "", phone: "" },
     name: "",
@@ -364,7 +363,6 @@ const BasicInfoEdit = ({ params }: { params: { slug: string } }) => {
     queryFn: () => eventsManagamentFunctions.getEventById(params.slug),
     staleTime: Infinity,
   });
-
   const eventInfoEdit: EventEditType = eventInfoEdit_;
 
   useEffect(() => {
@@ -376,13 +374,25 @@ const BasicInfoEdit = ({ params }: { params: { slug: string } }) => {
         },
         name: eventInfoEdit?.name,
         description: eventInfoEdit?.description,
-        location_type: eventInfoEdit?.locations[0].type,
-        categories: [eventInfoEdit?.categories[0]?.id],
-        location_details: {
-          address: eventInfoEdit.locations[0].address,
-          latitude: eventInfoEdit.locations[0].latitude,
-          longitude: eventInfoEdit?.locations[0].longitude,
-        },
+        location_type:
+          eventInfoEdit?.locations.length > 0
+            ? eventInfoEdit?.locations[0].type
+            : 2,
+        categories: eventInfoEdit.categories
+          ? [eventInfoEdit.categories[0]?.id]
+          : [""],
+        location_details:
+          eventInfoEdit?.locations.length > 0
+            ? {
+                address: eventInfoEdit?.locations[0]?.address || "",
+                latitude: eventInfoEdit?.locations[0]?.latitude || "",
+                longitude: eventInfoEdit?.locations[0]?.longitude || "",
+              }
+            : {
+                address: "",
+                latitude: "",
+                longitude: "",
+              },
         // @ts-ignore
         registration_requirements: eventInfoEdit.registration_requirements,
         medias: [eventInfoEdit?.medias[0]?.original],
@@ -431,7 +441,7 @@ const BasicInfoEdit = ({ params }: { params: { slug: string } }) => {
       setQuillValue(eventInfoEdit?.description);
       setTickets(extractedTickets as never);
       setImageUrl(eventInfoEdit?.medias[0].original);
-      setIsOnlineEvent(eventInfoEdit?.locations[0].type === 2 ? true : false);
+      setIsOnlineEvent(eventInfoEdit?.locations.length > 0 ? false : true);
       const extractedFaqs = eventInfoEdit?.faqs?.map(
         ({ question, answer }) => ({ question, answer })
       );
@@ -445,10 +455,10 @@ const BasicInfoEdit = ({ params }: { params: { slug: string } }) => {
       //   latitude: eventInfoEdit?.locations[0].latitude,
       //   longitude: eventInfoEdit?.locations[0].longitude,
       // });
-      setSelectedOption({
-        value: eventInfoEdit?.categories[0].id,
-        label: eventInfoEdit?.categories[0].name,
-      });
+      // setSelectedOption({
+      //   value:  eventInfoEdit?.categories[0].id,
+      //   label: eventInfoEdit?.categories[0].name,
+      // });
 
       const dateStart = moment(eventInfoEdit?.start_date);
       const dateEnd = moment(eventInfoEdit?.end_date);
@@ -638,7 +648,7 @@ const BasicInfoEdit = ({ params }: { params: { slug: string } }) => {
       <div>
         <img
           src={imageUrl ? imageUrl : file.preview}
-          className="w-full h-[248px] object-cover"
+          className="w-screen md:w-[65vw] h-[248px] object-cover"
           // Revoke data uri after image is loaded
           onLoad={() => {
             // console.log("file-from-me", file);

@@ -2,10 +2,15 @@ import axios, { AxiosResponse } from "axios";
 import { getData } from "../utils/localstorage";
 import moment from "moment";
 export const computeDateTime = (date: any, time: any) => {
-  const dateString = date.toISOString().split("T")[0];
-  const dateTimeString = `${dateString}T${time}`;
+  const dateString = moment(date).format("YYYY-MM-DD");
+  const dateTimeString = moment(`${dateString}T${time}`).toISOString();
   return dateTimeString;
 };
+// export const computeDateTime = (date: any, time: any) => {
+//   const formattedDate = moment(date).add(1, "days").format("YYYY-MM-DD");
+//   const dateTimeString = moment(`${formattedDate}T${time}`).toISOString();
+//   return dateTimeString;
+// };
 
 const APP_KEY = process.env.NEXT_PUBLIC_X_APP_KEY;
 

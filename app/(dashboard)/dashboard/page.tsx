@@ -239,7 +239,7 @@ export default function Dashboard() {
                   <p className="text-lg font-medium">Payouts</p>
 
                   <div className="flex items-center mt-3 md:mt-5">
-                    <div className=" bg-white h-[122px] w-full border-[.6px] shadow-lg p-4 rounded-md">
+                    <div className=" bg-white min-h-[122px] h-auto w-full border-[.6px] shadow-lg p-4 pb-2 rounded-md">
                       <div className="flex space-x-4">
                         <div className="basis-1/2 border-r border-dashed">
                           <h3 className="font-medium md:font-semibold text-2xl mb-2">
@@ -267,10 +267,10 @@ export default function Dashboard() {
                 <div className="w-full lg:basis-1/2">
                   <p className="text-lg font-medium">Share</p>
 
-                  <div className="mt-3 md:mt-5 rounded-md bg-white h-[122px] shadow-lg p-4 border-[.6px]">
+                  <div className="mt-3 md:mt-5 rounded-md bg-white min-h-[122px] h-auto shadow-lg p-4 border-[.6px]">
                     <p className="text-xs text-lightText mb-1">Event Url</p>
                     <div className="">
-                      <div className="w-[90%]  overflow-x-hidden">
+                      <div className="w-full  overflow-x-hidden">
                         <p
                           title="click to copy url"
                           onClick={handleCopy(eventURL)}
@@ -325,7 +325,7 @@ export default function Dashboard() {
             </div>
 
             {/* RIGHT */}
-            <div className="w-full  xl:w-[30%]">
+            <div className="w-full hidden  xl:w-[30%]">
               <h3 className="text-lg mt-4 mb-5 font-medium">Recommended</h3>
 
               <div>

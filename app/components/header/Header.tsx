@@ -61,7 +61,7 @@ const Header = ({ selectedEvent, setSelectedEvent }: Iprops) => {
         price: event.tickets[0].price,
         desc: event.tickets[0].description,
         img: event.medias[0].original,
-        address: event.locations[0].address,
+        address: event.locations[0]?.address ?? "Online",
       }));
 
       return selectedEvents;
