@@ -881,6 +881,13 @@
   dependencies:
     parchment "^1.1.2"
 
+"@types/react-csv@^1.1.10":
+  version "1.1.10"
+  resolved "https://registry.yarnpkg.com/@types/react-csv/-/react-csv-1.1.10.tgz#b4e292d7330d2fa12062c579c752f254f559bf56"
+  integrity sha512-PESAyASL7Nfi/IyBR3ufd8qZkyoS+7jOylKmJxRZUZLFASLo4NZaRsJ8rNP8pCcbIziADyWBbLPD1nPddhsL4g==
+  dependencies:
+    "@types/react" "*"
+
 "@types/react-data-grid@^4.0.12":
   version "4.0.12"
   resolved "https://registry.yarnpkg.com/@types/react-data-grid/-/react-data-grid-4.0.12.tgz#b9c287889f1f6136c576cdeb85491339d2c3f76a"
@@ -3599,6 +3606,11 @@ react-confetti@^6.1.0:
   integrity sha512-7Ypx4vz0+g8ECVxr88W9zhcQpbeujJAVqL14ZnXJ3I23mOI9/oBVTQ3dkJhUmB0D6XOtCZEM6N0Gm9PMngkORw==
   dependencies:
     tween-functions "^1.2.0"
+
+react-csv@^2.2.2:
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/react-csv/-/react-csv-2.2.2.tgz#5bbf0d72a846412221a14880f294da9d6def9bfb"
+  integrity sha512-RG5hOcZKZFigIGE8LxIEV/OgS1vigFQT4EkaHeKgyuCbUAu9Nbd/1RYq++bJcJJ9VOqO/n9TZRADsXNDR4VEpw==
 
 react-data-grid@^7.0.0-beta.42:
   version "7.0.0-beta.42"
