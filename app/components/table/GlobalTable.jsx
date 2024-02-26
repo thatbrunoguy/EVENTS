@@ -1,7 +1,6 @@
 "use client";
 
-import "react-data-grid/lib/styles.css";
-
+import { useEffect } from "react";
 import DataGrid from "react-data-grid";
 
 const columns = [
@@ -15,6 +14,9 @@ const rows = [
 ];
 
 export default function GlobalTable({ columns, rows }) {
+  useEffect(() => {
+    import("react-data-grid/lib/styles.css");
+  }, []);
   return (
     <DataGrid
       defaultColumnOptions={{

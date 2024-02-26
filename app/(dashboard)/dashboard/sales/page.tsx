@@ -190,11 +190,11 @@ export default function Guestlist() {
   }));
 
   const paymentColumns = [
-    { key: "recipient", name: "Recipient", minWidth: 100 },
-    { key: "account", name: "Account", minWidth: 100 },
-    { key: "transferFee", name: "Transfer Fee", minWidth: 100 },
-    { key: "payout", name: "Payout", minWidth: 100 },
-    { key: "date", name: "Date", minWidth: 100 },
+    { key: "recipient", name: "Recipient" },
+    { key: "account", name: "Account" },
+    { key: "transferFee", name: "Transfer Fee" },
+    { key: "payout", name: "Payout" },
+    { key: "date", name: "Date" },
   ];
 
   const paymentRows = paymentHistory.map((payment, index) => ({
