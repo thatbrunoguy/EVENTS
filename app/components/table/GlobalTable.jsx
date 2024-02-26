@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
 import DataGrid from "react-data-grid";
+import "react-data-grid/lib/styles.css";
 
 const columns = [
   { key: "id", name: "ID" },
@@ -14,17 +14,14 @@ const rows = [
 ];
 
 export default function GlobalTable({ columns, rows }) {
-  useEffect(() => {
-    import("react-data-grid/lib/styles.css");
-  }, []);
   return (
     <DataGrid
-      defaultColumnOptions={{
-        sortable: true,
-        resizable: true,
-      }}
-      enableCellSelect
-      rowGetter={() => {}}
+      // defaultColumnOptions={{
+      //   sortable: true,
+      //   resizable: true,
+      // }}
+      // enableCellSelect
+      // rowGetter={() => {}}
       className="rdg-light h-auto"
       columns={columns}
       rows={rows}
