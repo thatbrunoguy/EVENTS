@@ -115,10 +115,10 @@ const BasicInfo = () => {
   const [ticketInfo, setTicketInfo] = useState<TicketInfo>({
     type: 1,
     name: "",
-    stock: "",
+    stock: "unlimited",
     purchase_limit: 0,
     price: 0,
-    description: "",
+    // description: "",
   });
 
   // DETAILS
@@ -688,7 +688,7 @@ const BasicInfo = () => {
                         className="text-sm block mb-2 text-gray-800"
                         htmlFor="organizerName"
                       >
-                        Event end time <span className="text-red-500">*</span>
+                        Event end times <span className="text-red-500">*</span>
                       </label>
                       <div>
                         <TimePicker onChange={setEndTime} value={endTime} />

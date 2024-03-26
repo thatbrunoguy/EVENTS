@@ -399,10 +399,8 @@ export const eventsManagamentFunctions = {
           },
         }
       );
-      console.log("response-delete-event", response);
       if (response.data && response.data.status === true) {
         toast.success("Event deleted successfully!!");
-        console.log("res", response?.data.message);
         return response.data.data.events;
       } else {
         throw new Error(response.data.message);

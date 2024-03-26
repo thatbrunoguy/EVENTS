@@ -24,7 +24,7 @@ export type TicketInfo = {
   stock_qty?: number;
   purchase_limit: number;
   price: number;
-  description: string;
+  description?: string;
 };
 
 type IProps = {

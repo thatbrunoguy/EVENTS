@@ -18,7 +18,7 @@ import { signOut, useSession } from "next-auth/react";
 import { IoChevronDown } from "react-icons/io5";
 import { useQuery } from "@tanstack/react-query";
 import { authFunctions } from "@/app/utils/endpoints";
-import { Menu, MenuButton, MenuItem } from "@szhsin/react-menu";
+import { Menu, MenuButton, MenuGroup, MenuItem } from "@szhsin/react-menu";
 
 const routes = [
   {
@@ -153,6 +153,16 @@ const Sidebar = () => {
             <Menu
               className="w-full"
               direction="right"
+              menuStyle={{
+                backgroundColor: "white",
+                border: "1px solid #E7E4EB",
+                borderRadius: 8,
+                width: 230,
+                height: 240,
+                padding: 6,
+                boxShadow:
+                  "0px 4px 6px -2px #88868A0D, 0px 12px 16px -4px #88868A1A",
+              }}
               // arrow
               align="end"
               menuButton={
@@ -162,25 +172,27 @@ const Sidebar = () => {
               }
               transition
             >
-              {workspace?.map((item: any, index: number) => (
-                <MenuItem
-                  // onClick={() => setSelectedEvent(item)}
-                  // className="hover:bg-lightPurple"
-                  key={index}
-                >
-                  <div className="flex items-center space-x-3">
-                    <div className="relative w-[30px] h-[30px] grid place-content-center bg-lightPurple rounded-full overflow-hidden">
-                      <p className="text-xl text-primaryPurple font-medium">
-                        {/* @ts-ignore */}
-                        {item.name.charAt(0).toUpperCase()}
-                      </p>
+              <MenuGroup>
+                {workspace?.map((item: any, index: number) => (
+                  <MenuItem
+                    // onClick={() => setSelectedEvent(item)}
+                    className="py-2 cursor-pointer pl-3 hover:bg-lightPurple"
+                    key={index}
+                  >
+                    <div className="flex items-center space-x-3">
+                      <div className="relative w-[30px] h-[30px] grid place-content-center bg-lightPurple rounded-full overflow-hidden">
+                        <p className="text-xl text-primaryPurple font-medium">
+                          {/* @ts-ignore */}
+                          {item.name.charAt(0).toUpperCase()}
+                        </p>
+                      </div>
+                      <div>
+                        <p>{`${item.name}`}</p>
+                      </div>
                     </div>
-                    <div>
-                      <p>{`${item.name}`}</p>
-                    </div>
-                  </div>
-                </MenuItem>
-              ))}
+                  </MenuItem>
+                ))}
+              </MenuGroup>
             </Menu>
           </div>
         </div>

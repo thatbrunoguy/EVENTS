@@ -20,6 +20,7 @@ import { MdHideSource } from "react-icons/md";
 import { IoTrash } from "react-icons/io5";
 import { useCopyToClipboard } from "@/app/hooks";
 import toast from "react-hot-toast";
+import { IoMdSettings } from "react-icons/io";
 import ConfirmDeleteModal from "@/app/components/modals/ConfirmDelete";
 
 type Ticket = {
@@ -130,10 +131,6 @@ export default function Event() {
     },
   });
 
-  const deleteEventHandler = (id: string) => {
-    deleteEvent.mutate({ eventId: id });
-  };
-
   const handleEventStatusChange = (status: number, id: string) => {
     toggleEventStatus.mutate({ status: status, eventId: id });
   };
@@ -143,6 +140,7 @@ export default function Event() {
     isError,
     isLoading,
     status,
+    refetch: refetchEvent,
   } = useQuery({
     queryKey: ["events"],
     queryFn: eventsManagamentFunctions.getEvents,
@@ -173,7 +171,6 @@ export default function Event() {
           name: event.name || null,
           startDate,
           quantity,
-          // price,
           desc,
           img,
           address,
@@ -187,18 +184,30 @@ export default function Event() {
     },
   });
 
+  const deleteEventHandler = (id: string) => {
+    deleteEvent.mutate({ eventId: id });
+    refetchEvent();
+  };
+
   const actionOptions = [
     {
       icon: <HiPencil />,
       title: "Edit event",
+      callback: () => console.log("edit event"),
+    },
+    {
+      icon: <IoMdSettings />,
+      title: "Manage event",
     },
     {
       icon: <MdHideSource />,
       title: "Make event inactive",
+      callback: () => console.log("edit event"),
     },
     {
       icon: <IoTrash />,
       title: "Delete event",
+      callback: () => setIsDeleteModalOpen(true),
     },
   ];
 
@@ -264,7 +273,7 @@ export default function Event() {
                     <p className="">Ticket price</p>
                     <p className=""></p>
                   </header>
-                  {events?.map((item: any, index: number) => (
+                  {events?.map((item: any) => (
                     <div
                       key={item.id}
                       className="flex w-[130vw] md:w-full border-b items-center justify-between"
@@ -287,10 +296,10 @@ export default function Event() {
                         </div>
 
                         <div className="grid grid-cols-3 flex-1 justify-items-end">
-                          <div className=" md:mr-4">
+                          <div className="flex items-center md:mr-4">
                             {item.quantity || "unlimited"}
                           </div>
-                          <div className="">
+                          <div className="flex items-center">
                             <p className="relative md:left-5">
                               {item.highestPrice === item.lowestPrice
                                 ? `₦${item.lowestPrice}`
@@ -306,7 +315,7 @@ export default function Event() {
                                 border: "1px solid #E7E4EB",
                                 borderRadius: 8,
                                 width: 230,
-                                height: 204,
+                                height: 240,
                                 padding: 6,
                                 boxShadow:
                                   "0px 4px 6px -2px #88868A0D, 0px 12px 16px -4px #88868A1A",
@@ -331,22 +340,17 @@ export default function Event() {
                                   >
                                     <div
                                       onClick={
-                                        index === 0
-                                          ? () => {}
-                                          : index === 1
-                                          ? () => {
+                                        index === 2
+                                          ? () =>
                                               handleEventStatusChange(
                                                 item.status,
                                                 item.id
-                                              );
-                                            }
-                                          : () => {
-                                              setIsDeleteModalOpen(true);
-                                            }
+                                              )
+                                          : opt.callback
                                       }
                                       className="flex items-center w-full space-x-3 py-1"
                                     >
-                                      {index === 1 ? (
+                                      {index === 2 ? (
                                         <>
                                           <div
                                             className={`${
@@ -405,7 +409,7 @@ export default function Event() {
                               <ConfirmDeleteModal
                                 title="Are you sure want to delete this event?"
                                 setIsDeleteModalOpen={setIsDeleteModalOpen}
-                                deleteTicket={deleteEventHandler(item.id)}
+                                deleteTicket={() => deleteEventHandler(item.id)}
                               />
                             )}
                           </div>
