@@ -198,7 +198,7 @@ const SignUp = () => {
               {/* </Link> */}
             </form>
           )}
-          <div className="flex items-center space-x-4 my-4 md:my-5">
+          {/* <div className="flex items-center space-x-4 my-4 md:my-5">
             <div className="basis-1/2 h-[.8px] bg-[#E7E4EB]" />
             <p className="text-sm text-[#706D73] ">or</p>
             <div className="basis-1/2 h-[.8px] bg-[#E7E4EB]" />
@@ -212,7 +212,7 @@ const SignUp = () => {
               <FcGoogle />
             </div>
             <p>Sign up with Google</p>
-          </div>
+          </div> */}
 
           <div className="mt-6 md:mt-11 text-sm">
             <p>

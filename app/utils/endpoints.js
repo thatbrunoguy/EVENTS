@@ -212,6 +212,7 @@ export const authFunctions = {
   getAccountInfo: async () => {
     const TOKEN = getData(EVENTSPARROT_USER)?.token;
     const accountId = getData(EVENTSPARROT_USER)?.account?.id;
+
     try {
       const response = await axios.get(`${BASE_URL}/account/${accountId}`, {
         headers: {
@@ -310,9 +311,7 @@ export const eventsManagamentFunctions = {
         }
       );
       console.log("response", response);
-      if (response.data && response.data.status === true) {
-        toast.success(response.data.message);
-        console.log("res", response?.data.message);
+      if (response.data.status === true) {
         return response.data.data;
       } else {
         throw new Error(response.data.message);

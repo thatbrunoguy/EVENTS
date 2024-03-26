@@ -55,6 +55,7 @@ import {
 } from "@/app/utils/endpoints";
 import toast from "react-hot-toast";
 import { FadeLoader } from "react-spinners";
+import { EventInfoType, FaqType } from "@/app/types";
 
 const ticketOptions = [
   { icon: <IoEyeSharp />, title: "View ticket type" },
@@ -63,42 +64,6 @@ const ticketOptions = [
 
 type ValuePiece = Date | null;
 
-type OrganizerType = {
-  name: string;
-  phone: string;
-};
-type LocationDetailsType = {
-  address: string;
-  latitude: string;
-  longitude: string;
-};
-
-type RequirementType = {
-  name: string;
-  required: boolean;
-  title: string;
-};
-
-type FaqType = {
-  question: string;
-  answer: string;
-};
-
-export type EventInfoType = {
-  organizer: OrganizerType;
-  name: string;
-  description: string;
-  location_type: number;
-  location_details: LocationDetailsType;
-  start_date: string;
-  end_date: string;
-  timezone: string;
-  categories: [string];
-  registration_requirements: RequirementType[];
-  medias: string[];
-  faqs: FaqType[];
-  tickets: [];
-};
 const step: Step[] = [
   {
     title: "Basic info",
@@ -138,8 +103,8 @@ const BasicInfo = () => {
   const [eventPhoto, setEventPhoto] = useState<any>([]);
   const [isLoadingBanner, setIsLoadingBanner] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
-  // TICKET
 
+  // TICKET
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [creationStatus, setCreationStatus] = useState({
@@ -151,7 +116,6 @@ const BasicInfo = () => {
     type: 1,
     name: "",
     stock: "",
-    stock_qty: 0,
     purchase_limit: 0,
     price: 0,
     description: "",
@@ -165,12 +129,12 @@ const BasicInfo = () => {
     staleTime: Infinity,
   });
 
-  const { data: eventCategoriesOptions } = useQuery({
+  const { data: eventCategoriesOptions, refetch: refetchEventCat } = useQuery({
     queryKey: ["event-categories"],
     queryFn: eventsManagamentFunctions.getCategories,
     staleTime: Infinity,
     select(data: any) {
-      return data.data.events.map((event: { id: ""; name: "" }) => ({
+      return data.events.map((event: { id: ""; name: "" }) => ({
         value: event.id,
         label: event.name.charAt(0).toUpperCase() + event.name.slice(1),
       }));
@@ -180,24 +144,19 @@ const BasicInfo = () => {
   const createEvent = useMutation({
     mutationFn: eventsManagamentFunctions.createEvent,
     onError: async (error, variables, context) => {
-      // An error happened!
       console.log(` ${error}`);
     },
     onSuccess: async (data, variables, context) => {
-      // console.log("data", data);
       router.push("/dashboard/event");
     },
   });
 
   useEffect(() => {
-    // console.log("data", data);
-
     if (data?.url && status === "success" && !imageUrl) {
       const imageUpploadFinalHandler = async () => {
         setIsLoadingBanner(true);
         try {
           const res = await uploadImage(data.url, eventPhoto[0]);
-          // console.log("res-image", res);
           setIsImageUploadEnabled(false);
           toast.success("Event banner uploaded successfully!!!");
           setImageUrl(extractUrlBeforeQueryString(data.url as string));
@@ -220,6 +179,7 @@ const BasicInfo = () => {
     isEditEventDetails: false,
     isEditEventLocation: false,
     isEditEventDateAndTime: false,
+    isEditCustomUrl: false,
   });
 
   const toggleIsCompleteByIndex = (index: number, toggleTo: boolean): void => {
@@ -243,6 +203,7 @@ const BasicInfo = () => {
     end_date: "",
     timezone: "Africa/Lagos",
     categories: [""],
+    slug: "",
     location_details: {
       address: "",
       latitude: "",
@@ -380,6 +341,13 @@ const BasicInfo = () => {
       eventInfo.location_type === 2
         ? { ...rest, tickets: [...tickets] }
         : { ...eventInfo, tickets: [...tickets] };
+    updatedEventInfo?.tickets.forEach((ticket) => {
+      //@ts-ignore
+      if (ticket?.stock === "unlimited") {
+        //@ts-ignore
+        delete ticket?.stock_qty;
+      }
+    });
     createEvent.mutate({ data: updatedEventInfo });
     console.log("EventInfo:", updatedEventInfo);
   };
@@ -414,7 +382,7 @@ const BasicInfo = () => {
 
   const backHandler = () => {
     if (creationStatus.basicInfo) {
-      router.push("/event");
+      router.push("/dashboard/event");
     } else if (creationStatus.details) {
       setCreationStatus((prev) => ({
         ...prev,
@@ -439,10 +407,6 @@ const BasicInfo = () => {
           className="w-full h-[248px] object-cover"
           // Revoke data uri after image is loaded
           onLoad={() => {
-            // console.log("file-from-me", file);
-            // console.log("status-from-me", status);
-            // console.log("isError", isError);
-
             setIsImageUploadEnabled(true);
             URL.revokeObjectURL(file.preview);
           }}
@@ -456,14 +420,22 @@ const BasicInfo = () => {
     }
   }, [viewTicketIndex]);
   useEffect(() => {
-    // console.log("eventPhoto", eventPhoto);
-
     if (eventPhoto.length > 0) {
       setEventInfo((prev) => ({ ...prev, medias: [thumbs.preview] }));
     } else if (eventPhoto.length === 0 && eventInfo.medias.length > 0) {
       setEventInfo((prev) => ({ ...prev, medias: [] }));
     }
   }, [eventPhoto]);
+
+  //this is to update the slug
+  useEffect(() => {
+    if (eventInfo.name && creationStatus.basicInfo === true) {
+      setEventInfo((prev) => ({
+        ...prev,
+        slug: eventInfo?.name?.toLowerCase()?.split(" ").join("-"),
+      }));
+    }
+  }, [eventInfo.name]);
 
   return (
     <section>
@@ -931,6 +903,88 @@ const BasicInfo = () => {
                             type="tel"
                             className="h-[56px] text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
                           />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Custom url */}
+                <div className="mt-8">
+                  {!eventDetails.isEditCustomUrl ? (
+                    <div className=" w-full py-5 border-[.3px] border-gray-300 px-6 shadow-lg rounded-md relative">
+                      <div
+                        onClick={() =>
+                          setEventDetails((prev) => ({
+                            ...prev,
+                            isEditCustomUrl: true,
+                          }))
+                        }
+                        className="absolute -top-3 -right-3 cursor-pointer hover:bg-primaryPurple hover:text-white w-12 h-12 rounded-full text-primaryPurple bg-lightPurple grid place-content-center"
+                      >
+                        <BiPencil />
+                      </div>
+                      <p className="font-semibold ">Custom Url</p>
+                      <div className="mt-4  flex items-center justify-between">
+                        <div className="w-[100%]">
+                          <p className="text-sm text-lightText">Url</p>
+                          <div className="flex">
+                            <p>eventsparrot.com/ </p>
+                            <p>{eventInfo.slug}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="border-[2px] p-6 border-primaryPurple rounded-md">
+                      <div className="flex justify-between items-center">
+                        <h2 className="text-[24px] font-semibold">
+                          Custom Url
+                        </h2>
+                        <div
+                          onClick={() =>
+                            setEventDetails((prev) => ({
+                              ...prev,
+                              isEditCustomUrl: false,
+                            }))
+                          }
+                          className="text-2xl cursor-pointer text-gray-700 hover:text-gray-400"
+                        >
+                          <FaAngleDown />
+                        </div>
+                      </div>
+
+                      <p className="text-gray-500 w-[70%] mt-2 mb-9">
+                        You can edit your url
+                      </p>
+                      <div className="flex items-center space-x-6 ">
+                        <div className="basis-full">
+                          <label
+                            className="text-sm text-gray-800"
+                            htmlFor="organizerName"
+                          >
+                            Custom url
+                          </label>
+                          <div className="grid grid-cols-3 gap-4">
+                            <input
+                              value={"eventsparrot.com/"}
+                              readOnly
+                              type="text"
+                              className="h-[56px] text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600 col-span-1"
+                            />
+                            <input
+                              // value={eventInfo.organizer.phone}
+                              value={eventInfo.slug}
+                              onChange={(e) =>
+                                setEventInfo((prev) => ({
+                                  ...prev,
+                                  slug: e.target.value,
+                                }))
+                              }
+                              type="tel"
+                              className="h-[56px] text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600 col-span-2"
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
