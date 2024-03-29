@@ -129,7 +129,7 @@ const BasicInfo = () => {
     staleTime: Infinity,
   });
 
-  const { data: eventCategoriesOptions, refetch: refetchEventCat } = useQuery({
+  const { data: eventCategoriesOptions } = useQuery({
     queryKey: ["event-categories"],
     queryFn: eventsManagamentFunctions.getCategories,
     staleTime: Infinity,

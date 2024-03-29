@@ -235,6 +235,33 @@ export const authFunctions = {
       throw error;
     }
   },
+  getUserToken: async () => {
+    const TOKEN = getData(EVENTSPARROT_USER)?.token;
+    const accountId = getData(EVENTSPARROT_USER)?.account?.id;
+
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/account/${accountId}/wallet`,
+        {
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            "X-APP-KEY": APP_KEY,
+            Authorization: `Bearer ${TOKEN}`,
+          },
+        }
+      );
+      console.log("response - account", response);
+      if (response.data && response.data.status === true) {
+        return response.data.data;
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error.response.data.message);
+      toast.error(error.response.data.message);
+      throw error;
+    }
+  },
 };
 
 export const uploadImageFunctions = {

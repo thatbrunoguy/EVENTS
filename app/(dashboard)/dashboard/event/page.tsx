@@ -137,9 +137,7 @@ export default function Event() {
 
   const {
     data: events,
-    isError,
     isLoading,
-    status,
     refetch: refetchEvent,
   } = useQuery({
     queryKey: ["events"],

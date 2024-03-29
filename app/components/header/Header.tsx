@@ -42,27 +42,30 @@ interface SelectedEventData {
 }
 const Header = ({ selectedEvent, setSelectedEvent }: Iprops) => {
   // const [selectedEvent, setSelectedEvent] = useState({ name: "" });
-  const {
-    data: events,
-    isError,
-    isLoading,
-    status,
-  } = useQuery({
+
+  const { data: events, isLoading } = useQuery({
     queryKey: ["events"],
     queryFn: eventsManagamentFunctions.getEvents,
-    select: (data): SelectedEventData[] => {
-      const selectedEvents: any = data.map((event: EventData) => ({
-        id: event.id,
-        name: event.name,
-        startDate: `${formatDate(event.start_date)} | ${formatTime(
-          event.start_date
-        )}`,
-        quantity: event.tickets[0].stock_qty,
-        price: event.tickets[0].price,
-        desc: event.tickets[0].description,
-        img: event.medias[0].thumb,
-        address: event.locations[0].address,
-      }));
+    select: (data) => {
+      const selectedEvents = data.map((event: EventData) => {
+        const startDate = event.start_date
+          ? `${formatDate(event.start_date)} | ${formatTime(event.start_date)}`
+          : null;
+        const desc = event.tickets[0]?.description || null;
+        const img = event.medias[0]?.original || null;
+        const address = event.locations[0]?.address || "Online";
+        const status = event.status;
+
+        return {
+          id: event.id || null,
+          name: event.name || null,
+          startDate,
+          desc,
+          img,
+          address,
+          status,
+        };
+      });
 
       return selectedEvents;
     },
@@ -80,7 +83,7 @@ const Header = ({ selectedEvent, setSelectedEvent }: Iprops) => {
       });
     }
   }, [events]);
-  console.log("events", events);
+  console.log("eventssss", events);
 
   return (
     <div className="w-full flex justify-center md:justify-end md:pr-7 border-b ">
@@ -105,7 +108,7 @@ const Header = ({ selectedEvent, setSelectedEvent }: Iprops) => {
           }
           transition
         >
-          {events?.map((item: any, index) => (
+          {events?.map((item: any, index: number) => (
             <MenuItem
               onClick={() => setSelectedEvent(item)}
               className="hover:bg-lightPurple"
