@@ -5,7 +5,8 @@ import Faq from "react-faq-component";
 const styles = {
   // bgColor: 'white',
   //   titleTextColor: "blue",
-  //   rowTitleColor: "blue",
+  // rowTitleColor: "blue",
+  rowTitleTextSize: "medium",
   rowContentColor: "grey",
   // arrowColor: "red",
 };

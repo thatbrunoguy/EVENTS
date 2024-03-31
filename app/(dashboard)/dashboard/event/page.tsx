@@ -62,7 +62,7 @@ export default function Event() {
   const handleCopy = (text: string) => () => {
     copy(text)
       .then(() => {
-        console.log("Copied!", { text });
+        // console.log("Copied!", { text });
         toast.success("Event link copied");
       })
       .catch((error) => {
@@ -73,11 +73,11 @@ export default function Event() {
     mutationFn: eventsManagamentFunctions.toggleEventStatus,
     onError: async (error, variables, context) => {
       // An error happened!
-      console.log(` ${error}`);
+      // console.log(` ${error}`);
     },
     onSuccess: async (data, variables, context) => {
       queryClient.invalidateQueries({ queryKey: ["events"] });
-      console.log("data", data);
+      // console.log("data", data);
     },
   });
 
@@ -85,11 +85,11 @@ export default function Event() {
     mutationFn: eventsManagamentFunctions.deleteEvent,
     onError: async (error, variables, context) => {
       // An error happened!
-      console.log(` ${error}`);
+      // console.log(` ${error}`);
     },
     onSuccess: async (data, variables, context) => {
       // Boom baby!
-      console.log("data", data);
+      // console.log("data", data);
     },
   });
 
@@ -173,7 +173,7 @@ export default function Event() {
     title: "Copy event link",
   };
 
-  console.log("events", events);
+  // console.log("events", events);
   return (
     <section className="flex">
       <Sidebar />

@@ -35,7 +35,7 @@ export default function SettingsPage() {
   const [tablist, setTablist] = useState([...tablist_]);
   const [selectedEvent, setSelectedEvent] = useState({
     name: "",
-    ticketId: "",
+    eventId: "",
   });
 
   const [accountInfo, setAccountInfo] = useState<AccountInfo>({
@@ -77,13 +77,9 @@ export default function SettingsPage() {
               />
             </div>
           ) : tablist[1].isActive ? (
-            <div>
-              <TeamManagement />
-            </div>
+            <div>{/* <TeamManagement /> */}</div>
           ) : (
-            <div>
-              <PlanManagement />
-            </div>
+            <div>{/* <PlanManagement /> */}</div>
           )}
         </div>
       </main>

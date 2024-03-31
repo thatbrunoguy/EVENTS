@@ -15,10 +15,19 @@ const headOptions = [
 ];
 
 const socials = [
-  { icon: <BsTwitterX size={20} />, url: "/" },
-  { icon: <FaLinkedinIn size={20} />, url: "/" },
-  { icon: <FaFacebookF size={20} />, url: "/" },
-  { icon: <FaInstagram size={20} />, url: "/" },
+  { icon: <BsTwitterX size={20} />, url: "https://twitter.com/events_parrot" },
+  {
+    icon: <FaLinkedinIn size={20} />,
+    url: "https://www.linkedin.com/company/eventsparrot",
+  },
+  {
+    icon: <FaFacebookF size={20} />,
+    url: "https://www.facebook.com/eventsparrot",
+  },
+  {
+    icon: <FaInstagram size={20} />,
+    url: "https://instagram.com/eventsparrot",
+  },
 ];
 
 const HomeFooter = () => {
@@ -55,7 +64,13 @@ const HomeFooter = () => {
 
         <div className="flex items-center gap-6 self-start">
           {socials.map((item, i) => (
-            <Link className="text-white" key={i} href={item.url}>
+            <Link
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-white"
+              key={i}
+              href={item.url}
+            >
               {item.icon}
             </Link>
           ))}

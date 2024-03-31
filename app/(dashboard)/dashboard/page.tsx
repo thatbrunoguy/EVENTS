@@ -1,9 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import Header from "../../components/header/Header";
 import Sidebar from "../../components/sidebar/Sidebar";
-import { HiOutlinePlusSm } from "react-icons/hi";
 import Link from "next/link";
 import { HiOutlineSpeakerWave } from "react-icons/hi2";
 import { GoInfo } from "react-icons/go";
@@ -15,9 +13,8 @@ import {
   FaMoneyBills,
   FaXTwitter,
 } from "react-icons/fa6";
-import { PiShareLight } from "react-icons/pi";
 import MobileFooter from "../../components/footer/MobileFooter";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   authFunctions,
   eventsManagamentFunctions,
@@ -56,108 +53,21 @@ const emailCampaign = [
 export default function Dashboard() {
   const [selectedEvent, setSelectedEvent] = useState({
     name: "",
-    ticketId: "",
+    eventId: "",
   });
   const [copiedText, copy] = useCopyToClipboard();
-  const eventURL = `  https://eventsparrot.vercel.app/events/${selectedEvent.ticketId}`;
+  const eventURL = `  https://eventsparrot.com/events/${selectedEvent.eventId}`;
   const handleCopy = (text: string) => () => {
     copy(text)
       .then(() => {
-        console.log("Copied!", { text });
+        // console.log("Copied!", { text });
         toast.success("Event link copied");
       })
       .catch((error) => {
         console.error("Failed to copy!", error);
       });
   };
-
-  const [tickets, setTickets] = useState<any>([
-    {
-      name: " Diamond Pass",
-      quantity: 127,
-      revenue: "₦77,500.00",
-      fees: "₦15,500.00",
-      net: "₦70,000.00",
-    },
-    {
-      name: " Diamond Pass",
-      quantity: 127,
-      revenue: "₦77,500.00",
-      fees: "₦15,500.00",
-      net: "₦70,000.00",
-    },
-    {
-      name: " Diamond Pass",
-      quantity: 127,
-      revenue: "₦77,500.00",
-      fees: "₦15,500.00",
-      net: "₦70,000.00",
-    },
-    {
-      name: " Diamond Pass",
-      quantity: 127,
-      revenue: "₦77,500.00",
-      fees: "₦15,500.00",
-      net: "₦70,000.00",
-    },
-    {
-      name: " Diamond Pass",
-      quantity: 127,
-      revenue: "₦77,500.00",
-      fees: "₦15,500.00",
-      net: "₦70,000.00",
-    },
-    {
-      name: " Diamond Pass",
-      quantity: 127,
-      revenue: "₦77,500.00",
-      fees: "₦15,500.00",
-      net: "₦70,000.00",
-    },
-    {
-      name: " Diamond Pass",
-      quantity: 127,
-      revenue: "₦77,500.00",
-      fees: "₦15,500.00",
-      net: "₦70,000.00",
-    },
-    {
-      name: " Diamond Pass",
-      quantity: 127,
-      revenue: "₦77,500.00",
-      fees: "₦15,500.00",
-      net: "₦70,000.00",
-    },
-    {
-      name: " Diamond Pass",
-      quantity: 127,
-      revenue: "₦77,500.00",
-      fees: "₦15,500.00",
-      net: "₦70,000.00",
-    },
-    {
-      name: " Diamond Pass",
-      quantity: 127,
-      revenue: "₦77,500.00",
-      fees: "₦15,500.00",
-      net: "₦70,000.00",
-    },
-    {
-      name: " Diamond Pass",
-      quantity: 127,
-      revenue: "₦77,500.00",
-      fees: "₦15,500.00",
-      net: "₦70,000.00",
-    },
-    {
-      name: " Diamond Pass",
-      quantity: 127,
-      revenue: "₦77,500.00",
-      fees: "₦15,500.00",
-      net: "₦70,000.00",
-    },
-  ]);
-
+  const queryClient = useQueryClient();
   const recommended = [
     "Send announcements to your registrants ",
     "Send announcements to your registrants ",
@@ -176,11 +86,6 @@ export default function Dashboard() {
     { key: "net", name: "Net sales revenue" },
   ];
 
-  const salesRows = tickets.map((ticket: any, index: number) => ({
-    id: index,
-    ...ticket,
-  }));
-
   const {
     data: userAccount,
     isError,
@@ -193,20 +98,20 @@ export default function Dashboard() {
   });
 
   if (status === "success") {
-    console.log("userAccount", userAccount[0]);
+    // console.log("userAccount", userAccount[0]);
     addToLocalStorage(EVENTSPARROT_USER, "account", userAccount[0]);
   }
-
+  console.log("selectedEvent changed", selectedEvent);
   const {
     data: salesAnalytics,
     isError: isSalesError,
     isLoading: isSalesLoading,
     status: salesStatus,
   } = useQuery({
-    queryKey: ["events-sales-analytics"],
+    queryKey: ["events-sales-analytics", selectedEvent.eventId],
     queryFn: () =>
-      eventsManagamentFunctions.getEventSalesAnalytics(selectedEvent?.ticketId),
-    enabled: selectedEvent.ticketId ? true : false,
+      eventsManagamentFunctions.getEventSalesAnalytics(selectedEvent?.eventId),
+    enabled: selectedEvent.eventId ? true : false,
     select: (data): SalesAnalyticsData => {
       let type1Count = 0;
       let type2Count = 0;
@@ -250,8 +155,6 @@ export default function Dashboard() {
       };
     },
   });
-
-  console.log("salesAnalytics", salesAnalytics);
 
   const salesDataFormatted = useMemo(() => {
     if (!salesAnalytics) return [];

@@ -39,7 +39,6 @@ const GoogleLocationSearch = ({
       fromPlaceId(value?.value?.place_id as string)
         .then(({ results }) => {
           const { lat, lng } = results[0].geometry.location;
-          console.log(lat, lng);
           setEventInfo &&
             setEventInfo((prev) => ({
               ...prev,

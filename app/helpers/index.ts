@@ -32,7 +32,7 @@ export const uploadImage = async (uploadURL: string, file: File) => {
             }
           );
 
-          console.log("Upload successful:", response.data);
+          // console.log("Upload successful:", response.data);
           resolve(response.data);
         } catch (error) {
           console.error("Error uploading image:", error);

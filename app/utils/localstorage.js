@@ -3,7 +3,7 @@ export function storeData(key, data) {
     try {
       const serializedData = JSON.stringify(data);
       localStorage.setItem(key, serializedData);
-      console.log(`Data stored successfully with key: ${key}`);
+      // console.log(`Data stored successfully with key: ${key}`);
     } catch (error) {
       console.error("Error storing data:", error);
     }
@@ -20,7 +20,7 @@ export function getData(key) {
       }
 
       const data = JSON.parse(serializedData);
-      console.log(`Data retrieved successfully for key: ${key}`);
+      // console.log(`Data retrieved successfully for key: ${key}`);
       return data;
     } catch (error) {
       console.error("Error retrieving data:", error);
@@ -42,9 +42,9 @@ export function updateLocalStorageField(key, path, fieldName, newValue) {
 
         // Save the updated data back to localStorage
         localStorage.setItem(key, JSON.stringify(storedData));
-        console.log(
-          `Field "${fieldName}" in "${key}" updated successfully for path "${path}".`
-        );
+        // console.log(
+        //   `Field "${fieldName}" in "${key}" updated successfully for path "${path}".`
+        // );
       } else {
         console.warn(`No item found with path: ${path}`);
       }

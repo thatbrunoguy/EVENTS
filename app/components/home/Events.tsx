@@ -13,121 +13,6 @@ const options = [
   { title: "Popular" },
 ];
 
-export const cards = [
-  {
-    id: "1",
-    name: "Study Abroad Fair in Lagos Mainland 2024",
-    date: "Sat, Feb 10th 2024 | 5pm",
-    location: "The Good Village, VI",
-    image: "/assets/event-card.png",
-  },
-  {
-    id: "2",
-    name: "Study Abroad Fair in Lagos Mainland 2024",
-    date: "Sat, Feb 10th 2024 | 5pm",
-    location: "The Good Village, VI",
-    image: "/assets/event-card.png",
-  },
-  {
-    id: "3",
-    name: "Study Abroad Fair in Lagos Mainland 2024",
-    date: "Sat, Feb 10th 2024 | 5pm",
-    location: "The Good Village, VI",
-    image: "/assets/event-card.png",
-  },
-  {
-    id: "4",
-    name: "Study Abroad Fair in Lagos Mainland 2024",
-    date: "Sat, Feb 10th 2024 | 5pm",
-    location: "The Good Village, VI",
-    image: "/assets/event-card.png",
-  },
-  {
-    id: "5",
-    name: "Study Abroad Fair in Lagos Mainland 2024",
-    date: "Sat, Feb 10th 2024 | 5pm",
-    location: "The Good Village, VI",
-    image: "/assets/event-card.png",
-  },
-  {
-    id: "6",
-    name: "Study Abroad Fair in Lagos Mainland 2024",
-    date: "Sat, Feb 10th 2024 | 5pm",
-    location: "The Good Village, VI",
-    image: "/assets/event-card.png",
-  },
-  {
-    id: "1",
-    name: "Study Abroad Fair in Lagos Mainland 2024",
-    date: "Sat, Feb 10th 2024 | 5pm",
-    location: "The Good Village, VI",
-    image: "/assets/event-card.png",
-  },
-  {
-    id: "2",
-    name: "Study Abroad Fair in Lagos Mainland 2024",
-    date: "Sat, Feb 10th 2024 | 5pm",
-    location: "The Good Village, VI",
-    image: "/assets/event-card.png",
-  },
-  {
-    id: "3",
-    name: "Study Abroad Fair in Lagos Mainland 2024",
-    date: "Sat, Feb 10th 2024 | 5pm",
-    location: "The Good Village, VI",
-    image: "/assets/event-card.png",
-  },
-  {
-    id: "4",
-    name: "Study Abroad Fair in Lagos Mainland 2024",
-    date: "Sat, Feb 10th 2024 | 5pm",
-    location: "The Good Village, VI",
-    image: "/assets/event-card.png",
-  },
-  {
-    id: "5",
-    name: "Study Abroad Fair in Lagos Mainland 2024",
-    date: "Sat, Feb 10th 2024 | 5pm",
-    location: "The Good Village, VI",
-    image: "/assets/event-card.png",
-  },
-  {
-    id: "6",
-    name: "Study Abroad Fair in Lagos Mainland 2024",
-    date: "Sat, Feb 10th 2024 | 5pm",
-    location: "The Good Village, VI",
-    image: "/assets/event-card.png",
-  },
-  {
-    id: "1",
-    name: "Study Abroad Fair in Lagos Mainland 2024",
-    date: "Sat, Feb 10th 2024 | 5pm",
-    location: "The Good Village, VI",
-    image: "/assets/event-card.png",
-  },
-  {
-    id: "2",
-    name: "Study Abroad Fair in Lagos Mainland 2024",
-    date: "Sat, Feb 10th 2024 | 5pm",
-    location: "The Good Village, VI",
-    image: "/assets/event-card.png",
-  },
-  {
-    id: "3",
-    name: "Study Abroad Fair in Lagos Mainland 2024",
-    date: "Sat, Feb 10th 2024 | 5pm",
-    location: "The Good Village, VI",
-    image: "/assets/event-card.png",
-  },
-  {
-    id: "4",
-    name: "Study Abroad Fair in Lagos Mainland 2024",
-    date: "Sat, Feb 10th 2024 | 5pm",
-    location: "The Good Village, VI",
-    image: "/assets/event-card.png",
-  },
-];
-
 type FormattedEvent = {
   event: {
     id: string;
@@ -155,7 +40,7 @@ export const Card = ({ event }: FormattedEvent) => {
     highestPrice,
   } = event;
   return (
-    <div className="w-full md:w-[295px] cursor-pointer border-[.6px] rounded-xl hover:shadow-xl  transition-all duration-300 bg-white pt-3">
+    <div className="w-[95%] mx-auto md:mx-0 md:w-[295px] cursor-pointer border-[.6px] rounded-xl hover:shadow-xl  transition-all duration-300 bg-white pt-3">
       <Link href={`/events/${id}`} className=" w-auto h-auto block">
         <div className="px-3">
           <div className="h-[181px] w-full rounded-xl relative overflow-hidden">
@@ -171,21 +56,23 @@ export const Card = ({ event }: FormattedEvent) => {
           </div>
 
           <div className="mt-4 mb-3">
-            <p className="font-semibold text-xl">{name}</p>
+            <p className="font-medium md:font-semibold text-lg md:text-xl">
+              {name}
+            </p>
 
             <div className=" flex items-center gap-3 my-5  font-light">
               <div className="text-base">
                 <LuCalendarDays />
               </div>
 
-              <p>{startDate}</p>
+              <p className="text-sm md:text-base">{startDate}</p>
             </div>
             <div className=" flex items-center gap-3 my-5 font-light">
               <div className="text-base">
                 <MdOutlineLocationOn />
               </div>
 
-              <p className="hover:underline underline-offset-2 decoration-gray-400">
+              <p className="hover:underline text-sm md:text-base underline-offset-2 decoration-gray-400">
                 {" "}
                 {address}
               </p>
@@ -245,11 +132,21 @@ const HomeEvents = ({ events }: any) => {
         </div>
 
         <hr />
-        <div className="mt-12 grid-cols-1 grid md:grid-cols-2   lg:grid-cols-3 xl:grid-cols-4 gap-8">
-          {events?.map((card: any, i: number) => (
-            <Card key={i} event={card} />
-          ))}
-        </div>
+
+        {events?.length ? (
+          <div className="mt-12 grid-cols-1 grid md:grid-cols-2   lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            {events?.map((card: any, i: number) => (
+              <Card key={i} event={card} />
+            ))}
+          </div>
+        ) : (
+          <div className="text-gray-600 mt-12 text-xs text-center md:text-base">
+            <p>
+              <span className="text-primaryPurple">Oops!!!</span> No Events
+              found for your search query
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

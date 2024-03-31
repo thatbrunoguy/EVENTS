@@ -16,10 +16,10 @@ export const authFunctions = {
           "X-APP-KEY": APP_KEY,
         },
       });
-      console.log("response", response);
+      // console.log("response", response);
       if (response.data && response.data.status === true) {
         toast.success(response.data.message);
-        console.log("res", response?.data.message);
+        // console.log("res", response?.data.message);
         storeData(EVENTSPARROT_USER, response.data.data);
         return response.data.data;
       } else {
@@ -41,10 +41,10 @@ export const authFunctions = {
           Authorization: `Bearer ${TOKEN}`,
         },
       });
-      console.log("response", response);
+      // console.log("response", response);
       if (response.data && response.data.status === true) {
         toast.success("Email Verification Complete");
-        console.log("res", response?.data.message);
+        // console.log("res", response?.data.message);
         return response.data.data;
       } else {
         throw new Error(response.data.message);
@@ -65,10 +65,10 @@ export const authFunctions = {
           Authorization: `Bearer ${TOKEN}`,
         },
       });
-      console.log("response", response);
+      // console.log("response", response);
       if (response.data && response.data.status === true) {
         toast.success(response.data.message);
-        console.log("res", response?.data.message);
+        // console.log("res", response?.data.message);
         return response.data.data;
       } else {
         throw new Error(response.data.message);
@@ -93,10 +93,10 @@ export const authFunctions = {
           },
         }
       );
-      console.log("response", response);
+      // console.log("response", response);
       if (response.data && response.data.status === true) {
         toast.success(response.data.message);
-        console.log("res", response?.data.message);
+        // console.log("res", response?.data.message);
         return response.data.data;
       } else {
         throw new Error(response.data.message);
@@ -117,10 +117,10 @@ export const authFunctions = {
           Authorization: `Bearer ${TOKEN}`,
         },
       });
-      console.log("response", response);
+      // console.log("response", response);
       if (response.data && response.data.status === true) {
         toast.success(response.data.message);
-        console.log("res", response?.data.message);
+        // console.log("res", response?.data.message);
         return response.data.data;
       } else {
         throw new Error(response.data.message);
@@ -141,10 +141,10 @@ export const authFunctions = {
           Authorization: `Bearer ${TOKEN}`,
         },
       });
-      console.log("response", response);
+      // console.log("response", response);
       if (response?.data && response?.data?.status === true) {
         toast.success(response.data.message);
-        console.log("res", response?.data.message);
+        // console.log("res", response?.data.message);
         return response?.data?.data?.redirect;
       } else {
         throw new Error(response?.data?.message);
@@ -165,10 +165,10 @@ export const authFunctions = {
           Authorization: `Bearer ${TOKEN}`,
         },
       });
-      console.log("response", response);
+      // console.log("response", response);
       if (response.data && response.data.status === true) {
         toast.success(response.data.message);
-        console.log("res", response?.data.message);
+        // console.log("res", response?.data.message);
         return response.data.data;
       } else {
         throw new Error(response.data.message);
@@ -194,10 +194,10 @@ export const authFunctions = {
           },
         }
       );
-      console.log("response - account", response);
+      // console.log("response - account", response);
       if (response.data && response.data.status === true) {
         toast.success(response.data.message);
-        console.log("res", response?.data.message);
+        // console.log("res", response?.data.message);
         return response.data.data;
       } else {
         throw new Error(response.data.message);
@@ -221,18 +221,14 @@ export const authFunctions = {
           Authorization: `Bearer ${TOKEN}`,
         },
       });
-      console.log("response - account", response);
       if (response.data && response.data.status === true) {
         toast.success(response.data.message);
-        console.log("res", response?.data.message);
         return response.data.data;
       } else {
         throw new Error(response.data.message);
       }
     } catch (error) {
-      console.error("Error fetching data:", error.response.data.message);
       toast.error(error.response.data.message);
-      throw error;
     }
   },
   getUserToken: async () => {
@@ -252,21 +248,21 @@ export const authFunctions = {
       );
       console.log("response - account", response);
       if (response.data && response.data.status === true) {
+        toast.success(response.data.message);
+        console.log("res", response?.data.message);
         return response.data.data;
       } else {
         throw new Error(response.data.message);
       }
     } catch (error) {
-      console.error("Error fetching data:", error.response.data.message);
       toast.error(error.response.data.message);
-      throw error;
     }
   },
 };
 
 export const uploadImageFunctions = {
   getInitialURL: async (imageName) => {
-    console.log("ImageNmae::: ", imageName);
+    // console.log("ImageNmae::: ", imageName);
     const TOKEN = getData(EVENTSPARROT_USER)?.token;
     try {
       const response = await axios.get(
@@ -279,9 +275,9 @@ export const uploadImageFunctions = {
           },
         }
       );
-      console.log("response", response);
+      // console.log("response", response);
       if (response.data && response.status === 200) {
-        console.log("res", response?.data);
+        // console.log("res", response?.data);
         return response.data;
       } else {
         throw new Error(response.status);
@@ -297,7 +293,7 @@ export const eventsManagamentFunctions = {
   createEvent: async (data) => {
     const TOKEN = getData(EVENTSPARROT_USER)?.token;
     const accountId = getData(EVENTSPARROT_USER)?.account?.id;
-    console.log("userAccountId", accountId);
+    // console.log("userAccountId", accountId);
     try {
       const response = await axios.post(
         `${BASE_URL}/account/${accountId}/event`,
@@ -310,10 +306,10 @@ export const eventsManagamentFunctions = {
           },
         }
       );
-      console.log("response", response);
+      // console.log("response", response);
       if (response.data && response.data.status === true) {
         toast.success(response.data.message);
-        console.log("res", response?.data.message);
+        // console.log("res", response?.data.message);
         return response.data.data;
       } else {
         throw new Error(response.data.message);
@@ -364,10 +360,10 @@ export const eventsManagamentFunctions = {
           },
         }
       );
-      console.log("response", response);
+      // console.log("response", response);
       if (response.data && response.data.status === true) {
         // toast.success(response.data.message);
-        console.log("res", response?.data.message);
+        // console.log("res", response?.data.message);
         return response.data.data.events;
       } else {
         throw new Error(response.data.message);
@@ -394,12 +390,12 @@ export const eventsManagamentFunctions = {
           },
         }
       );
-      console.log("response-set-inactive", response);
+      // console.log("response-set-inactive", response);
       if (response.data && response.data.status === true) {
         toast.success(
           `Event has been set to ${status === 1 ? "Inactive" : "Active"}`
         );
-        console.log("res", response?.data.message);
+        // console.log("res", response?.data.message);
         return response.data.data.events;
       } else {
         throw new Error(response.data.message);
@@ -451,10 +447,10 @@ export const eventsManagamentFunctions = {
           Authorization: `Bearer ${TOKEN}`,
         },
       });
-      console.log("response - orders", response);
+      // console.log("response - orders", response);
       if (response?.data && response?.data?.status === true) {
         toast.success(response?.data?.message);
-        console.log("res", response?.data.message);
+        // console.log("res", response?.data.message);
         return response?.data?.data?.orders;
       } else {
         throw new Error(response?.data?.message);
@@ -477,10 +473,10 @@ export const eventsManagamentFunctions = {
           Authorization: `Bearer ${TOKEN}`,
         },
       });
-      console.log("response - orders", response);
+      // console.log("response - orders", response);
       if (response?.data && response?.data?.status === true) {
         toast.success(response?.data?.message);
-        console.log("res", response?.data.message);
+        // console.log("res", response?.data.message);
         return response?.data?.data;
       } else {
         throw new Error(response?.data?.message);
@@ -494,7 +490,7 @@ export const eventsManagamentFunctions = {
   checkInAttendee: async ({ id, eventId }) => {
     const TOKEN = getData(EVENTSPARROT_USER)?.token;
     const accountId = getData(EVENTSPARROT_USER)?.account?.id;
-    console.log("userAccountId", accountId);
+    // console.log("userAccountId", accountId);
     try {
       const response = await axios.get(
         `${BASE_URL}/event/${eventId}/check-in?${accountId}`,
@@ -507,10 +503,10 @@ export const eventsManagamentFunctions = {
           },
         }
       );
-      console.log("response", response);
+      // console.log("response", response);
       if (response.data && response.data.status === true) {
         toast.success(response.data.message);
-        console.log("res", response?.data.message);
+        // console.log("res", response?.data.message);
         return response.data.data;
       } else {
         throw new Error(response.data.message);
@@ -560,10 +556,10 @@ export const guestFunctions = {
           "X-APP-KEY": APP_KEY,
         },
       });
-      console.log("response", response);
+      // console.log("response", response);
       if (response.data && response.data.status === true) {
         // toast.success(response.data.message);
-        console.log("res", response?.data.message);
+        // console.log("res", response?.data.message);
         return response.data.data.events;
       } else {
         throw new Error(response.data.message);
@@ -582,10 +578,10 @@ export const guestFunctions = {
           "X-APP-KEY": APP_KEY,
         },
       });
-      console.log("response", response);
+      // console.log("response", response);
       if (response.data && response.data.status === true) {
         // toast.success(response.data.message);
-        console.log("res", response?.data.message);
+        // console.log("res", response?.data.message);
         return response.data.data.event;
       } else {
         throw new Error(response.data.message);
@@ -598,8 +594,8 @@ export const guestFunctions = {
   },
 
   bookEvent: async ({ myData, eventId }) => {
-    console.log("data", myData);
-    console.log("eventId", myData);
+    // console.log("data", myData);
+    // console.log("eventId", myData);
     try {
       const response = await axios.post(
         `${BASE_URL}/events/${eventId}/order`,
@@ -611,7 +607,7 @@ export const guestFunctions = {
           },
         }
       );
-      console.log("response", response.data.data);
+      // console.log("response", response.data.data);
       if (response) {
         // toast.success(response.data.message);
         return response.data.data.url;
@@ -633,10 +629,10 @@ export const guestFunctions = {
           "X-APP-KEY": APP_KEY,
         },
       });
-      console.log("response", response);
+      // console.log("response", response);
       if (response.data && response.data.status === true) {
         // toast.success(response.data.message);
-        console.log("res", response?.data.message);
+        // console.log("res", response?.data.message);
         return response.data.data.events;
       } else {
         throw new Error(response.data.message);

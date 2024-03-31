@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import HomeHeader from "../components/home/Header";
 import Image from "next/image";
 import HomeCategories from "../components/home/Categories";
@@ -13,7 +13,23 @@ import { guestFunctions } from "@/app/utils/endpoints";
 import { EventData } from "../(dashboard)/dashboard/event/page";
 import { formatDate, formatDate2, formatTime } from "../helpers";
 
+export type EventType = {
+  id: string;
+  name: string;
+  startDate: string;
+  quantity: number;
+  tickets: [];
+  lowestPrice: number;
+  highestPrice: number;
+  desc: string;
+  img: string;
+  address: string;
+};
+
 const Home = () => {
+  const [guestEvents, setGuestsEvent] = useState<EventType[] | null>(null);
+
+  const [searchTerm, setSearchTerm] = useState("");
   const {
     data: events,
     isError,
@@ -22,8 +38,8 @@ const Home = () => {
   } = useQuery({
     queryKey: ["events-guest"],
     queryFn: guestFunctions.getEvents,
-    select: (data) => {
-      const selectedEvents: EventData[] = data.map((event: EventData) => {
+    select: (data): EventType[] => {
+      const selectedEvents = data.map((event: EventData) => {
         let lowestPrice = Number.MAX_VALUE;
         let highestPrice = 0;
 
@@ -71,12 +87,15 @@ const Home = () => {
       return selectedEvents;
     },
   });
+  useEffect(() => {
+    setGuestsEvent(events as EventType[]);
+  }, [events]);
 
   return (
     <section>
       {/* HERO */}
       <div className="w-[98%] mx-auto">
-        <div className="relative h-[50vh] mt-6">
+        <div className="relative h-[50vh] md:h-[56vh] mt-6">
           <div className="h-full relative w-full rounded-lg overflow-hidden ">
             <Image
               className="object-cover"
@@ -87,7 +106,13 @@ const Home = () => {
             />
           </div>
           <div className="absolute w-[95%] md:w-[80%] -bottom-10 z-10 transform left-1/2 -translate-x-1/2">
-            <LocationSearchBar />
+            <LocationSearchBar
+              guestEvents={guestEvents}
+              setGuestsEvent={setGuestsEvent}
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+              events={events as EventType[]}
+            />
           </div>
         </div>
       </div>
@@ -97,7 +122,7 @@ const Home = () => {
       </div>
 
       <div className="md:mt-[84px] mb-16 md:mb-0 md:pb-[84px] w-full bg-white">
-        <HomeEvents events={events} />
+        <HomeEvents events={guestEvents} />
       </div>
       {/* <div className=" w-full pb-[84px] bg-[#FBFAFC]">
         <VirtualEvents events={events} />

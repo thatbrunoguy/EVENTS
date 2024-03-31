@@ -55,7 +55,7 @@ const categoriesOptions = [
 
 const HomeCategories = () => {
   return (
-    <div className="w-[90%] mx-auto flex scrollbar-hide pb-8 items-center justify-center gap-10 overflow-x-scroll mt-20 md:mt-[126px]">
+    <div className="w-[90%] mx-auto flex scrollbar-hide pb-8 items-center justify-center gap-10 overflow-x-scroll mt-[74px] md:mt-[126px]">
       {categoriesOptions.map((category) => (
         <Link
           href={`/events/category/${category.url}`}

@@ -13,92 +13,92 @@ import { eventsManagamentFunctions } from "@/app/utils/endpoints";
 
 const CheckIns = () => {
   const [options, setOptions] = useState<any>([
-    {
-      team: "Timilehin Adegbulugbe",
-      status: "Free Ticket",
-    },
-    {
-      team: "Timilehin Adegbulugbe",
-      status: "Free Ticket",
-    },
-    {
-      team: "Timilehin Adegbulugbe",
-      status: "Paid Ticket",
-    },
-    {
-      team: "Timilehin Adegbulugbe",
-      status: "Free Ticket",
-    },
-    {
-      team: "Timilehin Adegbulugbe",
-      status: "Free Ticket",
-    },
-    {
-      team: "Timilehin Adegbulugbe",
-      status: "Paid Ticket",
-    },
-    {
-      team: "Timilehin Adegbulugbe",
-      status: "Free Ticket",
-    },
-    {
-      team: "Timilehin Adegbulugbe",
-      status: "Paid Ticket",
-    },
-    {
-      team: "Timilehin Adegbulugbe",
-      status: "Free Ticket",
-    },
-    {
-      team: "Timilehin Adegbulugbe",
-      status: "Paid Ticket",
-    },
-    {
-      team: "Timilehin Adegbulugbe",
-      status: "Free Ticket",
-    },
-    {
-      team: "Timilehin Adegbulugbe",
-      status: "Paid Ticket",
-    },
-    {
-      team: "Timilehin Adegbulugbe",
-      status: "Free Ticket",
-    },
-    {
-      team: "Timilehin Adegbulugbe",
-      status: "Paid Ticket",
-    },
-    {
-      team: "Timilehin Adegbulugbe",
-      status: "Free Ticket",
-    },
-    {
-      team: "Timilehin Adegbulugbe",
-      status: "Paid Ticket",
-    },
-    {
-      team: "Timilehin Adegbulugbe",
-      status: "Free Ticket",
-    },
-    {
-      team: "Timilehin Adegbulugbe",
-      status: "Paid Ticket",
-    },
+    // {
+    //   team: "Timilehin Adegbulugbe",
+    //   status: "Free Ticket",
+    // },
+    // {
+    //   team: "Timilehin Adegbulugbe",
+    //   status: "Free Ticket",
+    // },
+    // {
+    //   team: "Timilehin Adegbulugbe",
+    //   status: "Paid Ticket",
+    // },
+    // {
+    //   team: "Timilehin Adegbulugbe",
+    //   status: "Free Ticket",
+    // },
+    // {
+    //   team: "Timilehin Adegbulugbe",
+    //   status: "Free Ticket",
+    // },
+    // {
+    //   team: "Timilehin Adegbulugbe",
+    //   status: "Paid Ticket",
+    // },
+    // {
+    //   team: "Timilehin Adegbulugbe",
+    //   status: "Free Ticket",
+    // },
+    // {
+    //   team: "Timilehin Adegbulugbe",
+    //   status: "Paid Ticket",
+    // },
+    // {
+    //   team: "Timilehin Adegbulugbe",
+    //   status: "Free Ticket",
+    // },
+    // {
+    //   team: "Timilehin Adegbulugbe",
+    //   status: "Paid Ticket",
+    // },
+    // {
+    //   team: "Timilehin Adegbulugbe",
+    //   status: "Free Ticket",
+    // },
+    // {
+    //   team: "Timilehin Adegbulugbe",
+    //   status: "Paid Ticket",
+    // },
+    // {
+    //   team: "Timilehin Adegbulugbe",
+    //   status: "Free Ticket",
+    // },
+    // {
+    //   team: "Timilehin Adegbulugbe",
+    //   status: "Paid Ticket",
+    // },
+    // {
+    //   team: "Timilehin Adegbulugbe",
+    //   status: "Free Ticket",
+    // },
+    // {
+    //   team: "Timilehin Adegbulugbe",
+    //   status: "Paid Ticket",
+    // },
+    // {
+    //   team: "Timilehin Adegbulugbe",
+    //   status: "Free Ticket",
+    // },
+    // {
+    //   team: "Timilehin Adegbulugbe",
+    //   status: "Paid Ticket",
+    // },
   ]);
 
   const [customerId, setCustomerId] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState({
     name: "",
-    ticketId: "",
+    eventId: "",
   });
 
   const checkInAttendee = useMutation({
     mutationFn: eventsManagamentFunctions.checkInAttendee,
     onError: async (error, variables, context) => {},
     onSuccess: async (data, variables, context) => {
-      console.log("checkin-attendee", data);
+      // console.log("checkin-attendee", data);
     },
   });
 
@@ -161,7 +161,7 @@ const CheckIns = () => {
                   setIsModalOpen(true);
                   checkInAttendee.mutate({
                     id: customerId,
-                    eventId: selectedEvent.ticketId,
+                    eventId: selectedEvent.eventId,
                   });
                 }}
                 className="w-full h-12 grid place-content-center bg-primaryPurple text-sm text-white rounded-md hover:bg-opacity-70 "
