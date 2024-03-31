@@ -521,6 +521,34 @@ export const eventsManagamentFunctions = {
       throw error;
     }
   },
+
+  getEventById: async ({ eventId }) => {
+    const TOKEN = getData(EVENTSPARROT_USER)?.token;
+    const accountId = getData(EVENTSPARROT_USER)?.account?.id;
+
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/account/${accountId}/event/${eventId}`,
+        {
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            "X-APP-KEY": APP_KEY,
+            Authorization: `Bearer ${TOKEN}`,
+          },
+        }
+      );
+      if (response.data && response.data.status === true) {
+        console.log("res", response?.data);
+        return response.data.data.event;
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error.response.data.message);
+      return error.response.data.message;
+      throw error;
+    }
+  },
 };
 
 export const guestFunctions = {

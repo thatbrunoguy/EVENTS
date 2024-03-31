@@ -22,46 +22,8 @@ import { useCopyToClipboard } from "@/app/hooks";
 import toast from "react-hot-toast";
 import { IoMdSettings } from "react-icons/io";
 import ConfirmDeleteModal from "@/app/components/modals/ConfirmDelete";
-
-type Ticket = {
-  id: string;
-  event_id: string;
-  name: string;
-  description: string;
-  price: number;
-  stock: string;
-  stock_qty: number;
-  purchase_limit: number;
-  quantity_limit_per_person: number | null;
-  currency: string;
-  type: number;
-  status: number;
-  created_at: string;
-  updated_at: string;
-};
-
-type Media = {
-  original: string;
-  thumb: string;
-};
-
-type Location = {
-  id: string;
-  event_id: string;
-  type: number;
-  latitude: string;
-  longitude: string;
-  country_code: string | null;
-  country: string | null;
-  city: string | null;
-  zipcode: string | null;
-  address: string;
-  link: string | null;
-  meta: any | null;
-  status: number;
-  created_at: string;
-  updated_at: string;
-};
+import { Location, Media, Ticket } from "@/app/types";
+import { useRouter } from "next/navigation";
 
 export type EventData = {
   id: string;
@@ -93,7 +55,7 @@ type FormattedEvent = {
 export default function Event() {
   const [copiedText, copy] = useCopyToClipboard();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  // const [selectedEvent, setSelectedEvent] = useState({ id: "" });
+  const router = useRouter();
 
   const queryClient = useQueryClient();
 
@@ -151,8 +113,6 @@ export default function Event() {
           event.tickets[0]?.stock_qty != null
             ? event.tickets[0].stock_qty
             : null;
-        // const price =
-        //   event.tickets[0]?.price != null ? event.tickets[0].price : null;
         const lowestPrice = Math.min(
           ...event.tickets.map((ticket: any) => ticket.price)
         );
@@ -191,7 +151,6 @@ export default function Event() {
     {
       icon: <HiPencil />,
       title: "Edit event",
-      callback: () => console.log("edit event"),
     },
     {
       icon: <IoMdSettings />,
@@ -338,7 +297,12 @@ export default function Event() {
                                   >
                                     <div
                                       onClick={
-                                        index === 2
+                                        index === 0
+                                          ? () =>
+                                              router.push(
+                                                `/dashboard/event/edit-event/${item?.id}`
+                                              )
+                                          : index === 2
                                           ? () =>
                                               handleEventStatusChange(
                                                 item.status,

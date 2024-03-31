@@ -37,3 +37,43 @@ export type EventInfoType = {
   tickets: [];
   slug: string;
 };
+
+export type Ticket = {
+  id: string;
+  event_id: string;
+  name: string;
+  description: string;
+  price: number;
+  stock: string;
+  stock_qty: number;
+  purchase_limit: number;
+  quantity_limit_per_person: number | null;
+  currency: string;
+  type: number;
+  status: number;
+  created_at: string;
+  updated_at: string;
+};
+
+export type Media = {
+  original: string;
+  thumb: string;
+};
+
+export type Location = {
+  id: string;
+  event_id: string;
+  type: number;
+  latitude: string;
+  longitude: string;
+  country_code: string | null;
+  country: string | null;
+  city: string | null;
+  zipcode: string | null;
+  address: string;
+  link: string | null;
+  meta: any | null;
+  status: number;
+  created_at: string;
+  updated_at: string;
+};
