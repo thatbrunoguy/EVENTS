@@ -30,10 +30,12 @@
     "app/components/select/ReactSelect.jsx",
     "app/components/fileUpload/FileUpload.jsx",
     "app/components/table/GlobalTable.tsx",
+    "app/utils/endpoints",
     "app/utils/endpoints.js",
     "app/hooks/auth-hook.js",
     "app/hooks/auth-hook.js",
-    "app/(dashboard)/dashboard/test/page.jsx"
+    "app/(dashboard)/dashboard/test/page.jsx",
+    "app/utils/countries.js"
   ],
   "exclude": ["node_modules"]
 }
