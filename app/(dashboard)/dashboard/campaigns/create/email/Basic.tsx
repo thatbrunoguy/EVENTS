@@ -4,13 +4,15 @@ import ReactQuillEditor from "@/app/components/Reactquill";
 import ReactSelectOptions from "@/app/components/select/ReactSelect";
 import { FaFacebookF, FaLinkedin } from "react-icons/fa6";
 import { FaInstagram, FaTiktok, FaTwitter, FaYoutube } from "react-icons/fa";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { RiDeleteBin6Fill } from "react-icons/ri";
 import FileUpload from "@/app/components/fileUpload/FileUpload";
+import { EmailAdContext } from "./EmailAdsContext";
 
 const CreateEmailCampaignBasic = () => {
   const [eventPhoto, setEventPhoto] = useState<any>([]);
   const [selectedOption, setSelectedOption] = useState({});
+  const { data, setData, setMailContent } = useContext(EmailAdContext);
 
   const thumbs = eventPhoto.map((file: any) => (
     <div key={file.name}>
@@ -32,13 +34,17 @@ const CreateEmailCampaignBasic = () => {
       <div className="mt-9 w-full">
         <h2 className="text-[24px] font-semibold mb-9">Campaign Information</h2>
         <div>
-          <label className="text-sm text-gray-800" htmlFor="organizerName">
+          <label className="text-sm text-gray-800" htmlFor="name">
             Campaign name <span className="text-red-500">*</span>
           </label>
           <input
             type="text"
             placeholder="Quick description of your Event name"
             className="h-[56px] text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
+            onChange={(e) =>
+              //@ts-ignore
+              setData((prev) => ({ ...prev, name: e.target.value }))
+            }
           />
         </div>
         <div className="my-6">
@@ -49,6 +55,10 @@ const CreateEmailCampaignBasic = () => {
             type="text"
             placeholder="e.g Organisers name"
             className="h-[56px] text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
+            onChange={(e) =>
+              //@ts-ignore
+              setData((prev) => ({ ...prev, from_email: e.target.value }))
+            }
           />
         </div>
         <div>
@@ -56,9 +66,13 @@ const CreateEmailCampaignBasic = () => {
             Reply-to email address <span className="text-red-500">*</span>
           </label>
           <input
-            type="text"
+            type="email"
             placeholder="e.g adegbulugbeisrael@gmail.com"
             className="h-[56px] text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
+            onChange={(e) =>
+              //@ts-ignore
+              setData((prev) => ({ ...prev, reply_to_email: e.target.value }))
+            }
           />
         </div>
 
@@ -78,6 +92,10 @@ const CreateEmailCampaignBasic = () => {
               type="text"
               placeholder="Quick description of your Event name"
               className="h-[56px] text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
+              onChange={(e) =>
+                //@ts-ignore
+                setData((prev) => ({ ...prev, name: e.target.value }))
+              }
             />
           </div>
           <div className="my-6">
@@ -85,26 +103,30 @@ const CreateEmailCampaignBasic = () => {
               className="text-sm mb-2 block text-gray-800"
               htmlFor="organizerName"
             >
-              Address <span className="text-red-500">*</span>
+              Street <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
               placeholder="Select category"
               className="h-[56px] text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
+              onChange={(e) =>
+                //@ts-ignore
+                setMailContent((prev) => ({ ...prev, street: e.target.value }))
+              }
             />
           </div>
           <div className="my-6">
-            <label
-              className="text-sm mb-2 block text-gray-800"
-              htmlFor="organizerName"
-            >
+            <label className="text-sm mb-2 block text-gray-800" htmlFor="city">
               City <span className="text-red-500">*</span>
             </label>
 
-            <ReactSelectOptions
-              options={[]}
-              setSelectedOption={setSelectedOption}
-              selectedOption={selectedOption}
+            <input
+              type="text"
+              className="h-[56px] text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
+              onChange={(e) =>
+                //@ts-ignore
+                setMailContent((prev) => ({ ...prev, city: e.target.value }))
+              }
             />
           </div>
 
@@ -112,14 +134,17 @@ const CreateEmailCampaignBasic = () => {
             <div className="basis-1/2">
               <label
                 className="text-sm text-gray-800 block mb-2"
-                htmlFor="organizerName"
+                htmlFor="state"
               >
                 State <span className="text-red-500">*</span>
               </label>
-              <ReactSelectOptions
-                options={[]}
-                setSelectedOption={setSelectedOption}
-                selectedOption={selectedOption}
+              <input
+                type="text"
+                className="h-[56px] text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
+                onChange={(e) =>
+                  //@ts-ignore
+                  setMailContent((prev) => ({ ...prev, state: e.target.value }))
+                }
               />
             </div>
             <div className="basis-1/2">
@@ -129,12 +154,35 @@ const CreateEmailCampaignBasic = () => {
               >
                 Postal Code <span className="text-red-500">*</span>
               </label>
-              <ReactSelectOptions
-                options={[]}
-                setSelectedOption={setSelectedOption}
-                selectedOption={selectedOption}
+              <input
+                type="text"
+                className="h-[56px] text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
+                onChange={(e) =>
+                  //@ts-ignore
+                  setMailContent((prev) => ({
+                    ...prev,
+                    postalCode: e.target.value,
+                  }))
+                }
               />
             </div>
+          </div>
+          <div className="my-6">
+            <label
+              className="text-sm mb-2 block text-gray-800"
+              htmlFor="organizerName"
+            >
+              Country <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              placeholder="Select category"
+              className="h-[56px] text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
+              onChange={(e) =>
+                //@ts-ignore
+                setMailContent((prev) => ({ ...prev, country: e.target.value }))
+              }
+            />
           </div>
           {/* SOCIALS */}
           {/* FACEBOOK */}
@@ -154,6 +202,13 @@ const CreateEmailCampaignBasic = () => {
                 type="text"
                 placeholder="Select category"
                 className="w-full h-full outline-none border-none bg-transparent"
+                onChange={(e) =>
+                  //@ts-ignore
+                  setMailContent((prev) => ({
+                    ...prev,
+                    facebookLink: e.target.value,
+                  }))
+                }
               />
             </div>
           </div>
@@ -176,6 +231,13 @@ const CreateEmailCampaignBasic = () => {
                 type="text"
                 placeholder="Select category"
                 className="w-full h-full outline-none border-none bg-transparent"
+                onChange={(e) =>
+                  //@ts-ignore
+                  setMailContent((prev) => ({
+                    ...prev,
+                    instagramLink: e.target.value,
+                  }))
+                }
               />
             </div>
           </div>
@@ -197,6 +259,13 @@ const CreateEmailCampaignBasic = () => {
                 type="text"
                 placeholder="Select category"
                 className="w-full h-full outline-none border-none bg-transparent"
+                onChange={(e) =>
+                  //@ts-ignore
+                  setMailContent((prev) => ({
+                    ...prev,
+                    xLink: e.target.value,
+                  }))
+                }
               />
             </div>
           </div>
@@ -219,6 +288,13 @@ const CreateEmailCampaignBasic = () => {
                 type="text"
                 placeholder="Select category"
                 className="w-full h-full outline-none border-none bg-transparent"
+                onChange={(e) =>
+                  //@ts-ignore
+                  setMailContent((prev) => ({
+                    ...prev,
+                    linkedinLink: e.target.value,
+                  }))
+                }
               />
             </div>
           </div>
@@ -241,6 +317,13 @@ const CreateEmailCampaignBasic = () => {
                 type="text"
                 placeholder="Select category"
                 className="w-full h-full outline-none border-none bg-transparent"
+                onChange={(e) =>
+                  //@ts-ignore
+                  setMailContent((prev) => ({
+                    ...prev,
+                    tiktokLink: e.target.value,
+                  }))
+                }
               />
             </div>
           </div>
@@ -263,6 +346,13 @@ const CreateEmailCampaignBasic = () => {
                 type="text"
                 placeholder="Select category"
                 className="w-full h-full outline-none border-none bg-transparent"
+                onChange={(e) =>
+                  //@ts-ignore
+                  setMailContent((prev) => ({
+                    ...prev,
+                    youtubeLink: e.target.value,
+                  }))
+                }
               />
             </div>
           </div>

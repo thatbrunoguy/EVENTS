@@ -9,6 +9,7 @@ import { HiOutlineMenuAlt4 } from "react-icons/hi";
 const headOptions = [
   { title: "FAQ", url: "faq" },
   { title: "Events", url: "" },
+  { title: "Contact us", url: "contact" },
   // { title: "Terms of service", url: "terms" },
   // { title: "Privacy Policy", url: "privacy-policy" },
 ];
