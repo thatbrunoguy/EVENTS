@@ -116,34 +116,51 @@ const Checkout = ({ params }: { params: { slug: string } }) => {
     // const res = calculateTotalPrice();
     // console.log("Total", res);
 
-    const filterOrderFields = () => {
-      const addAttendeeTickets = tickets.map((ticket: any) => ({
-        ...ticket,
-        attendee: {
-          ...userCheckoutInfo.attendee,
-        },
-      }));
+    // const filterOrderFields = () => {
+    //   const addAttendeeTickets = tickets.map((ticket: any) => ({
+    //     ...ticket,
+    //     attendee: {
+    //       ...userCheckoutInfo.attendee,
+    //     },
+    //   }));
 
-      return addAttendeeTickets
-        .filter((ticket: any) => ticket.quantity > 0)
-        .map((ticket: any) => {
-          const {
-            ticket_id,
-            quantity,
-            attendee: { first_name, last_name, email },
-          } = ticket;
-          return {
-            ticket_id,
-            quantity,
-            attendee: { first_name, last_name, email },
-          };
-        });
+    //   return addAttendeeTickets
+    //     .filter((ticket: any) => ticket.quantity > 0)
+    //     .map((ticket: any) => {
+    //       const {
+    //         ticket_id,
+    //         quantity,
+    //         attendee: { first_name, last_name, email },
+    //       } = ticket;
+    //       return {
+    //         ticket_id,
+    //         quantity,
+    //         attendee: { first_name, last_name, email },
+    //       };
+    //     });
+    // };
+
+    const filterOrderFields = () => {
+      const orders = tickets
+        .map((ticket: any) => ({
+          ticket_id: ticket.ticket_id,
+          quantity: ticket.quantity,
+        }))
+        .filter((ticket: any) => ticket.quantity > 0);
+
+      const buyer = userCheckoutInfo.attendee;
+
+      return {
+        buyer: buyer,
+        order: orders,
+      };
     };
 
     const finalOrder = filterOrderFields();
     // console.log("finalOrder", { orders: finalOrder });
-    const myData = { orders: finalOrder };
-    if (finalOrder.length) {
+    const myData = finalOrder;
+    if (finalOrder.order.length) {
+      // console.log("myData", myData);
       bookEvent.mutate({ myData, eventId: params?.slug });
     } else {
       toast.error("Kindly select a ticket at least to checkout");

@@ -214,6 +214,7 @@ export default function Guestlist() {
       eventsManagamentFunctions.getEventSalesAnalytics(selectedEvent?.eventId),
     enabled: selectedEvent.eventId ? true : false,
     select: (data): SalesAnalyticsData => {
+      console.log("DAta--", data);
       let type1Count = 0;
       let type2Count = 0;
       let totalCount = 0;
@@ -234,7 +235,7 @@ export default function Guestlist() {
 
         return {
           ticket: {
-            ticket_id: item.ticket.ticked_id,
+            ticket_id: item.ticket.id,
             name: item.ticket.name,
             price: item.ticket.price,
             type: item.ticket.type,
@@ -258,6 +259,7 @@ export default function Guestlist() {
     },
   });
   const salesDataFormatted = useMemo(() => {
+    console.log("salesAnalytics", salesAnalytics);
     if (!salesAnalytics) return [];
 
     return salesAnalytics.salesData.map((item) => ({

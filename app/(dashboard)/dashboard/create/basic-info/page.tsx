@@ -170,13 +170,12 @@ const BasicInfo = () => {
     queryFn: eventsManagamentFunctions.getCategories,
     // staleTime: Infinity,
     select(data: any) {
-      return data.data.events.map((event: { id: ""; name: "" }) => ({
+      return data.events.map((event: { id: ""; name: "" }) => ({
         value: event.id,
         label: event.name.charAt(0).toUpperCase() + event.name.slice(1),
       }));
     },
   });
-
   const createEvent = useMutation({
     mutationFn: eventsManagamentFunctions.createEvent,
     onError: async (error, variables, context) => {
