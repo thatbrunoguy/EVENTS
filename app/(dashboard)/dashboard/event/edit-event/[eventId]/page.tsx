@@ -1,7 +1,8 @@
 "use client";
 
+import { useParams } from "next/navigation";
 import React from "react";
-import CreateAndEditEvent from "../CreateAndEditEvent";
+import CreateAndEditEvent from "../../../create/CreateAndEditEvent";
 
 const page = () => {
   return (

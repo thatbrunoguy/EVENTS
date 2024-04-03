@@ -21,10 +21,10 @@ export type TicketInfo = {
   type: number;
   name: string;
   stock: string;
-  stock_qty: number;
+  stock_qty?: number;
   purchase_limit: number;
   price: number;
-  description: string;
+  description?: string;
 };
 
 type IProps = {
@@ -218,31 +218,37 @@ const AddTicketType = ({
           {/* Ticket stock / Price */}
 
           <div className="flex items-center space-x-6 mt-7">
-            <div className="basis-1/2">
-              <label
-                className="text-sm text-gray-800"
-                htmlFor="ticketStockCount"
-              >
-                How many ticket stock?{" "}
-                <span className="text-red-500">{/* * */}</span>
-              </label>
-              <input
-                value={ticketInfo.stock_qty}
-                onChange={(e) => {
-                  if (/^\d*$/.test(e.target.value)) {
-                    setTicketInfo((prev) => ({
-                      ...prev,
-                      stock_qty: Number(e.target.value),
-                    }));
-                  }
-                }}
-                id="ticketStockCount"
-                type="tel"
-                className="h-12 text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
-              />
-            </div>
+            {ticketInfo.stock === "limited" && (
+              <div className="basis-1/2">
+                <label
+                  className="text-sm text-gray-800"
+                  htmlFor="ticketStockCount"
+                >
+                  How many ticket stock?{" "}
+                  <span className="text-red-500">{/* * */}</span>
+                </label>
+                <input
+                  value={ticketInfo.stock_qty}
+                  onChange={(e) => {
+                    if (/^\d*$/.test(e.target.value)) {
+                      setTicketInfo((prev) => ({
+                        ...prev,
+                        stock_qty: Number(e.target.value),
+                      }));
+                    }
+                  }}
+                  id="ticketStockCount"
+                  type="tel"
+                  className="h-12 text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
+                />
+              </div>
+            )}
             {ticketInfo.type === 2 && (
-              <div className="basis-1/2 relative">
+              <div
+                className={`${
+                  ticketInfo.stock === "unlimited" ? "basis-full" : "basis-1/2"
+                } relative`}
+              >
                 <label className="text-sm text-gray-800" htmlFor="ticketPrice">
                   Ticket price <span className="text-red-500">*</span>
                 </label>
