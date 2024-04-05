@@ -4,7 +4,7 @@ import ReactQuillEditor from "@/app/components/Reactquill";
 import FileUpload from "@/app/components/fileUpload/FileUpload";
 import { TabsComponent2 } from "@/app/components/tabs/Tabs";
 import Image from "next/image";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { GoSearch } from "react-icons/go";
 import { RiDeleteBin6Fill } from "react-icons/ri";
 import { EmailAdContext } from "./EmailAdsContext";
@@ -12,37 +12,14 @@ import { useQuery } from "@tanstack/react-query";
 import { eventsManagamentFunctions } from "@/app/utils/endpoints";
 import { formatDate, formatTime } from "@/app/helpers";
 import { EventData } from "../../../event/page";
+import { EventObj } from "@/app/types";
 
 const CreateEmailCampaignContent = () => {
-  const [options, setOptions] = useState([
-    {
-      title: " Eko convections centre",
-      desc: "Lekki paradise estate 3, chevron drive",
-      date: "Saturday, October 22, 2023 | 7:30pm",
-    },
-    {
-      title: " Eko convections centre",
-      desc: "Lekki paradise estate 3, chevron drive",
-      date: "Saturday, October 22, 2023 | 7:30pm",
-    },
-    {
-      title: " Eko convections centre",
-      desc: "Lekki paradise estate 3, chevron drive",
-      date: "Saturday, October 22, 2023 | 7:30pm",
-    },
-    {
-      title: " Eko convections centre",
-      desc: "Lekki paradise estate 3, chevron drive",
-      date: "Saturday, October 22, 2023 | 7:30pm",
-    },
-  ]);
-
-  const { setData, setMailContent } = useContext(EmailAdContext);
-
+  const { setData, setMailContent, mailContent } = useContext(EmailAdContext);
   const [eventPhoto, setEventPhoto] = useState<any>([]);
-  const [value, setValue] = useState("");
   const [searchValue, setSearchValue] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef(null);
 
   const { data: events, isLoading } = useQuery({
     queryKey: ["events"],
@@ -71,13 +48,49 @@ const CreateEmailCampaignContent = () => {
     },
   });
 
-  const filteredEvents = events.filter((event: any) =>
+  const filteredEvents = events?.filter((event: any) =>
     event?.name.toLowerCase().includes(searchValue.toLowerCase())
   );
 
   const handleInputFocus = () => {
     setShowDropdown(true);
   };
+
+  const handleCheckboxClick = (event: EventObj) => {
+    //@ts-ignore
+    setMailContent((prev) => {
+      const isSelected = prev.selectedEvents.some(
+        (e: EventObj) => e.id === event.id
+      );
+      if (isSelected) {
+        return {
+          ...prev,
+          selectedEvents: prev.selectedEvents.filter(
+            (e: EventObj) => e.id !== event.id
+          ),
+        };
+      } else {
+        return {
+          ...prev,
+          selectedEvents: [...prev.selectedEvents, event],
+        };
+      }
+    });
+  };
+
+  const handleClickOutside = (event: any) => {
+    //@ts-ignore
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setShowDropdown(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const thumbs = eventPhoto.map((file: any) => (
     <div key={file.name}>
@@ -111,24 +124,41 @@ const CreateEmailCampaignContent = () => {
               className="block bg-transparent w-full h-full outline-none border-none"
               onChange={(e) => setSearchValue(e.target.value)}
               onFocus={handleInputFocus}
-              onBlur={() => setShowDropdown(false)}
+              // onBlur={() => setShowDropdown(false)}
               autoComplete="off"
             />
           </div>
           {showDropdown ? (
             filteredEvents?.length > 0 ? (
-              <div className="absolute top-full left-0 bg-white border border-gray-200 rounded-lg shadow-lg mt-2 z-10">
+              <div
+                ref={dropdownRef}
+                className="absolute top-full left-0 bg-white border border-gray-200 rounded-lg shadow-lg mt-2 z-10"
+              >
                 <ul>
-                  {filteredEvents.map((result: any, index: number) => (
+                  {filteredEvents.map((result: EventObj, index: number) => (
                     <li
                       key={index}
                       className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                      onClick={(e) => {
+                        setShowDropdown(true);
+                        e.stopPropagation();
+                        handleCheckboxClick(result);
+                      }}
                     >
                       <div className="w-full flex items-center space-x-3 mb-8">
                         <div className="">
                           <input
                             type="checkbox"
                             className=" w-5 h-5 accent-primaryPurple"
+                            checked={
+                              !!mailContent.selectedEvents.find(
+                                (e) => e.id === result.id
+                              )
+                            }
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleCheckboxClick(result);
+                            }}
                           />
                         </div>
                         <div className="flex items-center space-x-5 p-3">
@@ -156,7 +186,10 @@ const CreateEmailCampaignContent = () => {
                 </ul>
               </div>
             ) : (
-              <div className="absolute top-full left-0 bg-white border border-gray-200 rounded-lg shadow-lg mt-2 z-10 p-4 ">
+              <div
+                ref={dropdownRef}
+                className="absolute top-full left-0 bg-white border border-gray-200 rounded-lg shadow-lg mt-2 z-10 p-4 "
+              >
                 <p>No event found for your search</p>
               </div>
             )
@@ -169,18 +202,15 @@ const CreateEmailCampaignContent = () => {
         </div>
 
         {events?.slice(0, 2)?.map((event: any) => (
-          <div className="w-full flex items-center space-x-3 mb-8">
+          <div className="w-full flex items-center space-x-3 mb-4">
             <div className="">
               <input
                 type="checkbox"
                 className=" w-5 h-5 accent-primaryPurple"
-                onClick={() =>
-                  //@ts-ignore
-                  setMailContent((prev) => ({
-                    ...prev,
-                    selectedEvents: prev.selectedEvents.push(event),
-                  }))
+                checked={
+                  !!mailContent.selectedEvents.find((e) => e.id === event.id)
                 }
+                onClick={() => handleCheckboxClick(event)}
               />
             </div>
             <div className="flex items-center space-x-5 p-3">
@@ -220,11 +250,41 @@ const CreateEmailCampaignContent = () => {
         <div className="my-6">
           <label
             className="text-sm block text-gray-800 mb-2"
+            htmlFor="emailHeader"
+          >
+            Email header <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            className="h-[56px] text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
+            onChange={(e) =>
+              setMailContent((prev: any) => ({
+                ...prev,
+                emailHeader: e.target.value,
+              }))
+            }
+            value={mailContent?.emailHeader}
+          />
+        </div>
+
+        <div className="my-6">
+          <label
+            className="text-sm block text-gray-800 mb-2"
             htmlFor="organizerName"
           >
             Description of your event <span className="text-red-500">*</span>
           </label>
-          <ReactQuillEditor setValue={setValue} value={value} />
+          <input
+            type="text"
+            className="h-[56px] text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
+            onChange={(e) =>
+              setMailContent((prev: any) => ({
+                ...prev,
+                emailDescription: e.target.value,
+              }))
+            }
+            value={mailContent?.emailDescription}
+          />
         </div>
 
         <h2 className="text-[24px] font-semibold my-9">Header image</h2>
@@ -242,7 +302,12 @@ const CreateEmailCampaignContent = () => {
               onClick={() => setEventPhoto([])}
               className="w-[72px] h-[72px] cursor-pointer text-3xl transition-all duration-300 ease-in-out hover:text-red-500 hover:bg-red-100 rounded-full bg-white grid place-content-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
             >
-              <RiDeleteBin6Fill onClick={() => setEventPhoto([])} />
+              <RiDeleteBin6Fill
+                onClick={() => {
+                  setEventPhoto([]);
+                  setMailContent((prev: any) => ({ ...prev, media: [] }));
+                }}
+              />
             </div>
             <div className="w-full">{thumbs}</div>
           </div>

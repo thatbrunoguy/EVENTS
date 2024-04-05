@@ -108,7 +108,6 @@ const CreateAndEditEvent = () => {
   const [isLoadingBanner, setIsLoadingBanner] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
   const [enableGetEvent, setEnableGetEvent] = useState(false);
-  console.log("eventId", eventId);
 
   // TICKET
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -166,7 +165,7 @@ const CreateAndEditEvent = () => {
 
   useEffect(() => {
     if (data?.url && status === "success" && !imageUrl) {
-      const imageUpploadFinalHandler = async () => {
+      const imageUploadFinalHandler = async () => {
         setIsLoadingBanner(true);
         try {
           const res = await uploadImage(data.url, eventPhoto[0]);
@@ -183,7 +182,7 @@ const CreateAndEditEvent = () => {
           setIsLoadingBanner(false);
         }
       };
-      imageUpploadFinalHandler();
+      imageUploadFinalHandler();
     }
   }, [isImageUploadEnabled, status]);
 

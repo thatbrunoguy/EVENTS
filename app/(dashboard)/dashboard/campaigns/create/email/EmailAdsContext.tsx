@@ -1,4 +1,13 @@
+import { useRouter } from "next/navigation";
 import { ReactNode, createContext, useState } from "react";
+
+type EventObj = {
+  img: string;
+  address: string;
+  name: string;
+  startDate: string;
+  id: string;
+};
 
 type DProps = {
   setData: (value: any) => void;
@@ -21,9 +30,16 @@ type DProps = {
     linkedinLink: string;
     tiktokLink: string;
     youtubeLink: string;
-    selectedEvents: Array<Object>;
+    selectedEvents: EventObj[];
+    organizersName: string;
+    emailHeader: string;
+    emailDescription: string;
+    media: string[];
   };
   setMailContent: (value: any) => void;
+  createEmailCampaign: () => void;
+  isComplete: boolean;
+  goBack: () => void;
 };
 
 const defaultValue: DProps = {
@@ -48,8 +64,15 @@ const defaultValue: DProps = {
     tiktokLink: "",
     youtubeLink: "",
     selectedEvents: [],
+    organizersName: "",
+    emailHeader: "",
+    emailDescription: "",
+    media: [],
   },
   setMailContent: () => {},
+  createEmailCampaign: () => {},
+  isComplete: false,
+  goBack: () => {},
 };
 
 export const EmailAdContext = createContext<DProps>(defaultValue);
@@ -59,6 +82,7 @@ type IProps = {
 };
 
 export const EmailAdContextProvider = ({ children }: IProps) => {
+  const router = useRouter();
   const [data, setData] = useState({
     name: "Campaign Name",
     subject: "",
@@ -80,11 +104,41 @@ export const EmailAdContextProvider = ({ children }: IProps) => {
     tiktokLink: "",
     youtubeLink: "",
     selectedEvents: [],
+    organizersName: "",
+    emailHeader: "Email Header",
+    emailDescription:
+      "  Don't miss out! Fill in the email below with a captivating description of these must-attend events.",
+    media: [],
   });
+
+  const createEmailCampaign = () => {
+    console.log("data", data);
+  };
+
+  const goBack = () => {
+    router.push("/dashboard/campaigns");
+  };
+
+  const isComplete =
+    !!data.from_email &&
+    !!data.html_content &&
+    !!data.name &&
+    !!data.reply_to_email &&
+    !!data.subject &&
+    mailContent.selectedEvents.length > 0 &&
+    mailContent.emailHeader !== "Email Header";
 
   return (
     <EmailAdContext.Provider
-      value={{ data, setData, mailContent, setMailContent }}
+      value={{
+        data,
+        setData,
+        mailContent,
+        setMailContent,
+        createEmailCampaign,
+        isComplete,
+        goBack,
+      }}
     >
       {children}
     </EmailAdContext.Provider>

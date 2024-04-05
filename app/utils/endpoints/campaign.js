@@ -57,4 +57,28 @@ export const campaignFn = {
       return error.response.data.message;
     }
   },
+  createEmailCampaign: async ({ eventId, body }) => {
+    const TOKEN = getData(EVENTSPARROT_USER)?.token;
+    try {
+      const response = await axios.post(
+        `${BASE_URL}/event/${eventId}/email-campaign`,
+        body,
+        {
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            "X-APP-KEY": APP_KEY,
+            Authorization: `Bearer ${TOKEN}`,
+          },
+        }
+      );
+
+      if (response.data && response.data.status === true) {
+        return response.data.message;
+      } else {
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      return error.response.data.message;
+    }
+  },
 };

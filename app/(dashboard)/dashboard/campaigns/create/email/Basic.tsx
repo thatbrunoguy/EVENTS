@@ -4,15 +4,21 @@ import ReactQuillEditor from "@/app/components/Reactquill";
 import ReactSelectOptions from "@/app/components/select/ReactSelect";
 import { FaFacebookF, FaLinkedin } from "react-icons/fa6";
 import { FaInstagram, FaTiktok, FaTwitter, FaYoutube } from "react-icons/fa";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { RiDeleteBin6Fill } from "react-icons/ri";
 import FileUpload from "@/app/components/fileUpload/FileUpload";
 import { EmailAdContext } from "./EmailAdsContext";
+import { uploadImageFunctions } from "@/app/utils/endpoints";
+import { useQuery } from "@tanstack/react-query";
+import { toast } from "react-hot-toast";
+import { extractUrlBeforeQueryString, uploadImage } from "@/app/helpers";
 
 const CreateEmailCampaignBasic = () => {
   const [eventPhoto, setEventPhoto] = useState<any>([]);
-  const [selectedOption, setSelectedOption] = useState({});
-  const { data, setData, setMailContent } = useContext(EmailAdContext);
+  const [isImageUploadEnabled, setImageUploadEnabled] = useState(false);
+  const [isLoadingBanner, setIsLoadingBanner] = useState(false);
+  const { data, setData, mailContent, setMailContent } =
+    useContext(EmailAdContext);
 
   const thumbs = eventPhoto.map((file: any) => (
     <div key={file.name}>
@@ -22,12 +28,42 @@ const CreateEmailCampaignBasic = () => {
           className="w-full h-full object-cover"
           // Revoke data uri after image is loaded
           onLoad={() => {
+            setImageUploadEnabled(true);
             URL.revokeObjectURL(file.preview);
           }}
         />
       </div>
     </div>
   ));
+
+  const { data: imageUrl, status } = useQuery({
+    queryKey: ["event-banner"],
+    queryFn: () => uploadImageFunctions.getInitialURL(eventPhoto[0].name),
+    enabled: isImageUploadEnabled,
+    staleTime: Infinity,
+  });
+
+  useEffect(() => {
+    if (imageUrl?.url && status === "success" && !mailContent.media.length) {
+      const imageUploadFinalHandler = async () => {
+        setIsLoadingBanner(true);
+        try {
+          const res = await uploadImage(imageUrl.url, eventPhoto[0]);
+          setImageUploadEnabled(false);
+          toast.success("Ad banner uploaded successfully!!!");
+          setMailContent((prev: any) => ({
+            ...prev,
+            media: [extractUrlBeforeQueryString(imageUrl.url as string)],
+          }));
+        } catch {
+          toast.error("Something went wrong!!!");
+        } finally {
+          setIsLoadingBanner(false);
+        }
+      };
+      imageUploadFinalHandler();
+    }
+  }, [isImageUploadEnabled, status]);
 
   return (
     <div className="w-full h-full flex">
@@ -41,6 +77,7 @@ const CreateEmailCampaignBasic = () => {
             type="text"
             placeholder="Quick description of your Event name"
             className="h-[56px] text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
+            value={data.name}
             onChange={(e) =>
               //@ts-ignore
               setData((prev) => ({ ...prev, name: e.target.value }))
@@ -52,8 +89,9 @@ const CreateEmailCampaignBasic = () => {
             From <span className="text-red-500">*</span>
           </label>
           <input
-            type="text"
-            placeholder="e.g Organisers name"
+            type="email"
+            placeholder="e.g johndoe@gmail.com"
+            value={data.from_email}
             className="h-[56px] text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
             onChange={(e) =>
               //@ts-ignore
@@ -69,6 +107,7 @@ const CreateEmailCampaignBasic = () => {
             type="email"
             placeholder="e.g adegbulugbeisrael@gmail.com"
             className="h-[56px] text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
+            value={data.reply_to_email}
             onChange={(e) =>
               //@ts-ignore
               setData((prev) => ({ ...prev, reply_to_email: e.target.value }))
@@ -94,7 +133,10 @@ const CreateEmailCampaignBasic = () => {
               className="h-[56px] text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
               onChange={(e) =>
                 //@ts-ignore
-                setData((prev) => ({ ...prev, name: e.target.value }))
+                setMailContent((prev) => ({
+                  ...prev,
+                  organizersName: e.target.value,
+                }))
               }
             />
           </div>
@@ -200,7 +242,7 @@ const CreateEmailCampaignBasic = () => {
               <input
                 id="facebook"
                 type="text"
-                placeholder="Select category"
+                placeholder="e.g https://www.facebook.com/user"
                 className="w-full h-full outline-none border-none bg-transparent"
                 onChange={(e) =>
                   //@ts-ignore
@@ -227,9 +269,9 @@ const CreateEmailCampaignBasic = () => {
                 <FaInstagram />
               </label>
               <input
-                id="facebook"
+                id="instagram"
                 type="text"
-                placeholder="Select category"
+                placeholder="e.g https://www.instagram.com/user"
                 className="w-full h-full outline-none border-none bg-transparent"
                 onChange={(e) =>
                   //@ts-ignore
@@ -255,9 +297,9 @@ const CreateEmailCampaignBasic = () => {
                 <FaTwitter />
               </label>
               <input
-                id="facebook"
+                id="twitter"
                 type="text"
-                placeholder="Select category"
+                placeholder="e.g https://twitter.com/user"
                 className="w-full h-full outline-none border-none bg-transparent"
                 onChange={(e) =>
                   //@ts-ignore
@@ -284,9 +326,9 @@ const CreateEmailCampaignBasic = () => {
                 <FaLinkedin />
               </label>
               <input
-                id="facebook"
+                id="linkedIn"
                 type="text"
-                placeholder="Select category"
+                placeholder="e.g https://www.linkedin.com/user"
                 className="w-full h-full outline-none border-none bg-transparent"
                 onChange={(e) =>
                   //@ts-ignore
