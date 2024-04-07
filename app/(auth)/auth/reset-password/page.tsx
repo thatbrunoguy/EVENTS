@@ -34,7 +34,7 @@ const ResetPassword = () => {
     mutationFn: authFunctions.resetPassword,
     onError: async (error, variables, context) => {},
     onSuccess: async (data, variables, context) => {
-      console.log("reset-password", data);
+      // console.log("reset-password", data);
       router.push("/auth/login");
     },
   });

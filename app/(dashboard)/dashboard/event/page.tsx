@@ -173,7 +173,6 @@ export default function Event() {
     title: "Copy event link",
   };
 
-  // console.log("events", events);
   return (
     <section className="flex">
       <Sidebar />
@@ -271,6 +270,7 @@ export default function Event() {
                                 backgroundColor: "white",
                                 border: "1px solid #E7E4EB",
                                 borderRadius: 8,
+                                zIndex: 50,
                                 width: 230,
                                 height: 240,
                                 padding: 6,

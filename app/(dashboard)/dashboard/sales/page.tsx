@@ -17,7 +17,8 @@ import GlobalTable from "../../../components/table/GlobalTable";
 import { useQuery } from "@tanstack/react-query";
 import { eventsManagamentFunctions } from "@/app/utils/endpoints";
 import { PrimaryLoading2 } from "@/app/components/loaders/PrimaryLoading";
-
+import MainTable from "@/app/components/table/MainTable";
+import { CSVLink, CSVDownload } from "react-csv";
 export type SalesAnalyticsData = {
   salesData: {
     ticket: {
@@ -213,6 +214,7 @@ export default function Guestlist() {
       eventsManagamentFunctions.getEventSalesAnalytics(selectedEvent?.eventId),
     enabled: selectedEvent.eventId ? true : false,
     select: (data): SalesAnalyticsData => {
+      console.log("DAta--", data);
       let type1Count = 0;
       let type2Count = 0;
       let totalCount = 0;
@@ -233,7 +235,7 @@ export default function Guestlist() {
 
         return {
           ticket: {
-            ticket_id: item.ticket.ticked_id,
+            ticket_id: item.ticket.id,
             name: item.ticket.name,
             price: item.ticket.price,
             type: item.ticket.type,
@@ -257,6 +259,7 @@ export default function Guestlist() {
     },
   });
   const salesDataFormatted = useMemo(() => {
+    console.log("salesAnalytics", salesAnalytics);
     if (!salesAnalytics) return [];
 
     return salesAnalytics.salesData.map((item) => ({
@@ -277,10 +280,7 @@ export default function Guestlist() {
           <h3 className="mb-3 text-black text-base">
             CSV file exported successfully
           </h3>
-          <p>
-            The csv format of your guestlist has been exported to your mail.
-            Check spam folder if you can&apos;t see it.
-          </p>
+          <p>The csv format of your guestlist has been exported</p>
         </div>
       </div>,
       {
@@ -298,7 +298,7 @@ export default function Guestlist() {
   return (
     <section className="flex">
       <ToastContainer
-        toastClassName="w-[500px]"
+        toastClassName="w-[90%] md:w-[400px]"
         progressStyle={{ background: "#7431B8" }}
       />
       <Sidebar />
@@ -351,7 +351,12 @@ export default function Guestlist() {
                     <div>
                       <PiShareLight />
                     </div>
-                    <p>Export as CSV</p>
+                    <CSVLink
+                      data={salesDataFormatted}
+                      headers={ticketColumns as []}
+                    >
+                      <p>Export as CSV</p>
+                    </CSVLink>
                   </button>
                 </div>
 
@@ -383,6 +388,7 @@ export default function Guestlist() {
 
                 {/* <GlobalTable columns={paymentColumns} rows={paymentRows} /> */}
                 <GlobalTable columns={paymentColumns} rows={[]} />
+                {/* <MainTable /> */}
               </div>
             </>
           )}

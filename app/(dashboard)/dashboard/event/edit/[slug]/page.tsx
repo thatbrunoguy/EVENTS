@@ -10,11 +10,13 @@ import "react-time-picker/dist/TimePicker.css";
 import "react-clock/dist/Clock.css";
 import "react-date-picker/dist/DatePicker.css";
 import "react-calendar/dist/Calendar.css";
-import ReactSelectOptions from "@/app/components/select/ReactSelect";
+// import ReactSelectOptions from "../../../../components/select/ReactSelect";
 import MainFooter from "@/app/components/footer/MainFooter";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import GoogleLocationSearch from "@/app/components/googleLocationSearch";
 import {
+  addLinkStyling,
+  computeDateTime,
   extractUrlBeforeQueryString,
   formatDate,
   formatTime,
@@ -53,16 +55,147 @@ import {
 } from "@/app/utils/endpoints";
 import toast from "react-hot-toast";
 import { FadeLoader } from "react-spinners";
-import { EventInfoType, FaqType } from "@/app/types";
-import PrimaryLoading from "@/app/components/loaders/PrimaryLoading";
+import ReactSelectOptions from "@/app/components/select/ReactSelect";
+import moment from "moment";
 
 const ticketOptions = [
   { icon: <IoEyeSharp />, title: "View ticket type" },
   { icon: <RiDeleteBin6Fill />, title: "Delete ticket type" },
 ];
 
+interface RegistrationRequirement {
+  name: string;
+  required: boolean;
+}
+
+interface Media {
+  original: string;
+  thumb: string;
+}
+
+interface Organizer {
+  id: string;
+  event_id: string;
+  name: string;
+  email: string | null;
+  phone: string;
+  status: number;
+  created_at: string;
+  updated_at: string;
+}
+
+interface Ticket {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  type: number;
+  status: number;
+  stock: string;
+  stock_qty: number;
+  purchase_limit: number;
+  quantity_limit_per_person: number;
+  created_at: string;
+}
+
+interface FAQ {
+  id: string;
+  event_id: string;
+  question: string;
+  answer: string;
+  order: number;
+  status: number;
+  created_at: string;
+  updated_at: string;
+}
+
+interface Location {
+  id: string;
+  event_id: string;
+  type: number;
+  latitude: string;
+  longitude: string;
+  country_code: string | null;
+  country: string | null;
+  city: string | null;
+  zipcode: string | null;
+  address: string;
+  link: string | null;
+  meta: any | null;
+  status: number;
+  created_at: string;
+  updated_at: string;
+}
+
+interface Category {
+  id: string;
+  name: string;
+  slug: string;
+  status: number;
+  created_at: string;
+  updated_at: string;
+  pivot: {
+    event_id: string;
+    event_category_id: string;
+  };
+}
+
+interface EventEditType {
+  id: string;
+  account_id: string;
+  name: string;
+  start_date: string;
+  end_date: string;
+  timezone: string;
+  registration_requirements: RegistrationRequirement[];
+  description: string;
+  medias: Media[];
+  status: number;
+  organizer: Organizer;
+  tickets: Ticket[];
+  faqs: FAQ[];
+  locations: Location[];
+  categories: Category[];
+}
+
 type ValuePiece = Date | null;
 
+type OrganizerType = {
+  name: string;
+  phone: string;
+};
+type LocationDetailsType = {
+  address: string;
+  latitude: string;
+  longitude: string;
+};
+
+type RequirementType = {
+  name: string;
+  required: boolean;
+  title: string;
+};
+
+type FaqType = {
+  question: string;
+  answer: string;
+};
+
+export type EventInfoType = {
+  organizer: OrganizerType;
+  name: string;
+  description: string;
+  location_type: number;
+  location_details: LocationDetailsType;
+  start_date: string;
+  end_date: string;
+  timezone: string;
+  categories: [string];
+  registration_requirements: RequirementType[];
+  medias: string[];
+  faqs: FaqType[];
+  tickets: [];
+};
 const step: Step[] = [
   {
     title: "Basic info",
@@ -81,12 +214,7 @@ const step: Step[] = [
 
 export type Value = ValuePiece | [ValuePiece, ValuePiece];
 
-type CProps = {
-  eventId?: string | number | string[];
-};
-
-const CreateAndEditEvent = () => {
-  const { eventId } = useParams();
+const BasicInfoEdit = ({ params }: { params: { slug: string } }) => {
   const [steps, setSteps] = useState<Step[]>(step);
   const [startDate, setStartDate] = useState<Value>(new Date());
   const [startTime, setStartTime] = useState<any>("10:00");
@@ -107,9 +235,8 @@ const CreateAndEditEvent = () => {
   const [eventPhoto, setEventPhoto] = useState<any>([]);
   const [isLoadingBanner, setIsLoadingBanner] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
-  const [enableGetEvent, setEnableGetEvent] = useState(false);
-
   // TICKET
+
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [creationStatus, setCreationStatus] = useState({
@@ -120,14 +247,15 @@ const CreateAndEditEvent = () => {
   const [ticketInfo, setTicketInfo] = useState<TicketInfo>({
     type: 1,
     name: "",
-    stock: "unlimited",
+    stock: "",
+    stock_qty: 0,
     purchase_limit: 0,
     price: 0,
-    // description: "",
+    description: "",
   });
 
   // DETAILS
-  const { data, status } = useQuery({
+  const { data, isError, isLoading, status } = useQuery({
     queryKey: ["event-banner"],
     queryFn: () => uploadImageFunctions.getInitialURL(eventPhoto[0].name),
     enabled: isImageUploadEnabled,
@@ -139,36 +267,34 @@ const CreateAndEditEvent = () => {
     queryFn: eventsManagamentFunctions.getCategories,
     staleTime: Infinity,
     select(data: any) {
-      return data.events.map((event: { id: ""; name: "" }) => ({
+      return data.data.events.map((event: { id: ""; name: "" }) => ({
         value: event.id,
         label: event.name.charAt(0).toUpperCase() + event.name.slice(1),
       }));
     },
   });
 
-  const createEvent = useMutation({
-    mutationFn: eventsManagamentFunctions.createEvent,
+  const editEvent = useMutation({
+    mutationFn: eventsManagamentFunctions.editEvent,
     onError: async (error, variables, context) => {
+      // An error happened!
       console.log(` ${error}`);
     },
     onSuccess: async (data, variables, context) => {
+      // console.log("data", data);
       router.push("/dashboard/event");
     },
   });
 
-  const { data: event, isLoading: isLoadingEvent } = useQuery({
-    queryKey: ["getEvent"],
-    //@ts-ignore
-    queryFn: () => eventsManagamentFunctions.getEventById({ eventId: eventId }),
-    enabled: enableGetEvent,
-  });
-
   useEffect(() => {
+    // console.log("data", data);
+
     if (data?.url && status === "success" && !imageUrl) {
-      const imageUploadFinalHandler = async () => {
+      const imageUpploadFinalHandler = async () => {
         setIsLoadingBanner(true);
         try {
           const res = await uploadImage(data.url, eventPhoto[0]);
+          // console.log("res-image", res);
           setIsImageUploadEnabled(false);
           toast.success("Event banner uploaded successfully!!!");
           setImageUrl(extractUrlBeforeQueryString(data.url as string));
@@ -182,7 +308,7 @@ const CreateAndEditEvent = () => {
           setIsLoadingBanner(false);
         }
       };
-      imageUploadFinalHandler();
+      imageUpploadFinalHandler();
     }
   }, [isImageUploadEnabled, status]);
 
@@ -191,7 +317,6 @@ const CreateAndEditEvent = () => {
     isEditEventDetails: false,
     isEditEventLocation: false,
     isEditEventDateAndTime: false,
-    isEditCustomUrl: false,
   });
 
   const toggleIsCompleteByIndex = (index: number, toggleTo: boolean): void => {
@@ -205,7 +330,6 @@ const CreateAndEditEvent = () => {
       });
     });
   };
-
   const [eventInfo, setEventInfo] = useState<EventInfoType>({
     organizer: { name: "", phone: "" },
     name: "",
@@ -215,7 +339,6 @@ const CreateAndEditEvent = () => {
     end_date: "",
     timezone: "Africa/Lagos",
     categories: [""],
-    slug: "",
     location_details: {
       address: "",
       latitude: "",
@@ -235,57 +358,122 @@ const CreateAndEditEvent = () => {
     tickets: [],
   });
 
-  //trigger get event by id
-  useEffect(() => {
-    if (eventId) {
-      setEnableGetEvent(true);
-    }
-  }, []);
-  console.log("eventsss", event);
-  //update initial state when editing event
-  useEffect(() => {
-    if (event && eventId) {
-      eventInfo.organizer.name = event.organizer.name;
-      eventInfo.organizer.phone = event.organizer.phone;
-      eventInfo.name = event.name;
-      eventInfo.description = event.description;
-      setQuillValue(event.description);
-      eventInfo.location_type = event.location_type;
-      setIsOnlineEvent(event.locations.length === 1 ? true : false);
-      eventInfo.location_details.address = event?.locations[0]?.address;
-      eventInfo.location_details.latitude = event?.locations[0]?.latitude;
-      eventInfo.location_details.longitude = event?.locations[0]?.longitude;
-      setStartDate(new Date(event.start_date));
-      setEndDate(new Date(event.end_date));
-      eventInfo.timezone = event.timezone;
-      eventInfo.categories = event.categories[0].id;
-      setSelectedOption(event.categories[0].id);
-      eventInfo.slug = event.slug;
-      eventInfo.registration_requirements = event.registration_requirements;
-      eventInfo.medias = event.medias;
-      eventInfo.faqs = event.faqs;
-      eventInfo.tickets = event.tickets;
-      event.tickets.map((ev: any) => {
-        setTicketInfo((prev) => ({
-          ...prev,
-          type: ev.type,
-          name: ev.name,
-          stock: ev.stock,
-          stock_qty: ev.stock_qty,
-          price: ev.price,
-          purchase_limit: ev.purchase_limit,
-          description: ev.description,
-        }));
-      });
+  const { data: eventInfoEdit_ } = useQuery({
+    queryKey: ["event", params?.slug],
+    queryFn: () => eventsManagamentFunctions.getEventById(params.slug),
+    staleTime: Infinity,
+  });
+  const eventInfoEdit: EventEditType = eventInfoEdit_;
 
-      eventInfo.medias = event.medias[0].original;
-      setImageUrl(event.medias[0].original);
-      setEventPhoto([event.medias[0].original]);
+  useEffect(() => {
+    if (eventInfoEdit) {
+      setEventInfo({
+        organizer: {
+          name: eventInfoEdit?.organizer?.name,
+          phone: eventInfoEdit?.organizer?.phone,
+        },
+        name: eventInfoEdit?.name,
+        description: eventInfoEdit?.description,
+        location_type:
+          eventInfoEdit?.locations.length > 0
+            ? eventInfoEdit?.locations[0]?.type
+            : 2,
+        categories: eventInfoEdit.categories
+          ? [eventInfoEdit.categories[0]?.id]
+          : [""],
+        location_details:
+          eventInfoEdit?.locations.length > 0
+            ? {
+                address: eventInfoEdit?.locations[0]?.address || "",
+                latitude: eventInfoEdit?.locations[0]?.latitude || "",
+                longitude: eventInfoEdit?.locations[0]?.longitude || "",
+              }
+            : {
+                address: "",
+                latitude: "",
+                longitude: "",
+              },
+        // @ts-ignore
+        registration_requirements: eventInfoEdit.registration_requirements,
+        medias: [eventInfoEdit?.medias[0]?.original],
+        faqs: eventInfoEdit?.faqs,
+        // @ts-ignore
+        tickets: eventInfoEdit?.tickets?.map(
+          ({
+            name,
+            description,
+            price,
+            type,
+            stock,
+            stock_qty,
+            purchase_limit,
+          }) => ({
+            name,
+            description,
+            price,
+            type,
+            stock,
+            stock_qty,
+            purchase_limit,
+          })
+        ),
+      });
+      const extractedTickets = eventInfoEdit?.tickets?.map(
+        ({
+          name,
+          description,
+          price,
+          type,
+          stock,
+          stock_qty,
+          purchase_limit,
+        }) => ({
+          name,
+          description,
+          price,
+          type,
+          stock,
+          stock_qty,
+          purchase_limit,
+        })
+      );
+
+      setQuillValue(eventInfoEdit?.description);
+      setTickets(extractedTickets as never);
+      setImageUrl(eventInfoEdit?.medias[0].original);
+      setIsOnlineEvent(eventInfoEdit?.locations.length > 0 ? false : true);
+      const extractedFaqs = eventInfoEdit?.faqs?.map(
+        ({ question, answer }) => ({ question, answer })
+      );
+      setFaqs(extractedFaqs);
+      setEventPhoto([
+        { name: "banner", preview: eventInfoEdit?.medias[0].original },
+      ]);
+
+      // setLocationValue({
+      //   address: eventInfoEdit?.locations[0].address,
+      //   latitude: eventInfoEdit?.locations[0].latitude,
+      //   longitude: eventInfoEdit?.locations[0].longitude,
+      // });
+      // setSelectedOption({
+      //   value:  eventInfoEdit?.categories[0].id,
+      //   label: eventInfoEdit?.categories[0].name,
+      // });
+
+      const dateStart = moment(eventInfoEdit?.start_date);
+      const dateEnd = moment(eventInfoEdit?.end_date);
+
+      // Extract time
+      setStartDate(new Date(dateStart.format("YYYY-MM-DD")));
+      setStartTime(dateStart.format("HH:mm:ss"));
+      setEndDate(new Date(dateEnd.format("YYYY-MM-DD")));
+      setEndTime(dateEnd.format("HH:mm:ss"));
     }
-  }, [event]);
+  }, [eventInfoEdit]);
 
   const computeDateTime = useCallback((date: any, time: any) => {
-    const dateString = date?.toISOString()?.split("T")[0];
+    // console.log("Date", date, "Time", time);
+    const dateString = date.toISOString().split("T")[0];
     const dateTimeString = `${dateString}T${time}`;
     return dateTimeString;
   }, []);
@@ -386,10 +574,12 @@ const CreateAndEditEvent = () => {
       basicInfo: false,
       details: true,
     }));
+    // console.log("EventInfo:", eventInfo);
   };
 
   const nextHandlerTwo = () => {
     setCreationStatus((prev) => ({ ...prev, details: false, ticket: true }));
+    // console.log("EventInfo:", eventInfo);
   };
 
   const nextHandlerThree = () => {
@@ -399,15 +589,11 @@ const CreateAndEditEvent = () => {
       eventInfo.location_type === 2
         ? { ...rest, tickets: [...tickets] }
         : { ...eventInfo, tickets: [...tickets] };
-    updatedEventInfo?.tickets.forEach((ticket) => {
-      //@ts-ignore
-      if (ticket?.stock === "unlimited") {
-        //@ts-ignore
-        delete ticket?.stock_qty;
-      }
+    editEvent.mutate({
+      data: { ...updatedEventInfo, medias: [imageUrl] },
+      eventId: params.slug,
     });
-    createEvent.mutate({ data: updatedEventInfo });
-    console.log("EventInfo:", updatedEventInfo);
+    // console.log("EventInfo:", updatedEventInfo);
   };
 
   const setActiveStepByIndex = (index: number): Step[] => {
@@ -440,7 +626,7 @@ const CreateAndEditEvent = () => {
 
   const backHandler = () => {
     if (creationStatus.basicInfo) {
-      router.push("/dashboard/event");
+      router.push("/event");
     } else if (creationStatus.details) {
       setCreationStatus((prev) => ({
         ...prev,
@@ -462,9 +648,13 @@ const CreateAndEditEvent = () => {
       <div>
         <img
           src={imageUrl ? imageUrl : file.preview}
-          className="w-full h-[248px] object-cover"
+          className="w-screen md:w-[65vw] h-[248px] object-cover"
           // Revoke data uri after image is loaded
           onLoad={() => {
+            // console.log("file-from-me", file);
+            // console.log("status-from-me", status);
+            // console.log("isError", isError);
+
             setIsImageUploadEnabled(true);
             URL.revokeObjectURL(file.preview);
           }}
@@ -478,6 +668,8 @@ const CreateAndEditEvent = () => {
     }
   }, [viewTicketIndex]);
   useEffect(() => {
+    // console.log("eventPhoto", eventPhoto);
+
     if (eventPhoto.length > 0) {
       setEventInfo((prev) => ({ ...prev, medias: [thumbs.preview] }));
     } else if (eventPhoto.length === 0 && eventInfo.medias.length > 0) {
@@ -485,23 +677,9 @@ const CreateAndEditEvent = () => {
     }
   }, [eventPhoto]);
 
-  //this is to update the slug
-  useEffect(() => {
-    if (eventInfo.name && creationStatus.basicInfo === true) {
-      setEventInfo((prev) => ({
-        ...prev,
-        slug: eventInfo?.name?.toLowerCase()?.split(" ").join("-"),
-      }));
-    }
-  }, [eventInfo.name]);
-
-  if (eventId && isLoadingEvent) {
-    return <PrimaryLoading />;
-  }
-
   return (
     <section>
-      <div className="flex justify-between md:space-x-16 lg:space-x-0">
+      <div className="flex py-5 md:py-[50px] w-full md:w-[95%] lg:w-[80%] md:mx-auto  justify-between md:space-x-16 lg:space-x-0">
         <div>
           <Stepper steps={steps} />
         </div>
@@ -514,7 +692,7 @@ const CreateAndEditEvent = () => {
             {creationStatus.basicInfo ? (
               <div className="w-[94%] mx-auto  mb-20 ">
                 <div>
-                  <h2 className="text-[24px] font-semibold">
+                  <h2 className="text-[24px] font-medium md:font-semibold">
                     Organizers Information
                   </h2>
                   <p className="text-gray-500 w-[70%] mt-2 mb-9">
@@ -750,7 +928,7 @@ const CreateAndEditEvent = () => {
                         className="text-sm block mb-2 text-gray-800"
                         htmlFor="organizerName"
                       >
-                        Event end times <span className="text-red-500">*</span>
+                        Event end time <span className="text-red-500">*</span>
                       </label>
                       <div>
                         <TimePicker onChange={setEndTime} value={endTime} />
@@ -965,88 +1143,6 @@ const CreateAndEditEvent = () => {
                             type="tel"
                             className="h-[56px] text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
                           />
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Custom url */}
-                <div className="mt-8">
-                  {!eventDetails.isEditCustomUrl ? (
-                    <div className=" w-full py-5 border-[.3px] border-gray-300 px-6 shadow-lg rounded-md relative">
-                      <div
-                        onClick={() =>
-                          setEventDetails((prev) => ({
-                            ...prev,
-                            isEditCustomUrl: true,
-                          }))
-                        }
-                        className="absolute -top-3 -right-3 cursor-pointer hover:bg-primaryPurple hover:text-white w-12 h-12 rounded-full text-primaryPurple bg-lightPurple grid place-content-center"
-                      >
-                        <BiPencil />
-                      </div>
-                      <p className="font-semibold ">Custom Url</p>
-                      <div className="mt-4  flex items-center justify-between">
-                        <div className="w-[100%]">
-                          <p className="text-sm text-lightText">Url</p>
-                          <div className="flex">
-                            <p>eventsparrot.com/ </p>
-                            <p>{eventInfo.slug}</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="border-[2px] p-6 border-primaryPurple rounded-md">
-                      <div className="flex justify-between items-center">
-                        <h2 className="text-[24px] font-semibold">
-                          Custom Url
-                        </h2>
-                        <div
-                          onClick={() =>
-                            setEventDetails((prev) => ({
-                              ...prev,
-                              isEditCustomUrl: false,
-                            }))
-                          }
-                          className="text-2xl cursor-pointer text-gray-700 hover:text-gray-400"
-                        >
-                          <FaAngleDown />
-                        </div>
-                      </div>
-
-                      <p className="text-gray-500 w-[70%] mt-2 mb-9">
-                        You can edit your url
-                      </p>
-                      <div className="flex items-center space-x-6 ">
-                        <div className="basis-full">
-                          <label
-                            className="text-sm text-gray-800"
-                            htmlFor="organizerName"
-                          >
-                            Custom url
-                          </label>
-                          <div className="grid grid-cols-3 gap-4">
-                            <input
-                              value={"eventsparrot.com/"}
-                              readOnly
-                              type="text"
-                              className="h-[56px] text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600 col-span-1"
-                            />
-                            <input
-                              // value={eventInfo.organizer.phone}
-                              value={eventInfo.slug}
-                              onChange={(e) =>
-                                setEventInfo((prev) => ({
-                                  ...prev,
-                                  slug: e.target.value,
-                                }))
-                              }
-                              type="tel"
-                              className="h-[56px] text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600 col-span-2"
-                            />
-                          </div>
                         </div>
                       </div>
                     </div>
@@ -1545,7 +1641,7 @@ const CreateAndEditEvent = () => {
                     </button>
                   </div>
                 </div>
-                {createEvent?.isPending ? (
+                {editEvent?.isPending ? (
                   <MainFooter
                     title="Publish"
                     nextHandler={nextHandlerThree}
@@ -1569,4 +1665,4 @@ const CreateAndEditEvent = () => {
   );
 };
 
-export default CreateAndEditEvent;
+export default BasicInfoEdit;

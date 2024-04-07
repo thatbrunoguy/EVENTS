@@ -7,10 +7,10 @@ import { GrDown } from "react-icons/gr";
 import Link from "next/link";
 const options = [
   { title: "All" },
-  { title: "Free" },
-  { title: "Paid" },
-  { title: "Virtual" },
-  { title: "Popular" },
+  // { title: "Free" },
+  // { title: "Paid" },
+  // { title: "Virtual" },
+  // { title: "Popular" },
 ];
 
 type FormattedEvent = {
@@ -107,7 +107,7 @@ const HomeEvents = ({ events }: any) => {
     <div className="w-[94%] md:w-[90%] mx-auto">
       <div className="flex items-center gap-24">
         <p className="text-lg font-semibold   md:text-3xl">
-          Browse Events in <span className="text-primaryPurple">Lagos</span>
+          Browse Events in <span className="text-primaryPurple">Ibadan</span>
         </p>
         <div className="text-base md:text-[20px]">
           <GrDown />
