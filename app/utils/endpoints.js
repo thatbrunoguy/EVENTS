@@ -624,7 +624,6 @@ export const eventsManagamentFunctions = {
     } catch (error) {
       console.error("Error fetching data:", error.response.data.message);
       return error.response.data.message;
-      throw error;
     }
   },
 };

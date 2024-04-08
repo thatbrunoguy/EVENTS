@@ -12,13 +12,23 @@ import { uploadImageFunctions } from "@/app/utils/endpoints";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 import { extractUrlBeforeQueryString, uploadImage } from "@/app/helpers";
+import { Menu, MenuButton, MenuItem } from "@szhsin/react-menu";
+import Image from "next/image";
+import { IoChevronDown } from "react-icons/io5";
 
 const CreateEmailCampaignBasic = () => {
   const [eventPhoto, setEventPhoto] = useState<any>([]);
   const [isImageUploadEnabled, setImageUploadEnabled] = useState(false);
   const [isLoadingBanner, setIsLoadingBanner] = useState(false);
-  const { data, setData, mailContent, setMailContent } =
-    useContext(EmailAdContext);
+  const {
+    data,
+    setData,
+    mailContent,
+    setMailContent,
+    selectedEvent,
+    setSelectedEvent,
+    events,
+  } = useContext(EmailAdContext);
 
   const thumbs = eventPhoto.map((file: any) => (
     <div key={file.name}>
@@ -69,6 +79,73 @@ const CreateEmailCampaignBasic = () => {
     <div className="w-full h-full flex">
       <div className="mt-9 w-full">
         <h2 className="text-[24px] font-semibold mb-9">Campaign Information</h2>
+        <div className="mt-9 border-[0.5px] p-2 md:p-5 rounded-md mb-9">
+          <h3 className="">
+            Send mail to attendees of: <span className="text-red-500">*</span>
+          </h3>
+          <Menu
+            className="w-full"
+            direction="bottom"
+            // arrow
+            align="start"
+            menuButton={
+              <MenuButton style={{ background: "transparent" }}>
+                <div className="border px-3 py-3 flex items-center mt-6 md:h-[104px] justify-between shadow-lg rounded-lg w-full md:w-full bg-white">
+                  <div className="flex items-center space-x-5 p-3 ">
+                    <div className="h-[72px] w-[72px] relative rounded overflow-hidden">
+                      <Image
+                        fill
+                        src={selectedEvent?.img}
+                        alt={selectedEvent?.name}
+                        objectFit="cover"
+                      />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold mb-1">
+                        {selectedEvent?.name}
+                      </h4>
+                      <p className="text-lightText">{selectedEvent?.desc}</p>
+                      <p className="text-lightText">
+                        {selectedEvent?.startDate}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-xl">
+                    <IoChevronDown />
+                  </div>
+                </div>
+              </MenuButton>
+            }
+            transition
+          >
+            <div className="shadow-xl mt-6  bg-white">
+              {events?.map((item: any, index: number) => (
+                <MenuItem
+                  className="hover:bg-gray-100 hover:border-b cursor-pointer"
+                  key={index}
+                  onClick={() => setSelectedEvent(item)}
+                >
+                  <div className="flex items-center w-full md:w-full space-x-3 md:space-x-5 md:p-3 ">
+                    <div className="h-[42px] md:h-[72px] w-[42px] md:w-[72px] relative rounded overflow-hidden">
+                      <Image
+                        fill
+                        src={item.img}
+                        alt={item.name}
+                        objectFit="cover"
+                      />
+                    </div>
+                    <div className="w-full">
+                      <h4 className="font-semibold mb-1">{item.name}</h4>
+                      <p className="text-lightText">{item.desc}</p>
+                      <p className="text-lightText">{item.startDate}</p>
+                    </div>
+                  </div>
+                </MenuItem>
+              ))}
+            </div>
+          </Menu>
+        </div>
+
         <div>
           <label className="text-sm text-gray-800" htmlFor="name">
             Campaign name <span className="text-red-500">*</span>

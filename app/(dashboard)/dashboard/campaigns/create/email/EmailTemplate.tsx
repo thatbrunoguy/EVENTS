@@ -110,6 +110,7 @@ const EmailTemplate = () => {
                     marginRight: "auto",
                     marginTop: `${index > 0 && "64px"}`,
                   }}
+                  key={index}
                 >
                   <img
                     style={{
@@ -171,6 +172,11 @@ const EmailTemplate = () => {
                         paddingRight: "20px",
                         borderRadius: "4px",
                       }}
+                      onClick={() =>
+                        window.location.replace(
+                          `https://eventsparrot.com/events/${event.id}`
+                        )
+                      }
                     >
                       <p>Register</p>
                     </button>
