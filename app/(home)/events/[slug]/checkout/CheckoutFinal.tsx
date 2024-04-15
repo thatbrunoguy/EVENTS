@@ -58,20 +58,20 @@ const CheckoutFinal = ({
 
             <div className="flex items-center gap-3 ">
               <button
-                onClick={() => increaseQuantity(i)}
-                className=" w-10 h-10 md:w-14 md:h-14 bg-lightPurple hover:bg-primaryPurple hover:text-white text-primaryPurple rounded-md grid place-content-center"
-              >
-                <p>
-                  <FaPlus />
-                </p>
-              </button>
-              <p className="text-base md:text-2xl">{ticket.quantity}</p>
-              <button
                 onClick={() => decreaseQuantity(i)}
                 className=" w-10 h-10 md:w-14 md:h-14 bg-lightPurple hover:bg-primaryPurple hover:text-white text-primaryPurple rounded-md grid place-content-center"
               >
                 <p>
                   <FaMinus />
+                </p>
+              </button>
+              <p className="text-base md:text-2xl">{ticket.quantity}</p>
+              <button
+                onClick={() => increaseQuantity(i)}
+                className=" w-10 h-10 md:w-14 md:h-14 bg-lightPurple hover:bg-primaryPurple hover:text-white text-primaryPurple rounded-md grid place-content-center"
+              >
+                <p>
+                  <FaPlus />
                 </p>
               </button>
             </div>

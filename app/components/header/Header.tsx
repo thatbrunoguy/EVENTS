@@ -83,7 +83,6 @@ const Header = ({ selectedEvent, setSelectedEvent }: Iprops) => {
     if (events && events.length && selectedEvent?.name === "") {
       const activeEvent = getData(EVENTSPARROT_USER)?.activeEvent;
       const updatedEvent = activeEvent ? activeEvent : events[0];
-      console.log("activeEvent", activeEvent);
       setSelectedEvent({
         name: updatedEvent.name,
         eventId: updatedEvent.id,

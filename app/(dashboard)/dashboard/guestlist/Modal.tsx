@@ -14,7 +14,7 @@ const GuestlistModal = ({
   selectedOrder,
   selectedEvent,
 }: Iprops) => {
-  // console.log("selectedEvent", selectedEvent);
+  console.log("selectedEvent", selectedOrder);
   return (
     <>
       <div

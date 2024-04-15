@@ -98,13 +98,44 @@ export default function AdsCampaign() {
   const { data: adCampaign, isLoading } = useQuery({
     queryKey: ["ad-campaign"],
     queryFn: campaignFn.getAdsCampaign,
+    select: (data) => {
+      const selectedCampaign = data.events.map((campaign: any) => {
+        const startDate = campaign.start_date
+          ? `${formatDate(campaign.start_date)} | ${formatTime(
+              campaign.start_date
+            )}`
+              .split("|")[0]
+              .trim()
+          : null;
+        const endDate = campaign.end_date
+          ? `${formatDate(campaign.end_date)} | ${formatTime(
+              campaign.end_date
+            )}`
+              .split("|")[0]
+              .trim()
+          : null;
+        const img = campaign.event.medias[0]?.thumb || null;
+        const status = campaign.event.status === 2 ? "Active" : "Disabled";
+
+        return {
+          id: campaign.id || null,
+          name: campaign.event.name || null,
+          startDate,
+          img,
+          endDate,
+          status,
+        };
+      });
+
+      return selectedCampaign;
+    },
   });
 
   if (isLoading) return <PrimaryLoading />;
 
   return (
     <section className="flex">
-      {adCampaign.length > 0 ? (
+      {adCampaign?.length > 0 ? (
         <div className="w-full flex  h-full items-center justify-between ">
           <div className="md:space-x-4 md:px-8 mt-[5%] w-full">
             <div className="w-full mb-14">
@@ -165,27 +196,27 @@ export default function AdsCampaign() {
                           <div className="h-[72px] w-[72px] relative rounded overflow-hidden">
                             <Image
                               fill
-                              src="https://images.unsplash.com/photo-1711211095357-076c9784660d?q=80&w=2787&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                              alt={"hi"}
+                              src={item?.img}
+                              alt={item?.name}
                               className="object-cover"
                             />
                           </div>
                           <div>
-                            <h4 className="font-semibold mb-1">
-                              Eko convention centre
-                            </h4>
+                            <h4 className="font-semibold mb-1">{item?.name}</h4>
                           </div>
                         </div>
                       </td>
-                      <td className="p-3">1 Jun 2024</td>
-                      <td className="p-3">24 Jun 2024</td>
+                      <td className="p-3">{item?.startDate}</td>
+                      <td className="p-3">{item?.endDate}</td>
                       <td>
                         <p
                           className={`p-3 rounded-[15px] w-[100px] text-center  ${
-                            true ? "bg-[#EDFCF6] text-[#308760]" : ""
+                            item?.status === "Active"
+                              ? "bg-[#EDFCF6] text-[#308760]"
+                              : " text-[#df4951]"
                           }`}
                         >
-                          Active
+                          {item?.status}
                         </p>
                       </td>
                       <td>

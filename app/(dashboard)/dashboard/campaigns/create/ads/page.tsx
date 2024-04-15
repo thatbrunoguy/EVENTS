@@ -92,7 +92,7 @@ const CreateAdsCampaign = () => {
     onSuccess: async (data) => {
       // Boom baby!
       toast.success(data);
-      router.push("/dashboard");
+      router.push("/dashboard/campaigns");
     },
   });
 
