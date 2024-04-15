@@ -7,7 +7,6 @@ import Image from "next/image";
 import { HiOutlinePlusSm } from "react-icons/hi";
 import Link from "next/link";
 import { IoIosMore } from "react-icons/io";
-
 import { Swiper, SwiperSlide } from "swiper/react";
 
 // Import Swiper styles
@@ -17,6 +16,9 @@ import "swiper/css/pagination";
 // import required modules
 import { Pagination } from "swiper/modules";
 import { PiSpeakerHighLight } from "react-icons/pi";
+import { campaignFn } from "@/app/utils/endpoints/campaign";
+import { useQuery } from "@tanstack/react-query";
+import { formatDate, formatTime } from "@/app/helpers";
 
 const emailCampaign = [
   {
@@ -114,6 +116,42 @@ const EmailCampaign = () => {
     //   status: "sent",
     // },
   ]);
+
+  const { data: adCampaign, isLoading } = useQuery({
+    queryKey: ["ad-campaign"],
+    queryFn: campaignFn.getEmailCampaigns,
+    select: (data) => {
+      const selectedCampaign = data.events.map((campaign: any) => {
+        const startDate = campaign.start_date
+          ? `${formatDate(campaign.start_date)} | ${formatTime(
+              campaign.start_date
+            )}`
+              .split("|")[0]
+              .trim()
+          : null;
+        const endDate = campaign.end_date
+          ? `${formatDate(campaign.end_date)} | ${formatTime(
+              campaign.end_date
+            )}`
+              .split("|")[0]
+              .trim()
+          : null;
+        const img = campaign.event.medias[0]?.thumb || null;
+        const status = campaign.event.status === 2 ? "Active" : "Disabled";
+
+        return {
+          id: campaign.id || null,
+          name: campaign.event.name || null,
+          startDate,
+          img,
+          endDate,
+          status,
+        };
+      });
+
+      return selectedCampaign;
+    },
+  });
 
   return (
     <>

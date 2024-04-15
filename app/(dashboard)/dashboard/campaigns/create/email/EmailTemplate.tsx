@@ -16,7 +16,8 @@ const socials = [
 ];
 
 const EmailTemplate = () => {
-  const { data, mailContent, setData } = useContext(EmailAdContext);
+  const { data, mailContent, setData, selectedEvent } =
+    useContext(EmailAdContext);
   const emailBodyRef = useRef(null);
 
   useEffect(() => {
@@ -99,6 +100,88 @@ const EmailTemplate = () => {
             </div>
           </div>
 
+          <div>
+            <div
+              style={{
+                width: "100%",
+                maxWidth: "550px",
+                marginLeft: "auto",
+                marginRight: "auto",
+                // marginTop: `${index > 0 && "64px"}`,
+              }}
+            >
+              <img
+                style={{
+                  width: "550px",
+                  height: "277px",
+                  objectFit: "cover",
+                  borderRadius: "4px",
+                }}
+                //@ts-ignore
+                src={selectedEvent?.img}
+              />
+
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  padding: "24px",
+                  backgroundColor: "#FFFFFF",
+                  boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                  borderBottomLeftRadius: "4px",
+                  borderBottomRightRadius: "4px",
+                }}
+              >
+                <div>
+                  <h2
+                    style={{
+                      fontSize: "28px",
+                      fontWeight: "500",
+                      marginBottom: "4px",
+                    }}
+                  >
+                    {selectedEvent?.name}
+                  </h2>
+                  <p
+                    style={{
+                      color: "#6B7280",
+                      fontSize: "14px",
+                      marginBottom: "4px",
+                    }}
+                  >
+                    {selectedEvent?.address}
+                  </p>
+                  <p style={{ color: "#6B7280", fontSize: "14px" }}>
+                    {selectedEvent?.startDate}
+                  </p>
+                </div>
+                {/* REGISTR BUTTON */}
+                <button
+                  style={{
+                    backgroundColor: "#8B5CF6",
+                    display: "grid",
+                    placeContent: "center",
+                    fontSize: "14px",
+                    color: "#FFFFFF",
+                    paddingTop: "10px",
+                    paddingBottom: "10px",
+                    paddingLeft: "20px",
+                    paddingRight: "20px",
+                    borderRadius: "4px",
+                  }}
+                  onClick={() =>
+                    window.location.replace(
+                      `https://eventsparrot.com/events/${selectedEvent.id}`
+                    )
+                  }
+                >
+                  <p>Register</p>
+                </button>
+              </div>
+            </div>
+          </div>
+
           {mailContent?.selectedEvents?.map(
             (event: EventObj, index: number) => (
               <>
@@ -108,7 +191,7 @@ const EmailTemplate = () => {
                     maxWidth: "550px",
                     marginLeft: "auto",
                     marginRight: "auto",
-                    marginTop: `${index > 0 && "64px"}`,
+                    marginTop: "64px",
                   }}
                   key={index}
                 >

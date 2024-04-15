@@ -15,7 +15,8 @@ import { EventData } from "../../../event/page";
 import { EventObj } from "@/app/types";
 
 const CreateEmailCampaignContent = () => {
-  const { setData, setMailContent, mailContent } = useContext(EmailAdContext);
+  const { setData, setMailContent, mailContent, selectedEvent } =
+    useContext(EmailAdContext);
   const [eventPhoto, setEventPhoto] = useState<any>([]);
   const [searchValue, setSearchValue] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
@@ -48,8 +49,10 @@ const CreateEmailCampaignContent = () => {
     },
   });
 
-  const filteredEvents = events?.filter((event: any) =>
-    event?.name.toLowerCase().includes(searchValue.toLowerCase())
+  const filteredEvents = events?.filter(
+    (event: any) =>
+      event.id !== selectedEvent.id &&
+      event?.name.toLowerCase().includes(searchValue.toLowerCase())
   );
 
   const handleInputFocus = () => {
@@ -201,35 +204,38 @@ const CreateEmailCampaignContent = () => {
           <p>Ticket quantity</p>
         </div>
 
-        {events?.slice(0, 2)?.map((event: any) => (
-          <div className="w-full flex items-center space-x-3 mb-4">
-            <div className="">
-              <input
-                type="checkbox"
-                className=" w-5 h-5 accent-primaryPurple"
-                checked={
-                  !!mailContent.selectedEvents.find((e) => e.id === event.id)
-                }
-                onClick={() => handleCheckboxClick(event)}
-              />
-            </div>
-            <div className="flex items-center space-x-5 p-3">
-              <div className="h-[72px] w-[72px] relative rounded overflow-hidden">
-                <Image
-                  fill
-                  src={event.img}
-                  alt={event.name}
-                  objectFit="cover"
+        {events
+          ?.filter((event: any) => event.id !== selectedEvent.id)
+          ?.slice(0, 2)
+          ?.map((event: any) => (
+            <div className="w-full flex items-center space-x-3 mb-4">
+              <div className="">
+                <input
+                  type="checkbox"
+                  className=" w-5 h-5 accent-primaryPurple"
+                  checked={
+                    !!mailContent.selectedEvents.find((e) => e.id === event.id)
+                  }
+                  onClick={() => handleCheckboxClick(event)}
                 />
               </div>
-              <div>
-                <h4 className="font-semibold mb-1">{event.name}</h4>
-                <p className="text-lightText">{event.address}</p>
-                <p className="text-lightText">{event.startDate}</p>
+              <div className="flex items-center space-x-5 p-3">
+                <div className="h-[72px] w-[72px] relative rounded overflow-hidden">
+                  <Image
+                    fill
+                    src={event.img}
+                    alt={event.name}
+                    objectFit="cover"
+                  />
+                </div>
+                <div>
+                  <h4 className="font-semibold mb-1">{event.name}</h4>
+                  <p className="text-lightText">{event.address}</p>
+                  <p className="text-lightText">{event.startDate}</p>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
 
         <h2 className="text-[24px] font-semibold mb-9">Subject</h2>
 

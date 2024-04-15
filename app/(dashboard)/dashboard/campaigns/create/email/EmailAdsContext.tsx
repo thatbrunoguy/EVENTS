@@ -51,6 +51,8 @@ type DProps = {
     desc: string;
     name: string;
     startDate: string;
+    id: string;
+    address?: string;
   };
   setSelectedEvent: any;
   events: any;
@@ -92,6 +94,8 @@ const defaultValue: DProps = {
     desc: "",
     name: "",
     startDate: "",
+    id: "",
+    address: "",
   },
   setSelectedEvent: () => {},
   events: null,
@@ -186,12 +190,13 @@ export const EmailAdContextProvider = ({ children }: IProps) => {
     onSuccess: async (data) => {
       // Boom baby!
       toast.success(data);
-      router.push("/dashboard");
+      router.push("/dashboard/campaigns");
     },
   });
 
   const createEmailCampaign = () => {
-    createEmailCamp.mutate({ eventId: selectedEvent.id, body: data });
+    const newData = { ...data, from_name: data.name };
+    createEmailCamp.mutate({ eventId: selectedEvent.id, body: newData });
   };
 
   return (
