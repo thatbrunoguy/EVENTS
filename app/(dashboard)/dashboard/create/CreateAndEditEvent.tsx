@@ -520,7 +520,10 @@ const CreateAndEditEvent = () => {
 
   useEffect(() => {
     if (eventPhoto.length > 0) {
-      setEventInfo((prev) => ({ ...prev, medias: [imageUrl] }));
+      setEventInfo((prev) => ({
+        ...prev,
+        medias: [thumbs.preview ? thumbs.preview : imageUrl],
+      }));
     } else if (eventPhoto.length === 0 && eventInfo.medias.length > 0) {
       setEventInfo((prev) => ({ ...prev, medias: [] }));
     }
