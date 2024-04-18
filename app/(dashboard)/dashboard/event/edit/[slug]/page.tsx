@@ -214,7 +214,7 @@ const step: Step[] = [
 
 export type Value = ValuePiece | [ValuePiece, ValuePiece];
 
-const BasicInfoEdit = ({ params }: { params: { slug: string } }) => {
+const BasicInfoEdit = ({ params }: { params: { slug: string | any } }) => {
   const [steps, setSteps] = useState<Step[]>(step);
   const [startDate, setStartDate] = useState<Value>(new Date());
   const [startTime, setStartTime] = useState<any>("10:00");
@@ -370,13 +370,13 @@ const BasicInfoEdit = ({ params }: { params: { slug: string } }) => {
       setEventInfo({
         organizer: {
           name: eventInfoEdit?.organizer?.name,
-          phone: eventInfoEdit?.organizer.phone,
+          phone: eventInfoEdit?.organizer?.phone,
         },
         name: eventInfoEdit?.name,
         description: eventInfoEdit?.description,
         location_type:
           eventInfoEdit?.locations.length > 0
-            ? eventInfoEdit?.locations[0].type
+            ? eventInfoEdit?.locations[0]?.type
             : 2,
         categories: eventInfoEdit.categories
           ? [eventInfoEdit.categories[0]?.id]

@@ -172,8 +172,7 @@ export default function Event() {
     icon: <IoIosCopy />,
     title: "Copy event link",
   };
-  const router = useRouter();
-  // console.log("events", events);
+
   return (
     <section className="flex">
       <Sidebar />

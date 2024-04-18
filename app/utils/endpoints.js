@@ -320,6 +320,33 @@ export const eventsManagamentFunctions = {
       throw error;
     }
   },
+  editEvent: async ({ eventId, data }) => {
+    const TOKEN = getData(EVENTSPARROT_USER)?.token;
+    const accountId = getData(EVENTSPARROT_USER)?.account?.id;
+    try {
+      const response = await axios.put(
+        `${BASE_URL}/account/${accountId}/event/${eventId}`,
+        data,
+        {
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            "X-APP-KEY": APP_KEY,
+            Authorization: `Bearer ${TOKEN}`,
+          },
+        }
+      );
+      if (response.data && response.data.status === true) {
+        toast.success(response.data.message);
+        return response.data.data;
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error.response.data.message);
+      toast.error(error.response.data.message);
+      throw error;
+    }
+  },
   getCategories: async () => {
     const TOKEN = getData(EVENTSPARROT_USER)?.token;
     try {
@@ -476,17 +503,42 @@ export const eventsManagamentFunctions = {
           },
         }
       );
-      // console.log("response - orders", response);
+      console.log("response.data", response.data);
       if (response?.data && response?.data?.status === true) {
         toast.success(response?.data?.message);
-        // console.log("res", response?.data.message);
         return response?.data?.data?.orders;
       } else {
         throw new Error(response?.data?.message);
       }
     } catch (error) {
-      console.error("Error fetching data:", error.response?.data?.message);
+      console.error("Error fetching data:", error.response);
       // toast.error(error.response.data.message);
+      throw error;
+    }
+  },
+  downloadGuestListCsv: async () => {
+    const TOKEN = getData(EVENTSPARROT_USER)?.token;
+    const eventId = getData(EVENTSPARROT_USER)?.activeEvent.id;
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/event/${eventId}/export-guest`,
+        {
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            "X-APP-KEY": APP_KEY,
+            Authorization: `Bearer ${TOKEN}`,
+          },
+        }
+      );
+
+      if (response?.data && response?.data?.status === true) {
+        toast.success(response?.data?.message);
+        return response?.data;
+      } else {
+        throw new Error(response?.data?.message);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error.response?.data?.message);
       throw error;
     }
   },
@@ -597,7 +649,6 @@ export const eventsManagamentFunctions = {
     } catch (error) {
       console.error("Error fetching data:", error.response.data.message);
       return error.response.data.message;
-      throw error;
     }
   },
 };
@@ -649,8 +700,6 @@ export const guestFunctions = {
   },
 
   bookEvent: async ({ myData, eventId }) => {
-    // console.log("data", myData);
-    // console.log("eventId", myData);
     try {
       const response = await axios.post(
         `${BASE_URL}/events/${eventId}/order`,
@@ -695,6 +744,32 @@ export const guestFunctions = {
     } catch (error) {
       console.error("Error fetching data:", error.response.data.message);
       // toast.error(error.response.data.message);
+      throw error;
+    }
+  },
+
+  getTicketsData: async () => {
+    const TOKEN = getData(EVENTSPARROT_USER)?.token;
+    const eventId = getData(EVENTSPARROT_USER)?.activeEvent?.id;
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/event/${eventId}/ticket-sold`,
+        {
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            "X-APP-KEY": APP_KEY,
+            Authorization: `Bearer ${TOKEN}`,
+          },
+        }
+      );
+      console.log("response", response);
+      if (response.data && response.data.status === true) {
+        return response.data.data.events;
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error.response.data.message);
       throw error;
     }
   },

@@ -14,17 +14,17 @@ import AdsCampaign from "./AdsCampaign";
 import MobileFooter from "../../../components/footer/MobileFooter";
 
 const tablist_ = [
-  {
-    title: "Dashboard",
-    isActive: false,
-  },
+  // {
+  //   title: "Dashboard",
+  //   isActive: false,
+  // },
   {
     title: "Email Campaign",
-    isActive: false,
+    isActive: true,
   },
   {
     title: "Ads Campaign",
-    isActive: true,
+    isActive: false,
   },
 ];
 
@@ -45,7 +45,7 @@ export default function Campaigns() {
           setSelectedEvent={setSelectedEvent}
         />
 
-        <div className="w-full h-[80%] flex items-center justify-center">
+        {/* <div className="w-full h-[80%] flex items-center justify-center">
           <div className="w-[351px]  mx-auto my-auto flex flex-col items-center">
             <Image
               src="/assets/one.svg"
@@ -68,24 +68,29 @@ export default function Campaigns() {
               <p>Create Event</p>
             </Link>
           </div>
-        </div>
+        </div> */}
 
         {/* <h3 className="font-semibold text-2xl ml-12 mt-12">Campaigns</h3> */}
-        {/* <TabsComponent tablist={tablist} setTablist={setTablist} /> */}
+        <TabsComponent tablist={tablist} setTablist={setTablist} />
 
-        {/* {tablist[0].isActive ? (
-          <div>
-            <Dashboard />
-          </div>
-        ) : tablist[1].isActive ? (
-          <div>
-            <EmailCampaign />
-          </div>
-        ) : (
-          <div>
-            <AdsCampaign />
-          </div>
-        )} */}
+        {
+          tablist[0].isActive ? (
+            <div>
+              {/* <Dashboard /> */}
+              <EmailCampaign />
+            </div>
+          ) : tablist[1].isActive ? (
+            <div>
+              {/* <EmailCampaign /> */}
+              <AdsCampaign />
+            </div>
+          ) : null
+          // : (
+          //   <div>
+          //     <AdsCampaign />
+          //   </div>
+          // )
+        }
       </main>
     </section>
   );

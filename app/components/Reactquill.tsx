@@ -9,12 +9,13 @@ const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 type Iprops = {
   value: string;
   setValue: React.Dispatch<React.SetStateAction<string>>;
+  className?: string;
 };
 
-function ReactQuillEditor({ value, setValue }: Iprops) {
+function ReactQuillEditor({ value, setValue, className }: Iprops) {
   return (
     <ReactQuill
-      className="h-52 pb-11 border  hover:border-primaryPurple"
+      className={`h-52 pb-11 border  hover:border-primaryPurple ${className}`}
       theme="snow"
       value={value}
       onChange={setValue}

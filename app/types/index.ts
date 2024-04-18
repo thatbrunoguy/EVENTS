@@ -77,3 +77,11 @@ export type Location = {
   created_at: string;
   updated_at: string;
 };
+
+export type EventObj = {
+  img: string;
+  address: string;
+  name: string;
+  startDate: string;
+  id: string;
+};

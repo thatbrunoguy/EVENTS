@@ -57,4 +57,105 @@ export const campaignFn = {
       return error.response.data.message;
     }
   },
+  createEmailCampaign: async ({ eventId, body }) => {
+    const TOKEN = getData(EVENTSPARROT_USER)?.token;
+    try {
+      const response = await axios.post(
+        `${BASE_URL}/event/${eventId}/email-campaign`,
+        body,
+        {
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            "X-APP-KEY": APP_KEY,
+            Authorization: `Bearer ${TOKEN}`,
+          },
+        }
+      );
+
+      if (response.data && response.data.status === true) {
+        return response.data.message;
+      } else {
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      return error.response.data.message;
+    }
+  },
+  getAdsCampaign: async () => {
+    const TOKEN = getData(EVENTSPARROT_USER)?.token;
+    const activeEventId = getData(EVENTSPARROT_USER)?.activeEvent?.id;
+
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/event/${activeEventId}/ads-campaign `,
+        {
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            "X-APP-KEY": APP_KEY,
+            Authorization: `Bearer ${TOKEN}`,
+          },
+        }
+      );
+      if (response.data && response.data.status === true) {
+        return response?.data?.data;
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching campaign:", error.response.data.message);
+      return error.response.data;
+    }
+  },
+  getEmailCampaigns: async () => {
+    const TOKEN = getData(EVENTSPARROT_USER)?.token;
+    const activeEventId = getData(EVENTSPARROT_USER)?.activeEvent?.id;
+
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/event/${activeEventId}/email-campaign `,
+        {
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            "X-APP-KEY": APP_KEY,
+            Authorization: `Bearer ${TOKEN}`,
+          },
+        }
+      );
+
+      if (response.data && response.data.status === true) {
+        return response?.data?.data;
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching campaign:", error.response.data.message);
+      return error.response.data;
+    }
+  },
+  getAdCampaignsAnalytics: async ({}) => {
+    const TOKEN = getData(EVENTSPARROT_USER)?.token;
+    const activeEventId = getData(EVENTSPARROT_USER)?.activeEvent?.id;
+
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/event/${activeEventId}/adsCampaign/analytics`,
+        {
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            "X-APP-KEY": APP_KEY,
+            Authorization: `Bearer ${TOKEN}`,
+          },
+        }
+      );
+
+      if (response.data && response.data.status === true) {
+        return response?.data?.data;
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching campaign:", error.response.data.message);
+      return error.response.data;
+    }
+  },
 };

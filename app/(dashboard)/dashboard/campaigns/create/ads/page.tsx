@@ -13,7 +13,7 @@ import "react-time-picker/dist/TimePicker.css";
 import "react-clock/dist/Clock.css";
 import "react-date-picker/dist/DatePicker.css";
 import "react-calendar/dist/Calendar.css";
-import { Value } from "@/app/(dashboard)/dashboard/create/basic-info/page";
+// import { Value } from "@/app/(dashboard)/dashboard/create/basic-info/page";
 import Faq from "../Faq";
 import { FaMinus, FaPlus } from "react-icons/fa6";
 import BuyTokenModal from "./BuyTokenModal";
@@ -30,6 +30,7 @@ import { campaignFn } from "@/app/utils/endpoints/campaign";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { countries } from "@/app/utils/countries";
+import { Value } from "../../../create/CreateAndEditEvent";
 
 const CreateAdsCampaign = () => {
   const router = useRouter();
@@ -91,7 +92,7 @@ const CreateAdsCampaign = () => {
     onSuccess: async (data) => {
       // Boom baby!
       toast.success(data);
-      router.push("/dashboard");
+      router.push("/dashboard/campaigns");
     },
   });
 

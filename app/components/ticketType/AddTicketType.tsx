@@ -96,14 +96,14 @@ const AddTicketType = ({
     if (type === 1) {
       // For type 1, only name, stock, and description are required
       return (
-        name.trim() !== "" && stock.trim() !== ""
+        name?.trim() !== "" && stock?.trim() !== ""
         // && description.trim() !== ""
       );
     } else if (type === 2) {
       // For type 2, all fields are required
       return (
-        name.trim() !== "" &&
-        stock.trim() !== "" &&
+        name?.trim() !== "" &&
+        stock?.trim() !== "" &&
         // stock_qty !== 0 &&
         purchase_limit !== 0 &&
         price !== 0

@@ -1,15 +1,22 @@
 "use client";
 
 import { EventData } from "@/app/(dashboard)/dashboard/event/page";
+import { EVENTSPARROT_USER } from "@/app/constants";
 import { formatDate, formatTime } from "@/app/helpers";
 import { eventsManagamentFunctions } from "@/app/utils/endpoints";
+import {
+  addToLocalStorage,
+  getData,
+  storeData,
+} from "@/app/utils/localstorage";
 import { Menu, MenuItem, MenuButton } from "@szhsin/react-menu";
 import "@szhsin/react-menu/dist/index.css";
 import "@szhsin/react-menu/dist/transitions/slide.css";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { IoChevronDown } from "react-icons/io5";
+import PrimaryLoading from "../loaders/PrimaryLoading";
 
 type Iprops = {
   selectedEvent: {
@@ -42,25 +49,11 @@ interface SelectedEventData {
 }
 const Header = ({ selectedEvent, setSelectedEvent }: Iprops) => {
   // const [selectedEvent, setSelectedEvent] = useState({ name: "" });
+  const queryClient = useQueryClient();
 
   const { data: events, isLoading } = useQuery({
     queryKey: ["events"],
     queryFn: eventsManagamentFunctions.getEvents,
-<<<<<<< HEAD
-    select: (data): SelectedEventData[] => {
-      const selectedEvents: any = data.map((event: EventData) => ({
-        id: event.id,
-        name: event.name,
-        startDate: `${formatDate(event.start_date)} | ${formatTime(
-          event.start_date
-        )}`,
-        quantity: event.tickets[0].stock_qty,
-        price: event.tickets[0].price,
-        desc: event.tickets[0].description,
-        img: event.medias[0].original,
-        address: event.locations[0]?.address ?? "Online",
-      }));
-=======
     select: (data) => {
       const selectedEvents = data.map((event: EventData) => {
         const startDate = event.start_date
@@ -81,7 +74,6 @@ const Header = ({ selectedEvent, setSelectedEvent }: Iprops) => {
           status,
         };
       });
->>>>>>> 50211615ecdb05ac08e89bf7bf72a2000355fc7f
 
       return selectedEvents;
     },
@@ -89,16 +81,21 @@ const Header = ({ selectedEvent, setSelectedEvent }: Iprops) => {
 
   useEffect(() => {
     if (events && events.length && selectedEvent?.name === "") {
+      const activeEvent = getData(EVENTSPARROT_USER)?.activeEvent;
+      const updatedEvent = activeEvent ? activeEvent : events[0];
       setSelectedEvent({
-        name: events[0].name,
-        eventId: events[0].id,
-        img: events[0].img,
-        address: events[0].address,
-        startDate: events[0].startDate,
-        desc: events[0].desc,
+        name: updatedEvent.name,
+        eventId: updatedEvent.id,
+        img: updatedEvent.img,
+        address: updatedEvent.address,
+        startDate: updatedEvent.startDate,
+        desc: updatedEvent.desc,
       });
+      addToLocalStorage(EVENTSPARROT_USER, "activeEvent", updatedEvent);
     }
   }, [events]);
+
+  if (isLoading) return <PrimaryLoading />;
 
   return (
     <div className="w-full flex justify-center md:justify-end md:pr-7 border-b ">
@@ -125,14 +122,16 @@ const Header = ({ selectedEvent, setSelectedEvent }: Iprops) => {
         >
           {events?.map((item: any, index: number) => (
             <MenuItem
-              onClick={() =>
+              onClick={() => {
                 setSelectedEvent({
                   name: item.name,
                   eventId: item.id,
                   img: item.img,
                   address: item.address,
-                })
-              }
+                });
+                addToLocalStorage(EVENTSPARROT_USER, "activeEvent", item);
+                queryClient.invalidateQueries();
+              }}
               className="hover:bg-lightPurple"
               key={index}
             >
