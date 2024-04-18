@@ -19,132 +19,25 @@ import { PiSpeakerHighLight } from "react-icons/pi";
 import { campaignFn } from "@/app/utils/endpoints/campaign";
 import { useQuery } from "@tanstack/react-query";
 import { formatDate, formatTime } from "@/app/helpers";
-
-const emailCampaign = [
-  {
-    title: "Revenue",
-    value: "₦0",
-    icon: <FaMoneyBills color="#D90BD9" />,
-    background: "#FCEDFC",
-  },
-  {
-    title: "Ticket Sales",
-    value: "4",
-    icon: <FaMoneyBills color="#106BD5" />,
-    background: "#EDF4FC",
-  },
-  {
-    title: "Delivered",
-    value: "60",
-    icon: <FaMoneyBills color="#CB1C6F" />,
-    background: "#FCEDF6",
-  },
-  {
-    title: "Opens",
-    value: "65%",
-    icon: <FaMoneyBills color="#FF5602" />,
-    background: "#FCEFE8",
-  },
-  {
-    title: "Clicks",
-    value: "10%",
-    icon: <FaMoneyBills color="#199FFF" />,
-    background: "#F0F7FC",
-  },
-  {
-    title: "Unsubscribed",
-    value: "0%",
-    icon: <FaMoneyBills color="#B61C9D" />,
-    background: "#FCF0FA",
-  },
-  {
-    title: "Bounced",
-    value: "1.7%",
-    icon: <FaMoneyBills color="#7431B8" />,
-    background: "#F5EDFC",
-  },
-];
+import { getData } from "@/app/utils/localstorage";
+import { EVENTSPARROT_USER } from "@/app/constants";
+import PrimaryLoading from "@/app/components/loaders/PrimaryLoading";
 
 const EmailCampaign = () => {
-  const [options, setOptions] = useState<any>([
-    // {
-    //   title: " Eko convections centre",
-    //   opened: "14/20",
-    //   clicked: "10%",
-    //   status: "sent",
-    // },
-    // {
-    //   title: " Eko convections centre",
-    //   opened: "14/20",
-    //   clicked: "10%",
-    //   status: "sent",
-    // },
-    // {
-    //   title: " Eko convections centre",
-    //   opened: "14/20",
-    //   clicked: "10%",
-    //   status: "sent",
-    // },
-    // {
-    //   title: " Eko convections centre",
-    //   opened: "14/20",
-    //   clicked: "10%",
-    //   status: "sent",
-    // },
-    // {
-    //   title: " Eko convections centre",
-    //   opened: "14/20",
-    //   clicked: "10%",
-    //   status: "sent",
-    // },
-    // {
-    //   title: " Eko convections centre",
-    //   opened: "14/20",
-    //   clicked: "10%",
-    //   status: "sent",
-    // },
-    // {
-    //   title: " Eko convections centre",
-    //   opened: "14/20",
-    //   clicked: "10%",
-    //   status: "sent",
-    // },
-    // {
-    //   title: " Eko convections centre",
-    //   opened: "14/20",
-    //   clicked: "10%",
-    //   status: "sent",
-    // },
-  ]);
+  const activeEvent = getData(EVENTSPARROT_USER)?.activeEvent;
 
-  const { data: adCampaign, isLoading } = useQuery({
-    queryKey: ["ad-campaign"],
+  const { data: emailCampaign, isLoading } = useQuery({
+    queryKey: ["email-campaign"],
     queryFn: campaignFn.getEmailCampaigns,
     select: (data) => {
+      console.log("datasa", data);
       const selectedCampaign = data.events.map((campaign: any) => {
-        const startDate = campaign.start_date
-          ? `${formatDate(campaign.start_date)} | ${formatTime(
-              campaign.start_date
-            )}`
-              .split("|")[0]
-              .trim()
-          : null;
-        const endDate = campaign.end_date
-          ? `${formatDate(campaign.end_date)} | ${formatTime(
-              campaign.end_date
-            )}`
-              .split("|")[0]
-              .trim()
-          : null;
-        const img = campaign.event.medias[0]?.thumb || null;
-        const status = campaign.event.status === 2 ? "Active" : "Disabled";
-
+        const status = campaign?.status === 1 ? "Sent" : "Disabled";
         return {
           id: campaign.id || null,
-          name: campaign.event.name || null,
-          startDate,
-          img,
-          endDate,
+          name: campaign?.name || null,
+          clicked: campaign.analytics.clicked,
+          opened: campaign.analytics.opened,
           status,
         };
       });
@@ -153,9 +46,56 @@ const EmailCampaign = () => {
     },
   });
 
+  const emailCampaigns = [
+    {
+      title: "Revenue",
+      value: "₦0",
+      icon: <FaMoneyBills color="#D90BD9" />,
+      background: "#FCEDFC",
+    },
+    {
+      title: "Ticket Sales",
+      value: "4",
+      icon: <FaMoneyBills color="#106BD5" />,
+      background: "#EDF4FC",
+    },
+    {
+      title: "Delivered",
+      value: "60",
+      icon: <FaMoneyBills color="#CB1C6F" />,
+      background: "#FCEDF6",
+    },
+    {
+      title: "Opens",
+      value: "65%",
+      icon: <FaMoneyBills color="#FF5602" />,
+      background: "#FCEFE8",
+    },
+    {
+      title: "Clicks",
+      value: "10%",
+      icon: <FaMoneyBills color="#199FFF" />,
+      background: "#F0F7FC",
+    },
+    {
+      title: "Unsubscribed",
+      value: "0%",
+      icon: <FaMoneyBills color="#B61C9D" />,
+      background: "#FCF0FA",
+    },
+    {
+      title: "Bounced",
+      value: "1.7%",
+      icon: <FaMoneyBills color="#7431B8" />,
+      background: "#F5EDFC",
+    },
+  ];
+
+  if (isLoading) return <PrimaryLoading />;
+
   return (
     <>
-      {!options.length ? (
+      {!emailCampaign.length ? (
         <section className="flex">
           <main className="h-screen flex-1">
             <div className="flex justify-center items-center w-full h-[70%]">
@@ -202,7 +142,7 @@ const EmailCampaign = () => {
             // mousewheel={true}
             // cssMode={true}
           >
-            {emailCampaign.map((item, i) => (
+            {emailCampaigns.map((item: any, i: number) => (
               <SwiperSlide
                 key={i}
                 style={{ width: "122px" }}
@@ -240,49 +180,123 @@ const EmailCampaign = () => {
                 <p>New Campaign</p>
               </Link>
             </div>
-            <div className="">
-              <header className="w-full text-sm flex items-center py-3 px-4 bg-[#FBFAFC]">
-                <p className="w-[500px]">Campaigns</p>
-                <p className="w-[400px]">Opened</p>
-                <p className="w-[400px]">Clicked</p>
-                <p className="w-[400px]">Status</p>
-              </header>
-              {options.map((item: any, index: number) => (
-                <div
-                  key={index}
-                  className="flex w-full border-b items-center justify-between"
-                >
-                  <div className="flex items-center space-x-5 p-3 ">
-                    <div className="h-[48px] w-[48px] relative rounded overflow-hidden">
-                      <Image
-                        fill
-                        src="/assets/event.jpeg"
-                        alt={item.title}
-                        className="object-cover"
-                      />
-                    </div>
-                    <div className="w-[30%] text-sm">
-                      <h4 className="font-semibold mb-1">{item.title}</h4>
-                    </div>
-                    <div className="w-[360px]">{item.opened}</div>
-                    <div className="w-[310px]">{item.clicked}</div>
-                    <div className={`w-[310px] flex items-center`}>
-                      <div
-                        className={`px-[10px] rounded-[30px] w-auto ${
-                          item.status === "sent"
-                            ? "text-[#228056] bg-[#EDFCF6]"
-                            : "text-red-500 bg-red-200"
-                        }`}
-                      >
-                        {item.status}
-                      </div>
-                    </div>
-                    <div className="text-2xl text-gray-500 cursor-pointer">
-                      <IoIosMore />
-                    </div>
-                  </div>
-                </div>
-              ))}
+            <div className="w-full overflow-x-scroll">
+              <table className="w-full text-xs md:text-sm">
+                <thead className="h-[50px]">
+                  <tr className="py-3 px-4 bg-[#FBFAFC]">
+                    <th className="w-[30%] text-left">Campaigns</th>
+                    <th className="text-left">Opened</th>
+                    <th className="text-left">Clicked</th>
+                    <th className="text-left">Status</th>
+                    {/* <th></th> */}
+                  </tr>
+                </thead>
+                <tbody>
+                  {emailCampaign?.map((item: any) => (
+                    <tr key={item.id} className="border-b">
+                      <td className="p-3">
+                        <div className="flex items-center space-x-5">
+                          <div className="h-[72px] w-[72px] relative rounded overflow-hidden">
+                            <Image
+                              fill
+                              src={activeEvent?.img}
+                              alt={activeEvent?.name}
+                              className="object-cover"
+                            />
+                          </div>
+                          <div>
+                            <h4 className="font-semibold mb-1">{item?.name}</h4>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="p-3">{item?.opened}</td>
+                      <td className="p-3">{item?.clicked}</td>
+                      <td>
+                        <p
+                          className={`p-3 rounded-[15px] w-[100px] text-center  ${
+                            item?.status === "Sent"
+                              ? "bg-[#EDFCF6] text-[#308760]"
+                              : " text-[#df4951]"
+                          }`}
+                        >
+                          {item?.status}
+                        </p>
+                      </td>
+                      {/* <td>
+                        <Menu
+                          direction="left"
+                          menuStyle={{
+                            backgroundColor: "white",
+                            border: "1px solid #E7E4EB",
+                            borderRadius: 8,
+                            zIndex: 50,
+                            width: 230,
+                            height: 240,
+                            padding: 6,
+                            boxShadow:
+                              "0px 4px 6px -2px #88868A0D, 0px 12px 16px -4px #88868A1A",
+                          }}
+                          // arrow
+                          menuButton={
+                            <MenuButton style={{ background: "transparent" }}>
+                              <div className="text-gray-800 text-xl h-11 w-11 rounded-full hover:bg-gray-100 grid place-content-center cursor-pointer">
+                                <IoIosMore />
+                              </div>
+                            </MenuButton>
+                          }
+                          transition
+                        >
+                          <MenuGroup>
+                            {actionOptions.map((opt, index) => (
+                              <MenuItem
+                                className="py-2 cursor-pointer pl-3 hover:bg-lightPurple"
+                                key={opt.title}
+                              >
+                                <div className="flex items-center w-full space-x-3 py-1">
+                                  {index === 2 ? (
+                                    <>
+                                      <div
+                                        className={`${
+                                          item.status === 2
+                                            ? "text-red-500"
+                                            : "text-[#706D73]"
+                                        } text-base`}
+                                      >
+                                        {opt.icon}
+                                      </div>
+                                      <p
+                                        className={`${
+                                          item.status === 2
+                                            ? "text-red-500 "
+                                            : "text-[#706D73]"
+                                        } text-sm text-center`}
+                                      >
+                                        {item.status === 1
+                                          ? opt.title
+                                          : "Make event active"}
+                                      </p>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <div className="text-gray-500 text-base">
+                                        {opt.icon}
+                                      </div>
+
+                                      <p className="text-[#706D73] text-sm text-center">
+                                        {opt.title}
+                                      </p>
+                                    </>
+                                  )}
+                                </div>
+                              </MenuItem>
+                            ))}
+                          </MenuGroup>
+                        </Menu>
+                      </td> */}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>

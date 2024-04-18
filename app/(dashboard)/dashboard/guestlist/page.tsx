@@ -116,7 +116,7 @@ export default function Guestlist() {
       });
     },
   });
-
+  console.log("guestlistOrders", guestlistOrders);
   const exportCSV = () => {
     setDownloadCsv((prev) => (prev = true));
     if (data.status) {

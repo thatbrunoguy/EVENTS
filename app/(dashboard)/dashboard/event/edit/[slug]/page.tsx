@@ -214,7 +214,7 @@ const step: Step[] = [
 
 export type Value = ValuePiece | [ValuePiece, ValuePiece];
 
-const BasicInfoEdit = ({ params }: { params: { slug: string } }) => {
+const BasicInfoEdit = ({ params }: { params: { slug: string | any } }) => {
   const [steps, setSteps] = useState<Step[]>(step);
   const [startDate, setStartDate] = useState<Value>(new Date());
   const [startTime, setStartTime] = useState<any>("10:00");

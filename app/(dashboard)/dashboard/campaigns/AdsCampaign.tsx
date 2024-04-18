@@ -17,6 +17,9 @@ import { IoIosMore } from "react-icons/io";
 import { FaMoneyBills } from "react-icons/fa6";
 import { GoInfo } from "react-icons/go";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { VscThumbsupFilled } from "react-icons/vsc";
+import { LiaVoteYeaSolid } from "react-icons/lia";
+import { HiCursorArrowRipple } from "react-icons/hi2";
 
 // Import Swiper styles
 import "swiper/css";
@@ -24,51 +27,7 @@ import "swiper/css/pagination";
 
 // import required modules
 import { Pagination } from "swiper/modules";
-
-const emailCampaign = [
-  {
-    title: "Revenue",
-    value: "₦0",
-    icon: <FaMoneyBills color="#D90BD9" />,
-    background: "#FCEDFC",
-  },
-  {
-    title: "Ticket Sales",
-    value: "4",
-    icon: <FaMoneyBills color="#106BD5" />,
-    background: "#EDF4FC",
-  },
-  {
-    title: "Delivered",
-    value: "60",
-    icon: <FaMoneyBills color="#CB1C6F" />,
-    background: "#FCEDF6",
-  },
-  {
-    title: "Opens",
-    value: "65%",
-    icon: <FaMoneyBills color="#FF5602" />,
-    background: "#FCEFE8",
-  },
-  {
-    title: "Clicks",
-    value: "10%",
-    icon: <FaMoneyBills color="#199FFF" />,
-    background: "#F0F7FC",
-  },
-  {
-    title: "Unsubscribed",
-    value: "0%",
-    icon: <FaMoneyBills color="#B61C9D" />,
-    background: "#FCF0FA",
-  },
-  {
-    title: "Bounced",
-    value: "1.7%",
-    icon: <FaMoneyBills color="#7431B8" />,
-    background: "#F5EDFC",
-  },
-];
+import { BsPersonRolodex } from "react-icons/bs";
 
 const tablist_ = [
   {
@@ -115,7 +74,7 @@ export default function AdsCampaign() {
               .trim()
           : null;
         const img = campaign.event.medias[0]?.thumb || null;
-        const status = campaign.event.status === 2 ? "Active" : "Disabled";
+        const status = campaign.event.status === 1 ? "Active" : "Disabled";
 
         return {
           id: campaign.id || null,
@@ -130,6 +89,38 @@ export default function AdsCampaign() {
       return selectedCampaign;
     },
   });
+
+  const { data: adsAnalytics } = useQuery({
+    queryFn: campaignFn.getAdCampaignsAnalytics,
+    queryKey: ["ad-campaign-analytics"],
+  });
+
+  const emailCampaign = [
+    {
+      title: "Impression",
+      value: adsAnalytics.impressions,
+      icon: <BsPersonRolodex color="#D90BD9" />,
+      background: "#FCEDFC",
+    },
+    {
+      title: "Reach",
+      value: adsAnalytics.reach,
+      icon: <VscThumbsupFilled color="#106BD5" />,
+      background: "#EDF4FC",
+    },
+    {
+      title: "Page views",
+      value: adsAnalytics.page_views,
+      icon: <LiaVoteYeaSolid color="#CB1C6F" />,
+      background: "#FCEDF6",
+    },
+    {
+      title: "Sign up",
+      value: adsAnalytics.signups,
+      icon: <HiCursorArrowRipple color="#FF5602" />,
+      background: "#FCEFE8",
+    },
+  ];
 
   if (isLoading) return <PrimaryLoading />;
 
@@ -185,7 +176,7 @@ export default function AdsCampaign() {
                     <th className="text-left">Start date</th>
                     <th className="text-left">End date</th>
                     <th className="text-left">Status</th>
-                    <th></th>
+                    {/* <th></th> */}
                   </tr>
                 </thead>
                 <tbody>
@@ -219,7 +210,7 @@ export default function AdsCampaign() {
                           {item?.status}
                         </p>
                       </td>
-                      <td>
+                      {/* <td>
                         <Menu
                           direction="left"
                           menuStyle={{
@@ -289,7 +280,7 @@ export default function AdsCampaign() {
                             ))}
                           </MenuGroup>
                         </Menu>
-                      </td>
+                      </td> */}
                     </tr>
                   ))}
                 </tbody>

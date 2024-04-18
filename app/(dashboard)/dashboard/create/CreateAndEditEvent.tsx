@@ -107,7 +107,6 @@ const CreateAndEditEvent = () => {
   const [eventPhoto, setEventPhoto] = useState<any>([]);
   const [isLoadingBanner, setIsLoadingBanner] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
-  const [enableGetEvent, setEnableGetEvent] = useState(false);
 
   // TICKET
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -156,11 +155,21 @@ const CreateAndEditEvent = () => {
     },
   });
 
+  const updateEvent = useMutation({
+    mutationFn: eventsManagamentFunctions.editEvent,
+    onError: async (error, variables, context) => {
+      console.log(` ${error}`);
+    },
+    onSuccess: async (data, variables, context) => {
+      router.push("/dashboard/event");
+    },
+  });
+
   const { data: event, isLoading: isLoadingEvent } = useQuery({
     queryKey: ["getEvent"],
     //@ts-ignore
     queryFn: () => eventsManagamentFunctions.getEventById({ eventId: eventId }),
-    enabled: enableGetEvent,
+    enabled: eventId ? true : false,
   });
 
   useEffect(() => {
@@ -182,6 +191,7 @@ const CreateAndEditEvent = () => {
           setIsLoadingBanner(false);
         }
       };
+
       imageUploadFinalHandler();
     }
   }, [isImageUploadEnabled, status]);
@@ -235,52 +245,78 @@ const CreateAndEditEvent = () => {
     tickets: [],
   });
 
-  //trigger get event by id
-  useEffect(() => {
-    if (eventId) {
-      setEnableGetEvent(true);
-    }
-  }, []);
-  console.log("eventsss", event);
   //update initial state when editing event
   useEffect(() => {
     if (event && eventId) {
+      const mediaUrl = event.medias[0].original;
       eventInfo.organizer.name = event.organizer.name;
       eventInfo.organizer.phone = event.organizer.phone;
       eventInfo.name = event.name;
       eventInfo.description = event.description;
       setQuillValue(event.description);
       eventInfo.location_type = event.location_type;
-      setIsOnlineEvent(event.locations.length === 1 ? true : false);
+      setIsOnlineEvent(!!event.locations[0]?.address ? false : true);
+      eventInfo.location_type = !!event.locations[0]?.address ? 1 : 2;
       eventInfo.location_details.address = event?.locations[0]?.address;
       eventInfo.location_details.latitude = event?.locations[0]?.latitude;
       eventInfo.location_details.longitude = event?.locations[0]?.longitude;
       setStartDate(new Date(event.start_date));
       setEndDate(new Date(event.end_date));
       eventInfo.timezone = event.timezone;
-      eventInfo.categories = event.categories[0].id;
-      setSelectedOption(event.categories[0].id);
+      eventInfo.categories = event.categories[0]?.id;
+      setSelectedOption({
+        value: event.categories[0]?.id,
+        label:
+          eventCategoriesOptions &&
+          eventCategoriesOptions.find(
+            (e: any) => e.value === event.categories[0]?.id
+          )?.label,
+      });
       eventInfo.slug = event.slug;
       eventInfo.registration_requirements = event.registration_requirements;
-      eventInfo.medias = event.medias;
-      eventInfo.faqs = event.faqs;
-      eventInfo.tickets = event.tickets;
-      event.tickets.map((ev: any) => {
-        setTicketInfo((prev) => ({
-          ...prev,
-          type: ev.type,
-          name: ev.name,
-          stock: ev.stock,
-          stock_qty: ev.stock_qty,
-          price: ev.price,
-          purchase_limit: ev.purchase_limit,
-          description: ev.description,
-        }));
+      if (!!mediaUrl) {
+        eventInfo.medias = [mediaUrl];
+      } else {
+        eventInfo.medias = [];
+      }
+      eventInfo.tickets = event.tickets.map((obj: any) => {
+        return {
+          name: obj.name,
+          description: obj.description,
+          price: obj.price,
+          type: obj.type,
+          stock: obj.stock,
+          stock_qty: obj.stock_qty,
+          purchase_limit: obj.purchase_limit,
+          quantity_limit_per_person: obj.quantity_limit_per_person,
+        };
       });
+      setTickets(
+        event.tickets.map((obj: any) => {
+          return {
+            name: obj.name,
+            description: obj.description,
+            price: obj.price,
+            type: obj.type,
+            stock: obj.stock,
+            stock_qty: obj.stock_qty ?? 1,
+            purchase_limit: obj.purchase_limit,
+            quantity_limit_per_person: obj.quantity_limit_per_person,
+          };
+        })
+      );
 
-      eventInfo.medias = event.medias[0].original;
+      setFaqs(
+        event.faqs.map((obj: any) => {
+          return {
+            question: obj.question,
+            answer: obj.answer,
+          };
+        })
+      );
+
       setImageUrl(event.medias[0].original);
-      setEventPhoto([event.medias[0].original]);
+      setEventPhoto([mediaUrl]);
     }
   }, [event]);
 
@@ -406,8 +442,11 @@ const CreateAndEditEvent = () => {
         delete ticket?.stock_qty;
       }
     });
-    createEvent.mutate({ data: updatedEventInfo });
-    console.log("EventInfo:", updatedEventInfo);
+    if (eventId) {
+      updateEvent.mutate({ eventId: eventId, data: updatedEventInfo });
+    } else {
+      createEvent.mutate({ data: updatedEventInfo });
+    }
   };
 
   const setActiveStepByIndex = (index: number): Step[] => {
@@ -472,14 +511,16 @@ const CreateAndEditEvent = () => {
       </div>
     </div>
   ));
+
   useEffect(() => {
     if (viewTicketIndex !== null) {
       setTicketInfo(tickets[viewTicketIndex]);
     }
   }, [viewTicketIndex]);
+
   useEffect(() => {
     if (eventPhoto.length > 0) {
-      setEventInfo((prev) => ({ ...prev, medias: [thumbs.preview] }));
+      setEventInfo((prev) => ({ ...prev, medias: [imageUrl] }));
     } else if (eventPhoto.length === 0 && eventInfo.medias.length > 0) {
       setEventInfo((prev) => ({ ...prev, medias: [] }));
     }
@@ -856,6 +897,7 @@ const CreateAndEditEvent = () => {
                             setEventPhoto([]);
                             setEventInfo((prev) => ({ ...prev, medias: [] }));
                             setImageUrl("");
+                            setIsImageUploadEnabled(false);
                           }}
                         />
                       )}

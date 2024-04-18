@@ -184,10 +184,10 @@ export const EmailAdContextProvider = ({ children }: IProps) => {
 
   const createEmailCamp = useMutation({
     mutationFn: campaignFn.createEmailCampaign,
-    onError: async (error: string) => {
+    onError: async (error: string, variables, context) => {
       toast.error(error);
     },
-    onSuccess: async (data) => {
+    onSuccess: async (data, variables, context) => {
       // Boom baby!
       toast.success(data);
       router.push("/dashboard/campaigns");

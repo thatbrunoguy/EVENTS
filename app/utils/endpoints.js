@@ -320,13 +320,13 @@ export const eventsManagamentFunctions = {
       throw error;
     }
   },
-  editEvent: async (data) => {
+  editEvent: async ({ eventId, data }) => {
     const TOKEN = getData(EVENTSPARROT_USER)?.token;
     const accountId = getData(EVENTSPARROT_USER)?.account?.id;
     try {
       const response = await axios.put(
-        `${BASE_URL}/account/${accountId}/event/${data.eventId}`,
-        data.data,
+        `${BASE_URL}/account/${accountId}/event/${eventId}`,
+        data,
         {
           headers: {
             "Content-type": "application/json; charset=UTF-8",
@@ -503,6 +503,7 @@ export const eventsManagamentFunctions = {
           },
         }
       );
+      console.log("response.data", response.data);
       if (response?.data && response?.data?.status === true) {
         toast.success(response?.data?.message);
         return response?.data?.data?.orders;
