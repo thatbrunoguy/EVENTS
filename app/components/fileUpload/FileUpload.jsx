@@ -62,6 +62,7 @@ export default function FileUpload({ setEventPhoto }) {
       <div style={thumbInner}>
         <img
           src={file.preview}
+          alt="img"
           style={img}
           // Revoke data uri after image is loaded
           onLoad={() => {

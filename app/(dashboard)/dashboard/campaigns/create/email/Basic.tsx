@@ -33,8 +33,9 @@ const CreateEmailCampaignBasic = () => {
   const thumbs = eventPhoto.map((file: any) => (
     <div key={file.name}>
       <div>
-        <img
+        <Image
           src={file.preview}
+          alt=""
           className="w-full h-full object-cover"
           // Revoke data uri after image is loaded
           onLoad={() => {

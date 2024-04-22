@@ -648,6 +648,7 @@ const BasicInfoEdit = ({ params }: { params: { slug: string | any } }) => {
       <div>
         <img
           src={imageUrl ? imageUrl : file.preview}
+          alt={file.name}
           className="w-screen md:w-[65vw] h-[248px] object-cover"
           // Revoke data uri after image is loaded
           onLoad={() => {

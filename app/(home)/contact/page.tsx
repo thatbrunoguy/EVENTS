@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 
-const page = () => {
+const Contact = () => {
   const [data, setData] = useState({
     firstName: "",
     email: "",
@@ -106,4 +106,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Contact;

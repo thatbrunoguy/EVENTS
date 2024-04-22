@@ -43,6 +43,7 @@ const Details = () => {
           onLoad={() => {
             URL.revokeObjectURL(file.preview);
           }}
+          alt={file.name}
         />
       </div>
     </div>

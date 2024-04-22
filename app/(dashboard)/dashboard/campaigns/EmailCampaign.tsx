@@ -113,7 +113,7 @@ const EmailCampaign = () => {
                     ✨ Your events deserve an audience ✨
                   </p>
                   <p className="text-sm text-lightText">
-                    Let's build your email campaign from scratch!✨
+                    Let&apos;s build your email campaign from scratch!✨
                   </p>
                 </div>
                 <Link
