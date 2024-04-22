@@ -850,13 +850,13 @@ const BasicInfoEdit = ({ params }: { params: { slug: string | any } }) => {
                       <p>Online Event</p>
                     </button>
                   </div>
-                  {!isOnlineEvent && (
+                  {/* {!isOnlineEvent && (
                     <GoogleLocationSearch
                       value={locationValue}
                       setValue={setLocationValue}
                       setEventInfo={setEventInfo}
                     />
-                  )}
+                  )} */}
                 </div>
 
                 <hr className="my-6" />
@@ -1358,13 +1358,13 @@ const BasicInfoEdit = ({ params }: { params: { slug: string | any } }) => {
                         </div>
                       </div>
 
-                      {!isOnlineEvent && (
+                      {/* {!isOnlineEvent && (
                         <GoogleLocationSearch
                           value={locationValue}
                           setValue={setLocationValue}
                           setEventInfo={setEventInfo}
                         />
-                      )}
+                      )} */}
                     </div>
                   )}
                 </div>
@@ -1525,11 +1525,11 @@ const BasicInfoEdit = ({ params }: { params: { slug: string | any } }) => {
                   )}
                 </div>
                 {/* Add FAQ */}
-                <Faq
+                {/* <Faq
                   faqs={faqs}
                   setFaqs={setFaqs}
                   setEventInfo={setEventInfo}
-                />
+                /> */}
                 <MainFooter
                   isComplete={isComplete2}
                   backHandler={backHandler}
