@@ -95,10 +95,11 @@ const CreateEmailCampaignContent = () => {
     };
   }, []);
 
-  const thumbs = eventPhoto.map((file: any) => (
-    <div key={file.name}>
+  const thumbs = eventPhoto.map((file: any, i: number) => (
+    <div key={i}>
       <div>
-        <img
+        <Image
+          alt=""
           src={file.preview}
           className="w-full h-full object-cover"
           // Revoke data uri after image is loaded
@@ -207,8 +208,8 @@ const CreateEmailCampaignContent = () => {
         {events
           ?.filter((event: any) => event.id !== selectedEvent.id)
           ?.slice(0, 2)
-          ?.map((event: any) => (
-            <div className="w-full flex items-center space-x-3 mb-4">
+          ?.map((event: any, i: number) => (
+            <div key={i} className="w-full flex items-center space-x-3 mb-4">
               <div className="">
                 <input
                   type="checkbox"

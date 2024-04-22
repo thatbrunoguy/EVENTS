@@ -120,6 +120,7 @@ const OrganizationProfile = ({
       <div>
         <img
           src={imageUrl ? imageUrl : file.preview}
+          alt={file.name}
           // src={imageUrl ? imageUrl : file.preview}
           className="w-full h-[248px] object-cover"
           // Revoke data uri after image is loaded

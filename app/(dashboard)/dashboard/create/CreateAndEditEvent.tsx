@@ -507,6 +507,7 @@ const CreateAndEditEvent = () => {
             setIsImageUploadEnabled(true);
             URL.revokeObjectURL(file.preview);
           }}
+          alt=""
         />
       </div>
     </div>

@@ -67,9 +67,12 @@ const EmailTemplate = () => {
         >
           {mailContent.media?.length ? (
             <div style={{ height: "308px", width: "100%" }}>
-              <img
+              <Image
                 style={{ width: "100%", height: "100%", objectFit: "cover" }}
                 src={mailContent?.media[0]}
+                fill
+                priority
+                alt=""
               />
             </div>
           ) : null}
@@ -110,7 +113,7 @@ const EmailTemplate = () => {
                 // marginTop: `${index > 0 && "64px"}`,
               }}
             >
-              <img
+              <Image
                 style={{
                   width: "550px",
                   height: "277px",
@@ -119,6 +122,7 @@ const EmailTemplate = () => {
                 }}
                 //@ts-ignore
                 src={selectedEvent?.img}
+                alt="img"
               />
 
               <div
@@ -195,7 +199,7 @@ const EmailTemplate = () => {
                   }}
                   key={index}
                 >
-                  <img
+                  <Image
                     style={{
                       width: "550px",
                       height: "277px",
@@ -204,6 +208,7 @@ const EmailTemplate = () => {
                     }}
                     //@ts-ignore
                     src={event?.img}
+                    alt="Image"
                   />
 
                   <div

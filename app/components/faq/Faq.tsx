@@ -1,6 +1,6 @@
 "use client";
 
-import { EventInfoType } from "@/app/(dashboard)/dashboard/create/basic-info/page";
+import { EventInfoType } from "@/app/types";
 import React, { useEffect, useState } from "react";
 import { GoPlus } from "react-icons/go";
 import { RiDeleteBin6Fill } from "react-icons/ri";
