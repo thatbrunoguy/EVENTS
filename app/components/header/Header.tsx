@@ -72,6 +72,7 @@ const Header = ({ selectedEvent, setSelectedEvent }: Iprops) => {
           img,
           address,
           status,
+          slug: event.slug || null,
         };
       });
 
@@ -90,6 +91,7 @@ const Header = ({ selectedEvent, setSelectedEvent }: Iprops) => {
         address: updatedEvent.address,
         startDate: updatedEvent.startDate,
         desc: updatedEvent.desc,
+        slug: updatedEvent.slug,
       });
       addToLocalStorage(EVENTSPARROT_USER, "activeEvent", updatedEvent);
     }
@@ -128,6 +130,7 @@ const Header = ({ selectedEvent, setSelectedEvent }: Iprops) => {
                   eventId: item.id,
                   img: item.img,
                   address: item.address,
+                  slug: item.slug,
                 });
                 addToLocalStorage(EVENTSPARROT_USER, "activeEvent", item);
                 queryClient.invalidateQueries();
