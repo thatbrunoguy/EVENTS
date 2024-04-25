@@ -67,11 +67,9 @@ const EmailTemplate = () => {
         >
           {mailContent.media?.length ? (
             <div style={{ height: "308px", width: "100%" }}>
-              <Image
+              <img
                 style={{ width: "100%", height: "100%", objectFit: "cover" }}
                 src={mailContent?.media[0]}
-                fill
-                priority
                 alt=""
               />
             </div>
@@ -113,7 +111,7 @@ const EmailTemplate = () => {
                 // marginTop: `${index > 0 && "64px"}`,
               }}
             >
-              <Image
+              <img
                 style={{
                   width: "550px",
                   height: "277px",
@@ -199,7 +197,7 @@ const EmailTemplate = () => {
                   }}
                   key={index}
                 >
-                  <Image
+                  <img
                     style={{
                       width: "550px",
                       height: "277px",

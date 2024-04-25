@@ -98,25 +98,25 @@ export default function AdsCampaign() {
   const emailCampaign = [
     {
       title: "Impression",
-      value: adsAnalytics.impressions,
+      value: adsAnalytics?.impressions,
       icon: <BsPersonRolodex color="#D90BD9" />,
       background: "#FCEDFC",
     },
     {
       title: "Reach",
-      value: adsAnalytics.reach,
+      value: adsAnalytics?.reach,
       icon: <VscThumbsupFilled color="#106BD5" />,
       background: "#EDF4FC",
     },
     {
       title: "Page views",
-      value: adsAnalytics.page_views,
+      value: adsAnalytics?.page_views,
       icon: <LiaVoteYeaSolid color="#CB1C6F" />,
       background: "#FCEDF6",
     },
     {
       title: "Sign up",
-      value: adsAnalytics.signups,
+      value: adsAnalytics?.signups,
       icon: <HiCursorArrowRipple color="#FF5602" />,
       background: "#FCEFE8",
     },

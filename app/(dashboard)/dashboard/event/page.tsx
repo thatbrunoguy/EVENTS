@@ -41,6 +41,7 @@ export type EventData = {
   status: number;
   tickets: Ticket[];
   locations: Location[];
+  slug: string;
 };
 type FormattedEvent = {
   id: string;

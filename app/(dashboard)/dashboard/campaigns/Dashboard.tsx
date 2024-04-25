@@ -166,7 +166,7 @@ export default function Dashboard() {
           <h3 className="font-medium text-xl">Get better placement</h3>
           <p className="mt-3 w-[300px] text-sm text-center">
             We&apos;ll show your ad on our most - visited areas across
-            Eventsparrot, like search results, IOS app, and homeopage
+            Eventsparrot, like search results, IOS app, and homepage
           </p>
 
           <button
