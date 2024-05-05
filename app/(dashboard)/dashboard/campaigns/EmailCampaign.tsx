@@ -26,11 +26,12 @@ import PrimaryLoading from "@/app/components/loaders/PrimaryLoading";
 const EmailCampaign = () => {
   const activeEvent = getData(EVENTSPARROT_USER)?.activeEvent;
 
+  console.log(activeEvent, "activeEvent");
+
   const { data: emailCampaign, isLoading } = useQuery({
     queryKey: ["email-campaign"],
     queryFn: campaignFn.getEmailCampaigns,
     select: (data) => {
-      console.log("datasa", data);
       const selectedCampaign = data.events.map((campaign: any) => {
         const status = campaign?.status === 1 ? "Sent" : "Disabled";
         return {
@@ -46,46 +47,53 @@ const EmailCampaign = () => {
     },
   });
 
+  const { data: emailAnalytics } = useQuery({
+    queryFn: campaignFn.getEmailCampaignsAnalytics,
+    queryKey: ["email-campaign-analytics"],
+  });
+
+  console.log("emailAnalytics", emailAnalytics);
+
   const emailCampaigns = [
-    {
-      title: "Revenue",
-      value: "₦0",
-      icon: <FaMoneyBills color="#D90BD9" />,
-      background: "#FCEDFC",
-    },
-    {
-      title: "Ticket Sales",
-      value: "4",
-      icon: <FaMoneyBills color="#106BD5" />,
-      background: "#EDF4FC",
-    },
+    // {
+    //   title: "Revenue",
+    //   value: "₦0",
+    //   icon: <FaMoneyBills color="#D90BD9" />,
+    //   background: "#FCEDFC",
+    // },
+    // {
+    //   title: "Ticket Sales",
+    //   value: "4",
+    //   icon: <FaMoneyBills color="#106BD5" />,
+    //   background: "#EDF4FC",
+    // },
     {
       title: "Delivered",
-      value: "60",
+      value: (emailAnalytics && emailAnalytics?.delivered) ?? 0,
       icon: <FaMoneyBills color="#CB1C6F" />,
       background: "#FCEDF6",
     },
     {
       title: "Opens",
-      value: "65%",
+      value: (emailAnalytics && emailAnalytics?.opened) ?? 0,
       icon: <FaMoneyBills color="#FF5602" />,
       background: "#FCEFE8",
     },
     {
       title: "Clicks",
-      value: "10%",
+      value: (emailAnalytics && emailAnalytics?.clicked) ?? 0,
       icon: <FaMoneyBills color="#199FFF" />,
       background: "#F0F7FC",
     },
     {
       title: "Unsubscribed",
-      value: "0%",
+      value: (emailAnalytics && emailAnalytics?.unsubscribed) ?? 0,
       icon: <FaMoneyBills color="#B61C9D" />,
       background: "#FCF0FA",
     },
     {
       title: "Bounced",
-      value: "1.7%",
+      value: (emailAnalytics && emailAnalytics.hard_bounced) ?? 0,
       icon: <FaMoneyBills color="#7431B8" />,
       background: "#F5EDFC",
     },
@@ -95,7 +103,7 @@ const EmailCampaign = () => {
 
   return (
     <>
-      {!emailCampaign.length ? (
+      {!emailCampaign?.length ? (
         <section className="flex">
           <main className="h-screen flex-1">
             <div className="flex justify-center items-center w-full h-[70%]">
@@ -142,7 +150,7 @@ const EmailCampaign = () => {
             // mousewheel={true}
             // cssMode={true}
           >
-            {emailCampaigns.map((item: any, i: number) => (
+            {emailCampaigns?.map((item: any, i: number) => (
               <SwiperSlide
                 key={i}
                 style={{ width: "122px" }}

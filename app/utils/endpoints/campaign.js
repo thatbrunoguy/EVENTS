@@ -158,4 +158,31 @@ export const campaignFn = {
       return error.response.data;
     }
   },
+
+  getEmailCampaignsAnalytics: async ({}) => {
+    const TOKEN = getData(EVENTSPARROT_USER)?.token;
+    const activeEventId = getData(EVENTSPARROT_USER)?.activeEvent?.id;
+
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/event/${activeEventId}/emailCampaign/analytics`,
+        {
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            "X-APP-KEY": APP_KEY,
+            Authorization: `Bearer ${TOKEN}`,
+          },
+        }
+      );
+
+      if (response.data && response.data.status === true) {
+        return response?.data?.data;
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching campaign:", error.response.data.message);
+      return error.response.data;
+    }
+  },
 };

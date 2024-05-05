@@ -35,6 +35,8 @@ const CreateEmailCampaignBasic = () => {
       <div>
         <Image
           src={file.preview}
+          fill
+          priority
           alt=""
           className="w-full h-full object-cover"
           // Revoke data uri after image is loaded
