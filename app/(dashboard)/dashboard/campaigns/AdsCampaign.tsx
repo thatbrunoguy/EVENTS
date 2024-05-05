@@ -73,7 +73,7 @@ export default function AdsCampaign() {
               .split("|")[0]
               .trim()
           : null;
-        const img = campaign.event.medias[0]?.thumb || null;
+        const img = campaign.event.medias[0]?.original || null;
         const status = campaign.event.status === 1 ? "Active" : "Disabled";
 
         return {
@@ -95,7 +95,7 @@ export default function AdsCampaign() {
     queryKey: ["ad-campaign-analytics"],
   });
 
-  const emailCampaign = [
+  const adsCampaign = [
     {
       title: "Impression",
       value: adsAnalytics?.impressions,
@@ -137,7 +137,7 @@ export default function AdsCampaign() {
                 modules={[Pagination]}
                 className="h-auto"
               >
-                {emailCampaign.map((item, i) => (
+                {adsCampaign.map((item, i) => (
                   <SwiperSlide
                     key={i}
                     style={{ width: "122px" }}
@@ -160,7 +160,7 @@ export default function AdsCampaign() {
               </Swiper>
             </div>
             <Link
-              href="/dashboard/create/basic-info"
+              href="/dashboard/campaigns/create/ads"
               className="bg-purple-700 mb-10 ml-auto py-[10px] px-5 w-[160px] h-[41px] text-white text-sm rounded-lg flex items-center space-x-[4px]"
             >
               <div>

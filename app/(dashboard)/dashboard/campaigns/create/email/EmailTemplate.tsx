@@ -23,7 +23,7 @@ const EmailTemplate = () => {
   useEffect(() => {
     //@ts-ignore
     const emailBodyHTML = emailBodyRef.current.innerHTML;
-    console.log("emailBodyHTML", emailBodyHTML);
+
     setData((prev: any) => ({ ...prev, html_content: emailBodyHTML }));
   }, [mailContent]);
 
@@ -68,9 +68,11 @@ const EmailTemplate = () => {
           {mailContent.media?.length ? (
             <div style={{ height: "308px", width: "100%" }}>
               <img
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                style={{ objectFit: "cover" }}
                 src={mailContent?.media[0]}
                 alt=""
+                width="100%"
+                height="100%"
               />
             </div>
           ) : null}
@@ -111,17 +113,19 @@ const EmailTemplate = () => {
                 // marginTop: `${index > 0 && "64px"}`,
               }}
             >
-              <img
-                style={{
-                  width: "550px",
-                  height: "277px",
-                  objectFit: "cover",
-                  borderRadius: "4px",
-                }}
-                //@ts-ignore
-                src={selectedEvent?.img}
-                alt="img"
-              />
+              {selectedEvent?.img && (
+                <img
+                  style={{
+                    objectFit: "cover",
+                    borderRadius: "4px",
+                  }}
+                  //@ts-ignore
+                  src={selectedEvent?.img}
+                  alt="img"
+                  width="550px"
+                  height="277px"
+                />
+              )}
 
               <div
                 style={{
@@ -199,14 +203,14 @@ const EmailTemplate = () => {
                 >
                   <img
                     style={{
-                      width: "550px",
-                      height: "277px",
                       objectFit: "cover",
                       borderRadius: "4px",
                     }}
                     //@ts-ignore
                     src={event?.img}
                     alt="Image"
+                    width="550px"
+                    height="277px"
                   />
 
                   <div
