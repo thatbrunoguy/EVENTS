@@ -625,6 +625,37 @@ export const eventsManagamentFunctions = {
     }
   },
 
+  checkInAttendeeWithCode: async ({ id, eventId }) => {
+    const TOKEN = getData(EVENTSPARROT_USER)?.token;
+    const accountId = getData(EVENTSPARROT_USER)?.account?.id;
+    // console.log("userAccountId", accountId);
+    try {
+      const response = await axios.post(
+        `${BASE_URL}/event/${eventId}/check-in`,
+        { id: id },
+        {
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            "X-APP-KEY": APP_KEY,
+            Authorization: `Bearer ${TOKEN}`,
+          },
+        }
+      );
+      // console.log("response", response);
+      if (response.data && response.data.status === true) {
+        toast.success(response.data.message);
+        // console.log("res", response?.data.message);
+        return response.data.data;
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error.response.data.message);
+      toast.error(error.response.data.message);
+      throw error;
+    }
+  },
+
   getEventById: async ({ eventId }) => {
     const TOKEN = getData(EVENTSPARROT_USER)?.token;
     const accountId = getData(EVENTSPARROT_USER)?.account?.id;

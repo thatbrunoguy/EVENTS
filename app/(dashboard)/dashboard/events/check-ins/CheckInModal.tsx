@@ -4,14 +4,31 @@ import {
   SolidButton,
   TransparentButton,
 } from "@/app/components/buttons/button";
+import { eventsManagamentFunctions } from "@/app/utils/endpoints";
+import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
+import { QrReader } from "react-qr-reader";
+
 type Iprops = {
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  checkInAttendee?: any;
+  selectedEventId?: string;
 };
 
-const CheckInModal = ({ setIsModalOpen }: Iprops) => {
+const CheckInModal = ({ setIsModalOpen, selectedEventId }: Iprops) => {
   const router = useRouter();
+  const [customerId, setCustomerId] = useState("");
+  const [scanCode, setScanCode] = useState(false);
+
+  const checkInAttendee = useMutation({
+    mutationFn: eventsManagamentFunctions.checkInAttendeeWithCode,
+    onError: async (error, variables, context) => {},
+    onSuccess: async (data, variables, context) => {
+      // console.log("checkin-attendee", data);
+    },
+  });
+
   return (
     <>
       <div
@@ -34,10 +51,42 @@ const CheckInModal = ({ setIsModalOpen }: Iprops) => {
             </label>
             <input
               type="text"
-              //   placeholder="Select category"
+              onChange={(e) => setCustomerId(e.target.value)}
+              value={customerId}
               className="h-[56px] text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
             />
           </div>
+
+          <div className="flex items-center space-x-4 my-5">
+            <div className="basis-1/2 h-[.8px] bg-[#E7E4EB]" />
+            <p
+              className="text-sm text-[#706D73] white-space-none cursor-pointer"
+              onClick={() => setScanCode(true)}
+            >
+              or SCAN QR code
+            </p>
+            <div className="basis-1/2 h-[.8px] bg-[#E7E4EB]" />
+          </div>
+
+          <>
+            {scanCode && (
+              <QrReader
+                onResult={(result, error) => {
+                  if (!!result) {
+                    //@ts-ignore
+                    setCustomerId(result?.text);
+                    setScanCode(false);
+                  }
+
+                  if (!!error) {
+                    console.info(error);
+                  }
+                }}
+                //@ts-ignore
+                style={{ width: "100%" }}
+              />
+            )}
+          </>
 
           <div className="">
             <div className="rounded-md bg-purple-50 py-3 px-3  flex justify-between">
@@ -67,7 +116,13 @@ const CheckInModal = ({ setIsModalOpen }: Iprops) => {
             }}
           />
           <SolidButton
-            onClickHandler={() => router.push("/dashboard/payment/success")}
+            onClickHandler={() => {
+              setIsModalOpen(true);
+              checkInAttendee.mutate({
+                id: customerId,
+                eventId: selectedEventId,
+              });
+            }}
             title="Allow"
             styles={{ width: "160px", height: "41px" }}
           />
