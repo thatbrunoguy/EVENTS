@@ -59,8 +59,11 @@ export default function Guestlist() {
 
   // ticket sale data
   const { data: ticketsData } = useQuery({
-    queryKey: ["ticket-data"],
     queryFn: guestFunctions.getTicketsData,
+    queryKey: ["ticket-sale-data"],
+    select: (data) => {
+      return data;
+    },
   });
 
   const { data: guestlistOrders, isLoading } = useQuery({
@@ -117,7 +120,6 @@ export default function Guestlist() {
     },
   });
 
-  console.log("guestlistOrders", guestlistOrders);
   const exportCSV = () => {
     setDownloadCsv((prev) => (prev = true));
     if (data.status) {

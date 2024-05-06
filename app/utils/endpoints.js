@@ -795,7 +795,7 @@ export const guestFunctions = {
       );
       console.log("response", response);
       if (response.data && response.data.status === true) {
-        return response.data.data.events;
+        return response.data.data;
       } else {
         throw new Error(response.data.message);
       }
