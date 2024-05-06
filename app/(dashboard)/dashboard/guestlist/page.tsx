@@ -64,32 +64,30 @@ export default function Guestlist() {
   });
 
   const { data: guestlistOrders, isLoading } = useQuery({
-    queryKey: ["event-guestlist", selectedEvent.eventId],
+    queryKey: ["events-guestlist-order"],
     queryFn: () =>
       eventsManagamentFunctions.getEventGuestlist(selectedEvent?.eventId),
     enabled: selectedEvent.eventId ? true : false,
-    select: (data): OrderData[] => {
-      return data.map((item: any) => {
-        const { user, tickets, order_number } = item;
-        const amount =
-          tickets[0]?.ticket?.type === 1
-            ? "Free"
-            : tickets[0].price * tickets.length ?? "Free";
+    select: (data) => {
+      const selectedData = data.map((item: any) => {
+        console.log(item, "item");
+        const { user, tickets, order_number, order_date, quantity } = item;
+        const amount = tickets[0].price * quantity;
         let fees = 0;
 
-        if (tickets[0].price === 0) {
+        if (amount === 0) {
           fees = 0;
-        } else if (tickets[0].price >= 2000) {
-          fees = (tickets[0].price * 0.05 + 100) * item.quantity;
-        } else if (tickets[0].price < 2000) {
-          fees = tickets[0].price * 0.05 * item.quantity;
+        } else if (amount >= 2000) {
+          fees = amount * 0.05 + 100;
+        } else if (amount < 2000) {
+          fees = amount * 0.05;
         }
 
         const ticketCounts: { [ticketName: string]: number } = {};
 
         data.forEach((item: any) => {
           const { tickets } = item;
-          const ticketName = tickets[0].name;
+          const ticketName = tickets[0].ticket.name;
           ticketCounts[ticketName] = (ticketCounts[ticketName] || 0) + 1;
         });
 
@@ -102,20 +100,23 @@ export default function Guestlist() {
 
         return {
           name: tickets[0].ticket?.name,
-          quantity: tickets.length ?? 0,
+          quantity: tickets.length,
           buyerName: user.full_name,
           orderNumber: order_number,
-          date: item.order_date,
+          date: new Date(order_date).toLocaleDateString(),
           email: user.email,
-          price: tickets[0].price,
+          price: tickets[0].ticket.price,
           stockQuantity: tickets[0].stock_qty,
           amount: amount,
           fees: fees,
           stat: stat,
         };
       });
+      console.log("selectedData", selectedData);
+      return selectedData;
     },
   });
+
   console.log("guestlistOrders", guestlistOrders);
   const exportCSV = () => {
     setDownloadCsv((prev) => (prev = true));
@@ -191,7 +192,7 @@ export default function Guestlist() {
               ) : (
                 <div className="w-[95%] mt-6 mx-auto">
                   <div className="w-full mb-9">
-                    <DashHeader stat={guestlistOrders[0].stat} />
+                    <DashHeader stat={ticketsData} />
                   </div>
                   {isGuestlistModalOpen && (
                     <GuestlistModal

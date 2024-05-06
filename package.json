@@ -41,6 +41,7 @@
     "react-modern-drawer": "^1.2.2",
     "react-multi-carousel": "^2.8.4",
     "react-otp-input": "^3.1.1",
+    "react-qr-reader": "^3.0.0-beta-1",
     "react-quill": "^2.0.0",
     "react-select": "^5.8.0",
     "react-share": "^5.1.0",

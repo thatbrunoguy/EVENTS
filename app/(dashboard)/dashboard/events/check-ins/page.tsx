@@ -112,7 +112,13 @@ const CheckIns = () => {
           selectedEvent={selectedEvent}
           setSelectedEvent={setSelectedEvent}
         />
-        {isModalOpen && <CheckInModal setIsModalOpen={setIsModalOpen} />}
+        {isModalOpen && (
+          <CheckInModal
+            setIsModalOpen={setIsModalOpen}
+            checkInAttendee={checkInAttendee}
+            selectedEventId={selectedEvent.eventId}
+          />
+        )}
 
         {!options.length ? (
           <div className="w-[351px] mx-auto flex flex-col items-center mt-[15%]">
@@ -128,7 +134,7 @@ const CheckIns = () => {
               blast.
             </p>
             <button
-              //  onClick={() => setIsModalOpen(true)}
+              onClick={() => setIsModalOpen(true)}
               className="bg-purple-700 py-[10px] hover:bg-opacity-70 px-5 w-auto h-[41px] text-white text-sm rounded-lg flex items-center space-x-[4px]"
             >
               <div>
