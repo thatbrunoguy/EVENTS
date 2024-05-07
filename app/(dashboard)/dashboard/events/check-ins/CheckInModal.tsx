@@ -4,7 +4,10 @@ import {
   SolidButton,
   TransparentButton,
 } from "@/app/components/buttons/button";
-import { eventsManagamentFunctions } from "@/app/utils/endpoints";
+import {
+  eventsManagamentFunctions,
+  guestFunctions,
+} from "@/app/utils/endpoints";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -16,16 +19,31 @@ type Iprops = {
   selectedEventId?: string;
 };
 
+type ticketDetail = {
+  attendee?: string;
+  ticket_type?: string;
+};
+
 const CheckInModal = ({ setIsModalOpen, selectedEventId }: Iprops) => {
   const router = useRouter();
   const [customerId, setCustomerId] = useState("");
   const [scanCode, setScanCode] = useState(false);
+  const [ticketDetail, setTicketDetail] = useState<ticketDetail>({});
+  // const [qrScanner, setQrScanner] = useState<QrReader>();
 
   const checkInAttendee = useMutation({
     mutationFn: eventsManagamentFunctions.checkInAttendeeWithCode,
     onError: async (error, variables, context) => {},
     onSuccess: async (data, variables, context) => {
       // console.log("checkin-attendee", data);
+    },
+  });
+
+  const getTicketDetail = useMutation({
+    mutationFn: guestFunctions.getTicketInfo,
+    onError: async (error, variables, context) => {},
+    onSuccess: async (data, variables, context) => {
+      setTicketDetail(data);
     },
   });
 
@@ -60,10 +78,10 @@ const CheckInModal = ({ setIsModalOpen, selectedEventId }: Iprops) => {
           <div className="flex items-center space-x-4 my-5">
             <div className="basis-1/2 h-[.8px] bg-[#E7E4EB]" />
             <p
-              className="text-sm text-[#706D73] white-space-none cursor-pointer"
+              className="text-sm text-[#706D73] whitespace-nowrap cursor-pointer"
               onClick={() => setScanCode(true)}
             >
-              or SCAN QR code
+              or <span className="text-primaryPurple">SCAN QR code</span>
             </p>
             <div className="basis-1/2 h-[.8px] bg-[#E7E4EB]" />
           </div>
@@ -87,21 +105,22 @@ const CheckInModal = ({ setIsModalOpen, selectedEventId }: Iprops) => {
               />
             )}
           </>
-
-          <div className="">
-            <div className="rounded-md bg-purple-50 py-3 px-3  flex justify-between">
-              <p className="text-sm basis-1/2">Attendee</p>
-              <p className="text-sm basis-1/2">Ticket type</p>
-            </div>
-            <div className="flex justify-between items-center mt-8 border-b-[.6px] pb-8 px-4">
-              <p className="basis-1/2">Timilehin Adegbulugbe</p>
-              <div className="  p-2 basis-1/2">
-                <div className="rounded-md bg-lightPurple w-[100px] p-2 flex justify-center text-xs text-primaryPurple">
-                  <p>Free Ticket</p>
+          {ticketDetail ? (
+            <div className="">
+              <div className="rounded-md bg-purple-50 py-3 px-3  flex justify-between">
+                <p className="text-sm basis-1/2">Attendee</p>
+                <p className="text-sm basis-1/2">Ticket type</p>
+              </div>
+              <div className="flex justify-between items-center mt-8 border-b-[.6px] pb-8 px-4">
+                <p className="basis-1/2">{ticketDetail?.attendee}</p>
+                <div className="  p-2 basis-1/2">
+                  <div className="rounded-md bg-lightPurple w-[100px] p-2 flex justify-center text-xs text-primaryPurple">
+                    <p>{ticketDetail?.ticket_type}</p>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          ) : null}
         </div>
 
         <footer className="h-[70px] fixed bottom-0 left-0 bg-white shadow-lg right-0 px-2 md:pr-9 flex justify-center md:justify-end space-x-6 items-center border-t-[.8px] border-gray-300">
@@ -118,10 +137,7 @@ const CheckInModal = ({ setIsModalOpen, selectedEventId }: Iprops) => {
           <SolidButton
             onClickHandler={() => {
               setIsModalOpen(true);
-              checkInAttendee.mutate({
-                id: customerId,
-                eventId: selectedEventId,
-              });
+              getTicketDetail.mutate(customerId);
             }}
             title="Allow"
             styles={{ width: "160px", height: "41px" }}
