@@ -92,8 +92,9 @@ const CheckInModal = ({ setIsModalOpen, selectedEventId }: Iprops) => {
                 onResult={(result, error) => {
                   if (!!result) {
                     //@ts-ignore
-                    setCustomerId(result?.text);
-                    setScanCode(false);
+                    const res = JSON.parse(result.text);
+                    setCustomerId(res.ticket_number);
+                    setScanCode((prev) => (prev = false));
                   }
 
                   if (!!error) {
