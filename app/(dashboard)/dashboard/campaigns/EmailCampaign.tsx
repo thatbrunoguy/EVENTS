@@ -26,8 +26,6 @@ import PrimaryLoading from "@/app/components/loaders/PrimaryLoading";
 const EmailCampaign = () => {
   const activeEvent = getData(EVENTSPARROT_USER)?.activeEvent;
 
-  console.log(activeEvent, "activeEvent");
-
   const { data: emailCampaign, isLoading } = useQuery({
     queryKey: ["email-campaign"],
     queryFn: campaignFn.getEmailCampaigns,
@@ -51,8 +49,6 @@ const EmailCampaign = () => {
     queryFn: campaignFn.getEmailCampaignsAnalytics,
     queryKey: ["email-campaign-analytics"],
   });
-
-  console.log("emailAnalytics", emailAnalytics);
 
   const emailCampaigns = [
     // {
