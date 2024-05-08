@@ -227,9 +227,9 @@ export default function Dashboard() {
 
                       {i === 1 && (
                         <p className="text-xs overflow-ellipsis text-[#706D73]">
-                          {`${salesAnalytics?.type1Count || 0} Paid  ${
+                          {`${salesAnalytics?.type1Count || 0} Free  ${
                             salesAnalytics?.type2Count || 0
-                          } Free `}
+                          } Paid `}
                         </p>
                       )}
                     </div>
@@ -258,8 +258,8 @@ export default function Dashboard() {
                           <p className="text-sm text-lightText">Remaining</p>
                         </div>
                       </div>
-                      <p className="text-primaryPurple text-sm py-3">
-                        Add account
+                      <p className="text-primaryPurple text-sm py-3 cursor-pointer">
+                        Request payout
                       </p>
                     </div>
                   </div>

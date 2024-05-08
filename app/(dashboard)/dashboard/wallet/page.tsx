@@ -13,6 +13,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
 import { IoMailOpenSharp } from "react-icons/io5";
 import MobileFooter from "../../../components/footer/MobileFooter";
+import BuyTokenModal from "../campaigns/create/ads/BuyTokenModal";
 
 export default function Guestlist() {
   const [selectedEvent, setSelectedEvent] = useState({
@@ -110,6 +111,7 @@ export default function Guestlist() {
     //   date: "Sep 29, 2023",
     // },
   ];
+  const [openTokenModal, setOpenTokenModal] = useState<boolean>(false);
   const [isGuestlistModalOpen, setIsGuestlistModalOpen] =
     useState<boolean>(false);
 
@@ -169,7 +171,10 @@ export default function Guestlist() {
                 Buy token to promote campaigns of all your events
               </p>
 
-              <button className="px-5 py-[10px] rounded-md bg-primaryPurple">
+              <button
+                className="px-5 py-[10px] rounded-md bg-primaryPurple"
+                onClick={() => setOpenTokenModal(true)}
+              >
                 <p className="text-sm text-white">Buy Token</p>
               </button>
             </div>
@@ -225,6 +230,8 @@ export default function Guestlist() {
           </>
         )}
       </main>
+
+      {openTokenModal && <BuyTokenModal setIsModalOpen={setOpenTokenModal} />}
     </section>
   );
 }
