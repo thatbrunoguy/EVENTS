@@ -625,10 +625,10 @@ export const eventsManagamentFunctions = {
     }
   },
 
-  checkInAttendeeWithCode: async ({ id, eventId }) => {
+  checkInAttendeeWithCode: async (id) => {
     const TOKEN = getData(EVENTSPARROT_USER)?.token;
-    const accountId = getData(EVENTSPARROT_USER)?.account?.id;
-    // console.log("userAccountId", accountId);
+    const eventId = getData(EVENTSPARROT_USER)?.activeEvent?.id;
+
     try {
       const response = await axios.post(
         `${BASE_URL}/event/${eventId}/check-in`,
@@ -641,10 +641,9 @@ export const eventsManagamentFunctions = {
           },
         }
       );
-      // console.log("response", response);
+
       if (response.data && response.data.status === true) {
         toast.success(response.data.message);
-        // console.log("res", response?.data.message);
         return response.data.data;
       } else {
         throw new Error(response.data.message);

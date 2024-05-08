@@ -8,6 +8,7 @@ import { campaignFn } from "@/app/utils/endpoints/campaign";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import { toast } from "react-hot-toast";
 // import {campaignFn} from "@/app/utils/"
 type Iprops = {
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -24,6 +25,20 @@ const BuyTokenModal = ({ setIsModalOpen, tokenAmount }: Iprops) => {
     queryFn: () => campaignFn.buyToken({ token_qty: token }),
     enabled: enabled,
   });
+
+  const handleBuyToken = () => {
+    if (token < 5) {
+      toast.error("Token  cannot be less than 5");
+      return;
+    } else if (token > 50) {
+      toast.error("Token should not be greater than 50");
+      return;
+    } else if (token % 5 > 0) {
+      toast.error("Token should multiple of 5");
+      return;
+    }
+    setEnabled(true);
+  };
 
   return (
     <>
@@ -69,7 +84,7 @@ const BuyTokenModal = ({ setIsModalOpen, tokenAmount }: Iprops) => {
             }}
           />
           <SolidButton
-            onClickHandler={() => setEnabled(true)}
+            onClickHandler={handleBuyToken}
             title="Buy Now"
             styles={{ width: "160px", height: "41px" }}
           />

@@ -106,7 +106,7 @@ const CheckInModal = ({ setIsModalOpen, selectedEventId }: Iprops) => {
               />
             )}
           </>
-          {ticketDetail ? (
+          {ticketDetail?.attendee ? (
             <div className="">
               <div className="rounded-md bg-purple-50 py-3 px-3  flex justify-between">
                 <p className="text-sm basis-1/2">Attendee</p>
@@ -135,14 +135,25 @@ const CheckInModal = ({ setIsModalOpen, selectedEventId }: Iprops) => {
               height: "41px",
             }}
           />
-          <SolidButton
-            onClickHandler={() => {
-              setIsModalOpen(true);
-              getTicketDetail.mutate(customerId);
-            }}
-            title="Allow"
-            styles={{ width: "160px", height: "41px" }}
-          />
+          {ticketDetail?.attendee ? (
+            <SolidButton
+              onClickHandler={() => {
+                setIsModalOpen(false);
+                checkInAttendee.mutate(customerId);
+              }}
+              title="Admit Attendee"
+              styles={{ width: "160px", height: "41px" }}
+            />
+          ) : (
+            <SolidButton
+              onClickHandler={() => {
+                setIsModalOpen(true);
+                getTicketDetail.mutate(customerId);
+              }}
+              title="Allow"
+              styles={{ width: "160px", height: "41px" }}
+            />
+          )}
         </footer>
       </div>
     </>
