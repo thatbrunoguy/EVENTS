@@ -85,3 +85,14 @@ export type EventObj = {
   startDate: string;
   id: string;
 };
+
+export type Pagination = {
+  current_page: number;
+  next_page_url: string | null;
+  prev_page_url: string | null;
+  meta: {
+    last_page: number;
+    per_page: number;
+    to: number;
+  };
+};

@@ -35,7 +35,7 @@ const CheckInModal = ({ setIsModalOpen, selectedEventId }: Iprops) => {
     mutationFn: eventsManagamentFunctions.checkInAttendeeWithCode,
     onError: async (error, variables, context) => {},
     onSuccess: async (data, variables, context) => {
-      // console.log("checkin-attendee", data);
+      setIsModalOpen(false);
     },
   });
 
@@ -138,7 +138,6 @@ const CheckInModal = ({ setIsModalOpen, selectedEventId }: Iprops) => {
           {ticketDetail?.attendee ? (
             <SolidButton
               onClickHandler={() => {
-                setIsModalOpen(false);
                 checkInAttendee.mutate(customerId);
               }}
               title="Admit Attendee"
