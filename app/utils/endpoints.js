@@ -729,6 +729,29 @@ export const guestFunctions = {
     }
   },
 
+  getEventsBySlug: async (eventId) => {
+    try {
+      const response = await axios.get(`${BASE_URL}/events/s/${eventId}`, {
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+          "X-APP-KEY": APP_KEY,
+        },
+      });
+      // console.log("response", response);
+      if (response.data && response.data.status === true) {
+        // toast.success(response.data.message);
+        // console.log("res", response?.data.message);
+        return response.data.data.event;
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error.response.data.message);
+      // toast.error(error.response.data.message);
+      throw error;
+    }
+  },
+
   bookEvent: async ({ myData, eventId }) => {
     try {
       const response = await axios.post(
@@ -819,6 +842,29 @@ export const guestFunctions = {
           },
         }
       );
+
+      if (response.data && response.data.status === true) {
+        return response.data.data;
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error.response.data.message);
+      throw error;
+    }
+  },
+
+  getAttendeeList: async () => {
+    const TOKEN = getData(EVENTSPARROT_USER)?.token;
+    const eventId = getData(EVENTSPARROT_USER)?.activeEvent?.id;
+    try {
+      const response = await axios.get(`${BASE_URL}/event/${eventId}/guests`, {
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+          "X-APP-KEY": APP_KEY,
+          Authorization: `Bearer ${TOKEN}`,
+        },
+      });
 
       if (response.data && response.data.status === true) {
         return response.data.data;
