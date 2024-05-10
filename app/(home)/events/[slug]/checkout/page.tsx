@@ -27,7 +27,7 @@ const Checkout = ({ params }: { params: { slug: string } }) => {
     status,
   } = useQuery({
     queryKey: ["events-guest", params.slug],
-    queryFn: () => guestFunctions.getEventsById(params.slug),
+    queryFn: () => guestFunctions.getEventsBySlug(params.slug),
     select: (data) => {
       const selectedData = {
         name: data.name || null,

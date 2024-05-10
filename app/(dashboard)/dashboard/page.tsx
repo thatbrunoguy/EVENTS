@@ -64,8 +64,9 @@ export default function Dashboard() {
     slug: "",
   });
   const [copiedText, copy] = useCopyToClipboard();
-  const eventURL = `https://eventsparrot.com/events/${selectedEvent.eventId}`;
-  // selectedEvent.slug ? selectedEvent.slug : selectedEvent.eventId
+  const eventURL = `https://eventsparrot.com/events/${
+    selectedEvent.slug ? selectedEvent.slug : selectedEvent.eventId
+  }`;
 
   const handleCopy = (text: string) => () => {
     copy(text)
