@@ -681,6 +681,29 @@ export const eventsManagamentFunctions = {
       return error.response.data.message;
     }
   },
+
+  //check slug
+  checkSlug: async (slug) => {
+    const TOKEN = getData(EVENTSPARROT_USER)?.token;
+
+    try {
+      const response = await axios.get(`${BASE_URL}/chk-slug?slug=${slug}`, {
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+          "X-APP-KEY": APP_KEY,
+          Authorization: `Bearer ${TOKEN}`,
+        },
+      });
+      console.log("response", response);
+      if (response.data) {
+        return response.data;
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      return error.response.data.message;
+    }
+  },
 };
 
 export const guestFunctions = {
