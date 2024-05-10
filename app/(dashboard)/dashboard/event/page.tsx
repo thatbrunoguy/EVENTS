@@ -355,7 +355,7 @@ export default function Event() {
                               <MenuItem className="py-2 cursor-pointer pl-4 hover:bg-lightPurple mx-auto border-t">
                                 <div
                                   onClick={handleCopy(
-                                    `https://eventsparrot.vercel.app/events/${item.id}`
+                                    `https://eventsparrot.vercel.app/events/${item.slug}`
                                   )}
                                   className="flex items-center w-full cursor-pointer  space-x-3 py-1"
                                 >

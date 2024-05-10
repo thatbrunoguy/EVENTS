@@ -34,7 +34,7 @@ const EventDetails = ({ params }: { params: { slug: string } }) => {
     status,
   } = useQuery({
     queryKey: ["events-guest", params.slug],
-    queryFn: () => guestFunctions.getEventsById(params.slug),
+    queryFn: () => guestFunctions.getEventsBySlug(params.slug),
     select: (data) => {
       const faqs = data?.faqs || [];
       const lowestPrice = Math.min(
