@@ -30,6 +30,7 @@ const Checkout = ({ params }: { params: { slug: string } }) => {
     queryFn: () => guestFunctions.getEventsBySlug(params.slug),
     select: (data) => {
       const selectedData = {
+        id: data.id,
         name: data.name || null,
         img: data?.medias?.[0]?.original || null,
         tickets:
@@ -157,11 +158,10 @@ const Checkout = ({ params }: { params: { slug: string } }) => {
     };
 
     const finalOrder = filterOrderFields();
-    // console.log("finalOrder", { orders: finalOrder });
     const myData = finalOrder;
     if (finalOrder.order.length) {
-      // console.log("myData", myData);
-      bookEvent.mutate({ myData, eventId: params?.slug });
+      // @ts-ignore
+      bookEvent.mutate({ myData, eventId: ticket.id });
     } else {
       toast.error("Kindly select a ticket at least to checkout");
     }
