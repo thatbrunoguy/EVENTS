@@ -5,8 +5,10 @@ import {
   TransparentButton,
 } from "@/app/components/buttons/button";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import ReactSelectOptions from "../../../components/select/ReactSelect";
+import { useMutation } from "@tanstack/react-query";
+import { teammateFn } from "@/app/utils/endpoints/teammate";
 type Iprops = {
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
@@ -14,6 +16,18 @@ type Iprops = {
 const InviteUser = ({ setIsModalOpen }: Iprops) => {
   const router = useRouter();
   const [selectedOption, setSelectedOption] = useState({});
+  const [email, setEmail] = useState("");
+  const checks: boolean = useMemo(() => {
+    return !!email.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}/g);
+  }, [email, selectedOption]);
+
+  const inviteTeammate = useMutation({
+    mutationFn: teammateFn.inviteUser,
+    onError: async (error, variables, context) => {},
+    onSuccess: async (data, variables, context) => {
+      setIsModalOpen(false);
+    },
+  });
 
   return (
     <>
@@ -36,8 +50,9 @@ const InviteUser = ({ setIsModalOpen }: Iprops) => {
               Email <span className="text-red-500">*</span>
             </label>
             <input
-              type="text"
-              //   placeholder="Select category"
+              type="email"
+              placeholder="Input email address"
+              onChange={(e) => setEmail(e.target.value)}
               className="h-[56px] text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
             />
           </div>
@@ -53,13 +68,13 @@ const InviteUser = ({ setIsModalOpen }: Iprops) => {
               selectedOption={selectedOption}
               setSelectedOption={setSelectedOption}
               options={[
-                { value: "admin", label: "Admin (Manage everything)" },
+                { value: 1, label: "Admin (Manage everything)" },
                 {
-                  value: "marketing",
+                  value: 2,
                   label: "Marketing (Manage Ads & Emails)",
                 },
                 {
-                  value: "attendee",
+                  value: 3,
                   label:
                     "Check-in attendees (Scan, Input & Check in attendees on the event day)",
                 },
@@ -80,9 +95,16 @@ const InviteUser = ({ setIsModalOpen }: Iprops) => {
             }}
           />
           <SolidButton
-            onClickHandler={() => router.push("/payment/success")}
+            onClickHandler={() =>
+              inviteTeammate.mutate({
+                email,
+                //@ts-ignore
+                role: selectedOption.value,
+              })
+            }
             title="Add"
             styles={{ width: "160px", height: "41px" }}
+            isComplete={checks}
           />
         </footer>
       </div>

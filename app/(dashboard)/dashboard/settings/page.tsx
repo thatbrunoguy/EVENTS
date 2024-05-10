@@ -26,10 +26,10 @@ const tablist_ = [
     title: "Team Management",
     isActive: false,
   },
-  {
-    title: "Plan Management",
-    isActive: false,
-  },
+  // {
+  //   title: "Plan Management",
+  //   isActive: false,
+  // },
 ];
 export default function SettingsPage() {
   const [tablist, setTablist] = useState([...tablist_]);
@@ -77,7 +77,9 @@ export default function SettingsPage() {
               />
             </div>
           ) : tablist[1].isActive ? (
-            <div>{/* <TeamManagement /> */}</div>
+            <div>
+              <TeamManagement />
+            </div>
           ) : (
             <div>{/* <PlanManagement /> */}</div>
           )}

@@ -10,6 +10,8 @@ import { Menu, MenuButton, MenuItem } from "@szhsin/react-menu";
 import { RiDeleteBin6Fill } from "react-icons/ri";
 import ConfirmDeleteModal from "../../../components/modals/ConfirmDelete";
 import { BiSolidPencil } from "react-icons/bi";
+import { useQuery } from "@tanstack/react-query";
+import { roles, teammateFn } from "@/app/utils/endpoints/teammate";
 
 const TeamManagement = () => {
   const [options, setOptions] = useState<any>([
@@ -21,19 +23,24 @@ const TeamManagement = () => {
     //   team: "Timilehin Adegbulugbe",
     //   role: " Check-in attendees (Scan, Input & Check in attendees on the event day)",
     // },
-    {
-      team: "Timilehin Adegbulugbe",
-      role: "Marketing (Manage Ads & Emails)",
-    },
-    {
-      team: "Timilehin Adegbulugbe",
-      role: "Marketing (Manage Ads & Emails)",
-    },
-    {
-      team: "Timilehin Adegbulugbe",
-      role: "Marketing (Manage Ads & Emails)",
-    },
+    // {
+    //   team: "Timilehin Adegbulugbe",
+    //   role: "Marketing (Manage Ads & Emails)",
+    // },
+    // {
+    //   team: "Timilehin Adegbulugbe",
+    //   role: "Marketing (Manage Ads & Emails)",
+    // },
+    // {
+    //   team: "Timilehin Adegbulugbe",
+    //   role: "Marketing (Manage Ads & Emails)",
+    // },
   ]);
+
+  const { data: teammates } = useQuery({
+    queryFn: teammateFn.getTeammates,
+    queryKey: ["teammates"],
+  });
 
   const more = [
     { icon: <BiSolidPencil />, title: "Edit member" },
@@ -51,11 +58,12 @@ const TeamManagement = () => {
         {isDeleteModalOpen && (
           <ConfirmDeleteModal
             title="Are you sure want to delete this member"
+            content="By deleting this team member, you will lose all the user data. This action can't be undone."
             setIsDeleteModalOpen={setIsDeleteModalOpen}
           />
         )}
         <div className="w-full flex  h-full justify-center">
-          {!options.length ? (
+          {!teammates?.length ? (
             <div className="w-[351px] flex flex-col items-center mt-[15%]">
               <Image
                 src="/assets/team.svg"
@@ -79,12 +87,74 @@ const TeamManagement = () => {
               </button>
             </div>
           ) : (
-            <div className="w-[90%] mt-[5%]">
+            <div className="w-full mt-[5%]">
               <div className="">
-                <header className="w-full text-sm flex items-center py-3 px-4 bg-[#FBFAFC]">
-                  <p className="w-[500px]">Team members</p>
-                  <p className="w-[400px]">Roles</p>
-                </header>
+                <table className="w-full text-xs md:text-sm">
+                  <thead className="h-[50px] font-normal">
+                    <tr className="py-3 px-4 bg-[#FBFAFC]">
+                      <th className="text-left font-normal">Team members</th>
+                      <th className="text-left font-normal">Roles</th>
+                      <th className="text-left font-normal"></th>
+                      <th className="text-left font-normal"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {teammates?.map((team: any) => (
+                      <tr className="border-b" key={team?.id}>
+                        <td className="py-3">
+                          {team.first_name} {team.last_name}
+                        </td>
+                        <td className="py-3">
+                          {
+                            //@ts-ignore
+                            roles[team?.type]
+                          }
+                        </td>
+                        {team.type === 1 ? (
+                          <td className="rounded-md bg-lightPurple w-[100px] p-2 my-3 flex justify-center text-xs text-primaryPurple">
+                            Admin
+                          </td>
+                        ) : (
+                          <td className="rounded-md bg-yellow-100 w-[100px] p-2 my-3 flex justify-center text-xs text-yellow-500">
+                            Admin
+                          </td>
+                        )}
+                        <td>
+                          <Menu
+                            direction="left"
+                            // arrow
+                            menuButton={
+                              <MenuButton style={{ background: "transparent" }}>
+                                <div className="text-gray-800 text-xl h-11 w-11 rounded-full hover:bg-gray-100 grid place-content-center cursor-pointer">
+                                  <IoIosMore />
+                                </div>
+                              </MenuButton>
+                            }
+                            transition
+                          >
+                            {more.map((item, index) => (
+                              <MenuItem className="" key={item.title}>
+                                <div
+                                  onClick={
+                                    index === 0
+                                      ? () => setIsModalOpen(true)
+                                      : () => setIsDeleteModalOpen(true)
+                                  }
+                                  className="flex items-center w-full space-x-3 py-1"
+                                >
+                                  <div className="text-gray-500 text-lg">
+                                    {item.icon}
+                                  </div>
+                                  <p className="text-lightText">{item.title}</p>
+                                </div>
+                              </MenuItem>
+                            ))}
+                          </Menu>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
                 {options.map((item: any, index: number) => (
                   <div
                     key={index}

@@ -55,6 +55,7 @@ import toast from "react-hot-toast";
 import { FadeLoader } from "react-spinners";
 import { EventInfoType, FaqType } from "@/app/types";
 import PrimaryLoading from "@/app/components/loaders/PrimaryLoading";
+import { CiWarning } from "react-icons/ci";
 
 const ticketOptions = [
   { icon: <IoEyeSharp />, title: "View ticket type" },
@@ -107,6 +108,7 @@ const CreateAndEditEvent = () => {
   const [eventPhoto, setEventPhoto] = useState<any>([]);
   const [isLoadingBanner, setIsLoadingBanner] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
+  const [checkSlugStatus, setCheckSlugStatus] = useState(false);
 
   // TICKET
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -372,6 +374,24 @@ const CreateAndEditEvent = () => {
       toggleIsCompleteByIndex(2, false);
     }
   }, [tickets.length]);
+
+  const {
+    data: slugCheck,
+    isLoading: isCheckingSlug,
+    refetch,
+  } = useQuery({
+    queryKey: ["check-slug"],
+    //@ts-ignore
+    queryFn: () => eventsManagamentFunctions.checkSlug(eventInfo.slug),
+    enabled: checkSlugStatus,
+  });
+
+  useEffect(() => {
+    if (creationStatus.details) {
+      refetch();
+      // setCheckSlugStatus(true);
+    }
+  }, [creationStatus.details]);
 
   const hasValues = useMemo(() => {
     return (
@@ -1036,9 +1056,10 @@ const CreateAndEditEvent = () => {
                       <div className="mt-4  flex items-center justify-between">
                         <div className="w-[100%]">
                           <p className="text-sm text-lightText">Url</p>
-                          <div className="flex">
+                          <div className="flex items-center">
                             <p>eventsparrot.com/ </p>
                             <p>{eventInfo.slug}</p>
+                            {slugCheck?.exists && <CiWarning color="red" />}
                           </div>
                         </div>
                       </div>
@@ -1080,18 +1101,30 @@ const CreateAndEditEvent = () => {
                               type="text"
                               className="h-[56px] text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600 col-span-1"
                             />
-                            <input
-                              // value={eventInfo.organizer.phone}
-                              value={eventInfo.slug}
-                              onChange={(e) =>
-                                setEventInfo((prev) => ({
-                                  ...prev,
-                                  slug: e.target.value,
-                                }))
-                              }
-                              type="tel"
-                              className="h-[56px] text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600 col-span-2"
-                            />
+                            <div className="w-full col-span-2">
+                              <input
+                                // value={eventInfo.organizer.phone}
+                                value={eventInfo.slug}
+                                onChange={(e) =>
+                                  setEventInfo((prev) => ({
+                                    ...prev,
+                                    slug: e.target.value,
+                                  }))
+                                }
+                                onBlur={() => refetch()}
+                                type="tel"
+                                className={`h-[56px] text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600 ${
+                                  slugCheck.exists && "border border-red-500"
+                                }`}
+                              />
+                            </div>
+                            <div className="col-span-3">
+                              {slugCheck?.exists && (
+                                <p className="mt-2 text-red-500 text-sm text-end">
+                                  This name has been taken! Please try again.
+                                </p>
+                              )}
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -1459,10 +1492,7 @@ const CreateAndEditEvent = () => {
                             <span className="text-red-500">*</span>
                           </label>
                           <div>
-                            <TimePicker
-                              onChange={setStartTime}
-                              value={startTime}
-                            />
+                            <TimePicker onChange={setEndTime} value={endTime} />
                           </div>
                           {/* <input
                 type="text"
