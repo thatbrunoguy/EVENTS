@@ -70,3 +70,7 @@ export const steps = [
   { title: "Details", isComplete: false, isActive: false },
   { title: "Tickets", isComplete: false, isActive: false },
 ];
+
+const removeFromLocalStorage = (key) => {
+  localStorage.removeItem(key);
+};

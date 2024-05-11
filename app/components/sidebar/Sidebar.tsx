@@ -16,10 +16,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import { IoChevronDown } from "react-icons/io5";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { authFunctions } from "@/app/utils/endpoints";
 import { Menu, MenuButton, MenuGroup, MenuItem } from "@szhsin/react-menu";
-import { truncateText } from "@/app/constants";
+import { EVENTSPARROT_USER, truncateText } from "@/app/constants";
+import { addToLocalStorage } from "@/app/utils/localstorage";
 
 const routes = [
   {
@@ -66,6 +67,7 @@ const routes = [
 const Sidebar = () => {
   const path = usePathname().split("/");
   const { data: session, status } = useSession();
+  const queryClient = useQueryClient();
 
   const handleSignOutClick = async () => {
     try {
@@ -80,6 +82,11 @@ const Sidebar = () => {
     queryFn: authFunctions.getUserAccount,
     staleTime: Infinity,
   });
+
+  const handleWorkspaceSwitch = (workspace: any) => {
+    addToLocalStorage(EVENTSPARROT_USER, "account", workspace);
+    queryClient.invalidateQueries();
+  };
 
   console.log("workspace", workspace);
 
@@ -184,7 +191,7 @@ const Sidebar = () => {
               <MenuGroup>
                 {workspace?.map((item: any, index: number) => (
                   <MenuItem
-                    // onClick={() => setSelectedEvent(item)}
+                    onClick={() => handleWorkspaceSwitch(item)}
                     className="py-2 cursor-pointer pl-3 hover:bg-lightPurple"
                     key={index}
                   >
