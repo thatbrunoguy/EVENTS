@@ -20,7 +20,12 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { authFunctions } from "@/app/utils/endpoints";
 import { Menu, MenuButton, MenuGroup, MenuItem } from "@szhsin/react-menu";
 import { EVENTSPARROT_USER, truncateText } from "@/app/constants";
-import { addToLocalStorage } from "@/app/utils/localstorage";
+import {
+  addToLocalStorage,
+  getData,
+  removeFromLocalStorage,
+} from "@/app/utils/localstorage";
+import { roles } from "@/app/utils/endpoints/teammate";
 
 const routes = [
   {
@@ -68,6 +73,15 @@ const Sidebar = () => {
   const path = usePathname().split("/");
   const { data: session, status } = useSession();
   const queryClient = useQueryClient();
+  const [userRole, setUserRole] = useState<number | null>(null);
+
+  const { data: accountInfo_ } = useQuery({
+    queryKey: ["account-info"],
+    queryFn: authFunctions.getAccountInfo,
+    staleTime: Infinity,
+  });
+
+  console.log("accountInfo_", accountInfo_);
 
   const handleSignOutClick = async () => {
     try {
@@ -85,10 +99,9 @@ const Sidebar = () => {
 
   const handleWorkspaceSwitch = (workspace: any) => {
     addToLocalStorage(EVENTSPARROT_USER, "account", workspace);
+    removeFromLocalStorage("activeEvent");
     queryClient.invalidateQueries();
   };
-
-  console.log("workspace", workspace);
 
   // if(status === "authenticated"){
   //   storeData(EVENTSPARROT_USER, session.user);
@@ -96,7 +109,7 @@ const Sidebar = () => {
   // }
 
   return (
-    <div className="h-screen min-w-[284px] w-[284px] hidden md:block py-[25px] border-r relative">
+    <div className="h-[100dvh] min-w-[284px] w-[284px] hidden md:block py-[25px] border-r relative">
       <div className="pl-6">
         <Link href="/">
           <Image
@@ -109,7 +122,7 @@ const Sidebar = () => {
         </Link>
       </div>
 
-      <div className="px-6  flex-col gap-2 space-y-2 justify-center mt-12 ">
+      <div className="px-6 pb-20 md:pb-0  flex-col gap-2 space-y-2 justify-center h-[70dvh] mt-12 overflow-y-auto">
         {routes.map((item) => (
           <Link
             // className={`flex items-center space-x-3 text-base px-4 py-3 text-gray-500 rounded-2xl hover:bg-lightPurple hover:text-primaryPurple hover:font-semibold ${
@@ -142,7 +155,7 @@ const Sidebar = () => {
       </div>
 
       {session?.user && (
-        <div className="flex justify-between items-center border-t absolute bottom-0 left-0 right-0 py-6 px-4">
+        <div className="flex justify-between items-center border-t fixed bottom-0 left-0 w-[284px] border-r py-6 px-4 bg-white">
           <div className="flex space-x-3">
             <div
               onClick={handleSignOutClick}
@@ -162,7 +175,13 @@ const Sidebar = () => {
                   13
                 )}
               </p>
-              <p className="text-sm text-gray-500">Role: Business</p>
+              <p className="text-sm text-gray-500">
+                Role:{" "}
+                {
+                  //@ts-ignore
+                  roles[accountInfo_?.user_role_on_account]?.split(" ")[0]
+                }
+              </p>
             </div>
           </div>
           <div className="cursor-pointer">
