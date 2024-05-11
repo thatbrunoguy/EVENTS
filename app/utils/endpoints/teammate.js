@@ -99,7 +99,7 @@ export const teammateFn = {
   },
 
   //delete teammate invite
-  acceptInvite: async (teamId) => {
+  deleteMember: async (teamId) => {
     const TOKEN = getData(EVENTSPARROT_USER)?.token;
     const accountId = getData(EVENTSPARROT_USER)?.account?.id;
     try {

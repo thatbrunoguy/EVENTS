@@ -5,7 +5,7 @@ import Sidebar from "../../components/sidebar/Sidebar";
 import Link from "next/link";
 import { HiOutlineSpeakerWave } from "react-icons/hi2";
 import { GoInfo } from "react-icons/go";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   FaFacebook,
   FaInstagram,
@@ -26,7 +26,7 @@ import {
   authFunctions,
   eventsManagamentFunctions,
 } from "../../utils/endpoints";
-import { addToLocalStorage } from "../../utils/localstorage";
+import { addToLocalStorage, getData } from "../../utils/localstorage";
 import { EVENTSPARROT_USER } from "../../constants";
 import GlobalTable from "@/app/components/table/GlobalTable";
 import { SalesAnalyticsData } from "./sales/page";
@@ -108,10 +108,11 @@ export default function Dashboard() {
   });
 
   if (status === "success") {
-    // console.log("userAccount", userAccount[0]);
-    addToLocalStorage(EVENTSPARROT_USER, "account", userAccount[0]);
+    const activeAccount = getData(EVENTSPARROT_USER)?.account;
+    const updatedAccount = activeAccount ? activeAccount : userAccount[0];
+    addToLocalStorage(EVENTSPARROT_USER, "account", updatedAccount);
   }
-  // console.log("selectedEvent changed", selectedEvent);
+
   const {
     data: salesAnalytics,
     isError: isSalesError,

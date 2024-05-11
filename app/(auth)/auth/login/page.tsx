@@ -28,7 +28,6 @@ const Login = () => {
     try {
       const res = await getAccountInfo();
       if (res) {
-        console.log("getAcount", res);
         setAccountInfo(res);
       }
     } catch (error) {
