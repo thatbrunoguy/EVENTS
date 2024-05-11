@@ -19,6 +19,7 @@ import { IoChevronDown } from "react-icons/io5";
 import { useQuery } from "@tanstack/react-query";
 import { authFunctions } from "@/app/utils/endpoints";
 import { Menu, MenuButton, MenuGroup, MenuItem } from "@szhsin/react-menu";
+import { truncateText } from "@/app/constants";
 
 const routes = [
   {
@@ -79,6 +80,8 @@ const Sidebar = () => {
     queryFn: authFunctions.getUserAccount,
     staleTime: Infinity,
   });
+
+  console.log("workspace", workspace);
 
   // if(status === "authenticated"){
   //   storeData(EVENTSPARROT_USER, session.user);
@@ -145,7 +148,13 @@ const Sidebar = () => {
             </div>
             <div>
               {/* @ts-ignore */}
-              <p>{`${session?.user?.user?.first_name} ${session?.user?.user?.last_name}`}</p>
+              <p>
+                {truncateText(
+                  //@ts-ignore
+                  `${session?.user?.user?.first_name} ${session?.user?.user?.last_name}`,
+                  13
+                )}
+              </p>
               <p className="text-sm text-gray-500">Role: Business</p>
             </div>
           </div>
@@ -187,7 +196,7 @@ const Sidebar = () => {
                         </p>
                       </div>
                       <div>
-                        <p>{`${item.name}`}</p>
+                        <p>{truncateText(`${item.name}`, 13)}</p>
                       </div>
                     </div>
                   </MenuItem>

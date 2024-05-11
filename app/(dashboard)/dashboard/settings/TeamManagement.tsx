@@ -10,37 +10,29 @@ import { Menu, MenuButton, MenuItem } from "@szhsin/react-menu";
 import { RiDeleteBin6Fill } from "react-icons/ri";
 import ConfirmDeleteModal from "../../../components/modals/ConfirmDelete";
 import { BiSolidPencil } from "react-icons/bi";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { roles, teammateFn } from "@/app/utils/endpoints/teammate";
+import { SolidButton } from "@/app/components/buttons/button";
 
 const TeamManagement = () => {
-  const [options, setOptions] = useState<any>([
-    // {
-    //   team: "Timilehin Adegbulugbe",
-    //   role: "Marketing (Manage Ads & Emails)",
-    // },
-    // {
-    //   team: "Timilehin Adegbulugbe",
-    //   role: " Check-in attendees (Scan, Input & Check in attendees on the event day)",
-    // },
-    // {
-    //   team: "Timilehin Adegbulugbe",
-    //   role: "Marketing (Manage Ads & Emails)",
-    // },
-    // {
-    //   team: "Timilehin Adegbulugbe",
-    //   role: "Marketing (Manage Ads & Emails)",
-    // },
-    // {
-    //   team: "Timilehin Adegbulugbe",
-    //   role: "Marketing (Manage Ads & Emails)",
-    // },
-  ]);
-
-  const { data: teammates } = useQuery({
+  const { data: teammates, refetch } = useQuery({
     queryFn: teammateFn.getTeammates,
     queryKey: ["teammates"],
   });
+
+  const deleteMember = useMutation({
+    mutationFn: teammateFn.deleteMember,
+    onError: async (error, variables, context) => {
+      // console.log(` ${error}`);
+    },
+    onSuccess: async (data, variables, context) => {
+      refetch();
+    },
+  });
+
+  const deleteMemberHandler = (id: string) => {
+    deleteMember.mutate(id);
+  };
 
   const more = [
     { icon: <BiSolidPencil />, title: "Edit member" },
@@ -49,6 +41,7 @@ const TeamManagement = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
+  const [memberId, setMemberId] = useState("");
 
   return (
     <div>
@@ -60,6 +53,7 @@ const TeamManagement = () => {
             title="Are you sure want to delete this member"
             content="By deleting this team member, you will lose all the user data. This action can't be undone."
             setIsDeleteModalOpen={setIsDeleteModalOpen}
+            deleteTicket={() => deleteMemberHandler(memberId)}
           />
         )}
         <div className="w-full flex  h-full justify-center">
@@ -88,6 +82,14 @@ const TeamManagement = () => {
             </div>
           ) : (
             <div className="w-full mt-[5%]">
+              <div className="my-4 flex justify-end">
+                <button
+                  onClick={() => setIsModalOpen(true)}
+                  className={`bg-primaryPurple h-10 hover:bg-opacity-70 rounded-md text-sm text-white w-[200px]`}
+                >
+                  <p>Send invite</p>
+                </button>
+              </div>
               <div className="">
                 <table className="w-full text-xs md:text-sm">
                   <thead className="h-[50px] font-normal">
@@ -107,16 +109,16 @@ const TeamManagement = () => {
                         <td className="py-3">
                           {
                             //@ts-ignore
-                            roles[team?.type]
+                            roles[team?.user_role_on_account]
                           }
                         </td>
-                        {team.type === 1 ? (
+                        {team.user_role_on_account === 1 ? (
                           <td className="rounded-md bg-lightPurple w-[100px] p-2 my-3 flex justify-center text-xs text-primaryPurple">
                             Admin
                           </td>
                         ) : (
                           <td className="rounded-md bg-yellow-100 w-[100px] p-2 my-3 flex justify-center text-xs text-yellow-500">
-                            Admin
+                            Member
                           </td>
                         )}
                         <td>
@@ -138,7 +140,10 @@ const TeamManagement = () => {
                                   onClick={
                                     index === 0
                                       ? () => setIsModalOpen(true)
-                                      : () => setIsDeleteModalOpen(true)
+                                      : () => {
+                                          setIsDeleteModalOpen(true);
+                                          setMemberId(team.id);
+                                        }
                                   }
                                   className="flex items-center w-full space-x-3 py-1"
                                 >
@@ -155,50 +160,6 @@ const TeamManagement = () => {
                     ))}
                   </tbody>
                 </table>
-                {options.map((item: any, index: number) => (
-                  <div
-                    key={index}
-                    className="flex w-full border-b items-center justify-between"
-                  >
-                    <div className="flex items-center space-x-5 p-3 ">
-                      <div className="w-[460px]">{item.team}</div>
-                      <div className="w-[480px]">{item.role}</div>
-                      {/* <div className="text-2xl">
-                        <IoIosMore />
-                      </div> */}
-                      <Menu
-                        direction="left"
-                        // arrow
-                        menuButton={
-                          <MenuButton style={{ background: "transparent" }}>
-                            <div className="text-gray-800 text-xl h-11 w-11 rounded-full hover:bg-gray-100 grid place-content-center cursor-pointer">
-                              <IoIosMore />
-                            </div>
-                          </MenuButton>
-                        }
-                        transition
-                      >
-                        {more.map((item, index) => (
-                          <MenuItem className="" key={item.title}>
-                            <div
-                              onClick={
-                                index === 0
-                                  ? () => setIsModalOpen(true)
-                                  : () => setIsDeleteModalOpen(true)
-                              }
-                              className="flex items-center w-full space-x-3 py-1"
-                            >
-                              <div className="text-gray-500 text-lg">
-                                {item.icon}
-                              </div>
-                              <p className="text-lightText">{item.title}</p>
-                            </div>
-                          </MenuItem>
-                        ))}
-                      </Menu>
-                    </div>
-                  </div>
-                ))}
               </div>
             </div>
           )}

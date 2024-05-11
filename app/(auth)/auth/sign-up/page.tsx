@@ -9,10 +9,12 @@ import { FcGoogle } from "react-icons/fc";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { authFunctions } from "@/app/utils/endpoints";
 import PrimaryLoading from "@/app/components/loaders/PrimaryLoading";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 const SignUp = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const searchParams = useSearchParams();
+  const invite = searchParams.get("invite");
 
   const [isGoogleAuth, setIsGoogleAuth] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -49,15 +51,24 @@ const SignUp = () => {
       // console.log(`rolling back optimistic update with id ${error}`);
     },
     onSuccess: async (data, variables, context) => {
-      // Boom baby!
-      // console.log("data", data);
-      router.push("/auth/otp");
+      if (invite) {
+        router.push("/dashboard");
+      } else {
+        router.push("/auth/otp");
+      }
     },
   });
 
   const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    createRegisterMutation.mutate(userCredentials);
+    console.log(invite);
+    const userCred = { ...userCredentials };
+    if (invite) {
+      //@ts-ignore
+      userCred.invite = invite;
+    }
+    console.log("userCred", userCred);
+    createRegisterMutation.mutate(userCred);
   };
 
   return (
