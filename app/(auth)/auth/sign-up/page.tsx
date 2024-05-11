@@ -61,13 +61,11 @@ const SignUp = () => {
 
   const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(invite);
     const userCred = { ...userCredentials };
     if (invite) {
       //@ts-ignore
       userCred.invite = invite;
     }
-    console.log("userCred", userCred);
     createRegisterMutation.mutate(userCred);
   };
 

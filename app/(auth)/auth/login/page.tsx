@@ -10,7 +10,7 @@ import { signIn } from "next-auth/react";
 import { useSession } from "next-auth/react";
 import PrimaryLoading from "@/app/components/loaders/PrimaryLoading";
 import toast, { Toaster } from "react-hot-toast";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { addToLocalStorage, storeData } from "@/app/utils/localstorage";
 import { EVENTSPARROT_USER } from "@/app/constants";
 import { authFunctions } from "@/app/utils/endpoints";
@@ -21,6 +21,8 @@ const Login = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [accountInfo, setAccountInfo] = useState<AccountInfo | {}>({});
+  const searchParams = useSearchParams();
+  const invite = searchParams.get("invite");
 
   const { getAccountInfo, getUserAccount } = authFunctions;
 
@@ -69,8 +71,13 @@ const Login = () => {
   const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsProcessing(true);
+    const userCred = { ...loginCredential };
+    if (invite) {
+      //@ts-ignore
+      userCred.invite = invite;
+    }
     const res = await signIn("credentials", {
-      ...loginCredential,
+      ...userCred,
       redirect: false,
       // callbackUrl: "/",
     });
