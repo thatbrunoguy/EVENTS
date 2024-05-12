@@ -130,7 +130,7 @@ const Sidebar = () => {
       <div className="px-6 pb-20 md:pb-0  flex-col gap-2 space-y-2 justify-center h-[70dvh] mt-12 overflow-y-auto">
         {routes
           .filter((route) =>
-            route.allowedRoles?.includes(accountInfo_.user_role_on_account)
+            route.allowedRoles?.includes(accountInfo_?.user_role_on_account)
           )
           .map((item) => (
             <Link
