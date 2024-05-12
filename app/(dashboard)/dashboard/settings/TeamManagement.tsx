@@ -117,7 +117,7 @@ const TeamManagement = () => {
                             Admin
                           </td>
                         ) : (
-                          <td className="rounded-md bg-yellow-100 w-[100px] p-2 my-3 flex justify-center text-xs text-yellow-500">
+                          <td className="rounded-md bg-lightOrange w-[100px] p-2 my-3 flex justify-center text-xs text-primaryOrange">
                             Member
                           </td>
                         )}
