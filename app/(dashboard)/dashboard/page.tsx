@@ -33,6 +33,11 @@ import { SalesAnalyticsData } from "./sales/page";
 import toast from "react-hot-toast";
 import { useCopyToClipboard } from "@/app/hooks";
 import { PrimaryLoading2 } from "@/app/components/loaders/PrimaryLoading";
+import RequestPayoutModal from "./payout/RequestPayoutModal";
+import AccountType from "./payout/AccountType";
+import AccountSubmission from "./payout/AccountSubmission";
+import VerificationPending from "./payout/VerificationPending";
+import { IoIosAlert } from "react-icons/io";
 
 const emailCampaign = [
   {
@@ -67,6 +72,11 @@ export default function Dashboard() {
   const eventURL = `https://eventsparrot.com/events/${
     selectedEvent.slug ? selectedEvent.slug : selectedEvent.eventId
   }`;
+  const [openRequestPayout, setOpenRequestPayout] = useState(false);
+  const [openAccountSelect, setOpenAccountSelect] = useState<boolean>(false);
+  const [openBankDetails, setOpenBankDetails] = useState<boolean>(false);
+  const [openPending, setOpenPending] = useState<boolean>(false);
+  const [accountType, setAccountType] = useState("individual");
 
   const handleCopy = (text: string) => () => {
     copy(text)
@@ -259,9 +269,40 @@ export default function Dashboard() {
                           <p className="text-sm text-lightText">Remaining</p>
                         </div>
                       </div>
-                      <p className="text-primaryPurple text-sm py-3 cursor-pointer">
+                      {/* Request payout */}
+                      {/* <p
+                        className="text-primaryPurple text-sm py-3 cursor-pointer"
+                        onClick={() => setOpenRequestPayout(true)}
+                      >
                         Request payout
-                      </p>
+                      </p> */}
+
+                      {/* Payment under verification */}
+                      {/* <p
+                        className="text-sm p-1 my-4 flex items-center gap-2 bg-lightOrange rounded-md"
+                        onClick={() => setOpenRequestPayout(true)}
+                      >
+                        <IoIosAlert color="#FF5602" />
+                        <p className="text-sm text-[#332F2F]">
+                          Payout is undergoing verification
+                        </p>
+                      </p> */}
+
+                      {/* Payment verified */}
+                      <div
+                        className="text-sm p-1 my-4 flex items-center justify-between bg-lightGreen rounded-md"
+                        onClick={() => setOpenRequestPayout(true)}
+                      >
+                        <div className="flex gap-1 items-center">
+                          <img src="/assets/done.svg" alt="" />
+                          <p className="text-sm text-[#332F2F]">
+                            Payout verified
+                          </p>
+                        </div>
+                        <p className="cursor-pointer text-primaryPurple text-sm">
+                          View
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -363,6 +404,32 @@ export default function Dashboard() {
           </div>
         </main>
       )}
+
+      {openRequestPayout && (
+        <RequestPayoutModal
+          setIsModalOpen={setOpenRequestPayout}
+          setOpenNextModal={setOpenAccountSelect}
+        />
+      )}
+
+      {openAccountSelect && (
+        <AccountType
+          setIsModalOpen={setOpenAccountSelect}
+          setOpenNextModal={setOpenBankDetails}
+          accountType={accountType}
+          setAccountType={setAccountType}
+        />
+      )}
+
+      {openBankDetails && (
+        <AccountSubmission
+          setIsModalOpen={setOpenBankDetails}
+          accountType={accountType}
+          setOpenNextModal={setOpenPending}
+        />
+      )}
+
+      {openPending && <VerificationPending setIsModalOpen={setOpenPending} />}
     </section>
   );
 }

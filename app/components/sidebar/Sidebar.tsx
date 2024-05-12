@@ -32,56 +32,61 @@ const routes = [
     title: "Dashboard",
     icon: <RxDashboard />,
     path: "",
+    allowedRoles: [1, 2],
   },
   {
     title: "Event",
     icon: <MdCalendarToday />,
     path: "event",
+    allowedRoles: [1],
   },
   {
     title: "Campaigns",
     icon: <MdOutlineCampaign />,
     path: "campaigns",
+    allowedRoles: [1, 2],
   },
   {
     title: "Guestlist",
     icon: <PiUsersThreeLight />,
     path: "guestlist",
+    allowedRoles: [1, 2, 3],
   },
   {
     title: "Sales",
     icon: <MdOutlineSavings />,
     path: "sales",
+    allowedRoles: [1],
   },
   {
     title: "Wallet History",
     icon: <IoMdWallet />,
     path: "wallet",
+    allowedRoles: [1],
   },
   {
     title: "Settings",
     icon: <AiOutlineSetting />,
     path: "settings",
+    allowedRoles: [1],
   },
   {
     title: "Event Check ins",
     icon: <TbCalendarTime />,
     path: "events/check-ins",
+    allowedRoles: [1, 2, 3],
   },
 ];
 const Sidebar = () => {
   const path = usePathname().split("/");
   const { data: session, status } = useSession();
   const queryClient = useQueryClient();
-  const [userRole, setUserRole] = useState<number | null>(null);
 
   const { data: accountInfo_ } = useQuery({
     queryKey: ["account-info"],
     queryFn: authFunctions.getAccountInfo,
     staleTime: Infinity,
   });
-
-  console.log("accountInfo_", accountInfo_);
 
   const handleSignOutClick = async () => {
     try {
@@ -123,35 +128,39 @@ const Sidebar = () => {
       </div>
 
       <div className="px-6 pb-20 md:pb-0  flex-col gap-2 space-y-2 justify-center h-[70dvh] mt-12 overflow-y-auto">
-        {routes.map((item) => (
-          <Link
-            // className={`flex items-center space-x-3 text-base px-4 py-3 text-gray-500 rounded-2xl hover:bg-lightPurple hover:text-primaryPurple hover:font-semibold ${
-            //   path.length > 3
-            //     ? `${path[2]}/${path[3]}` === item.path &&
-            //       "bg-lightPurple text-primaryPurple font-semibold"
-            //     : path[2] === item.path &&
-            //       "bg-lightPurple text-primaryPurple font-semibold"
-            // }`}
-            className={`flex items-center space-x-3 text-base px-4 py-3 text-gray-500 rounded-2xl hover:bg-lightPurple hover:text-primaryPurple hover:font-semibold ${
-              (path.length < 3 && item.path === "") ||
-              (path.length > 2 &&
-                path[2] === "dashboard" &&
-                item.path === "") ||
-              (path.length > 2 &&
-                path[2] !== "dashboard" &&
-                path[2] === item.path.split("/")[0])
-                ? "bg-lightPurple text-primaryPurple font-semibold"
-                : path.length > 3 &&
-                  `${path[2]}/${path[3]}` === item.path &&
-                  "bg-lightPurple text-primaryPurple font-semibold"
-            }`}
-            key={item.title}
-            href={`/dashboard/${item.path}`}
-          >
-            <div className="text-2xl">{item.icon}</div>
-            <p>{item.title}</p>
-          </Link>
-        ))}
+        {routes
+          .filter((route) =>
+            route.allowedRoles?.includes(accountInfo_.user_role_on_account)
+          )
+          .map((item) => (
+            <Link
+              // className={`flex items-center space-x-3 text-base px-4 py-3 text-gray-500 rounded-2xl hover:bg-lightPurple hover:text-primaryPurple hover:font-semibold ${
+              //   path.length > 3
+              //     ? `${path[2]}/${path[3]}` === item.path &&
+              //       "bg-lightPurple text-primaryPurple font-semibold"
+              //     : path[2] === item.path &&
+              //       "bg-lightPurple text-primaryPurple font-semibold"
+              // }`}
+              className={`flex items-center space-x-3 text-base px-4 py-3 text-gray-500 rounded-2xl hover:bg-lightPurple hover:text-primaryPurple hover:font-semibold ${
+                (path.length < 3 && item.path === "") ||
+                (path.length > 2 &&
+                  path[2] === "dashboard" &&
+                  item.path === "") ||
+                (path.length > 2 &&
+                  path[2] !== "dashboard" &&
+                  path[2] === item.path.split("/")[0])
+                  ? "bg-lightPurple text-primaryPurple font-semibold"
+                  : path.length > 3 &&
+                    `${path[2]}/${path[3]}` === item.path &&
+                    "bg-lightPurple text-primaryPurple font-semibold"
+              }`}
+              key={item.title}
+              href={`/dashboard/${item.path}`}
+            >
+              <div className="text-2xl">{item.icon}</div>
+              <p>{item.title}</p>
+            </Link>
+          ))}
       </div>
 
       {session?.user && (
@@ -167,7 +176,6 @@ const Sidebar = () => {
               </p>
             </div>
             <div>
-              {/* @ts-ignore */}
               <p>
                 {truncateText(
                   //@ts-ignore
