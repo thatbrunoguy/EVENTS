@@ -8,7 +8,7 @@ import {
   eventsManagamentFunctions,
   guestFunctions,
 } from "@/app/utils/endpoints";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { QrReader } from "react-qr-reader";
@@ -26,23 +26,28 @@ type ticketDetail = {
 
 const CheckInModal = ({ setIsModalOpen, selectedEventId }: Iprops) => {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [customerId, setCustomerId] = useState("");
   const [scanCode, setScanCode] = useState(false);
   const [ticketDetail, setTicketDetail] = useState<ticketDetail>({});
-  // const [qrScanner, setQrScanner] = useState<QrReader>();
+  const [errorState, setErrorState] = useState(false);
 
   const checkInAttendee = useMutation({
     mutationFn: eventsManagamentFunctions.checkInAttendeeWithCode,
     onError: async (error, variables, context) => {},
     onSuccess: async (data, variables, context) => {
       setIsModalOpen(false);
+      queryClient.invalidateQueries({ queryKey: ["get-attendee-list"] });
     },
   });
 
   const getTicketDetail = useMutation({
     mutationFn: guestFunctions.getTicketInfo,
-    onError: async (error, variables, context) => {},
+    onError: async (error, variables, context) => {
+      setErrorState(true);
+    },
     onSuccess: async (data, variables, context) => {
+      setErrorState(false);
       setTicketDetail(data);
     },
   });
@@ -120,6 +125,11 @@ const CheckInModal = ({ setIsModalOpen, selectedEventId }: Iprops) => {
                   </div>
                 </div>
               </div>
+            </div>
+          ) : null}
+          {errorState ? (
+            <div className="bg-lightOrange text-sm text-primaryOrange p-3 rounded-xl">
+              Ticket not valid
             </div>
           ) : null}
         </div>
