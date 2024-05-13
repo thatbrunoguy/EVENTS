@@ -13,7 +13,7 @@ import { AiOutlineSetting } from "react-icons/ai";
 import { IoMdWallet } from "react-icons/io";
 import { TbCalendarTime } from "react-icons/tb";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import { IoChevronDown } from "react-icons/io5";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -81,6 +81,7 @@ const Sidebar = () => {
   const path = usePathname().split("/");
   const { data: session, status } = useSession();
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   const { data: accountInfo_ } = useQuery({
     queryKey: ["account-info"],
@@ -105,6 +106,7 @@ const Sidebar = () => {
   const handleWorkspaceSwitch = (workspace: any) => {
     addToLocalStorage(EVENTSPARROT_USER, "account", workspace);
     removeFromLocalStorage("activeEvent");
+    router.push("/dashboard");
     queryClient.invalidateQueries();
   };
 
@@ -134,13 +136,6 @@ const Sidebar = () => {
           )
           .map((item) => (
             <Link
-              // className={`flex items-center space-x-3 text-base px-4 py-3 text-gray-500 rounded-2xl hover:bg-lightPurple hover:text-primaryPurple hover:font-semibold ${
-              //   path.length > 3
-              //     ? `${path[2]}/${path[3]}` === item.path &&
-              //       "bg-lightPurple text-primaryPurple font-semibold"
-              //     : path[2] === item.path &&
-              //       "bg-lightPurple text-primaryPurple font-semibold"
-              // }`}
               className={`flex items-center space-x-3 text-base px-4 py-3 text-gray-500 rounded-2xl hover:bg-lightPurple hover:text-primaryPurple hover:font-semibold ${
                 (path.length < 3 && item.path === "") ||
                 (path.length > 2 &&

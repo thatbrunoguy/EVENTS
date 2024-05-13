@@ -13,9 +13,14 @@ import { BiSolidPencil } from "react-icons/bi";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { roles, teammateFn } from "@/app/utils/endpoints/teammate";
 import { SolidButton } from "@/app/components/buttons/button";
+import { PrimaryLoading2 } from "@/app/components/loaders/PrimaryLoading";
 
 const TeamManagement = () => {
-  const { data: teammates, refetch } = useQuery({
+  const {
+    data: teammates,
+    isLoading,
+    refetch,
+  } = useQuery({
     queryFn: teammateFn.getTeammates,
     queryKey: ["teammates"],
   });
@@ -42,6 +47,10 @@ const TeamManagement = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [memberId, setMemberId] = useState("");
+
+  if (isLoading) {
+    return <PrimaryLoading2 />;
+  }
 
   return (
     <div>
