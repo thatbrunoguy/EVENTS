@@ -117,6 +117,20 @@ export default function Dashboard() {
     staleTime: Infinity,
   });
 
+  const { data: accountInfo } = useQuery({
+    queryKey: ["user-account-info"],
+    queryFn: authFunctions.getAccountInfo,
+    staleTime: Infinity,
+  });
+
+  const isAccountOwner = useMemo(() => {
+    if (accountInfo && userAccount) {
+      return accountInfo?.owner[0]?.full_name === userAccount[0]?.name;
+    } else {
+      return false;
+    }
+  }, [accountInfo, userAccount]);
+
   if (status === "success") {
     const activeAccount = getData(EVENTSPARROT_USER)?.account;
     const updatedAccount = activeAccount ? activeAccount : userAccount[0];
@@ -269,16 +283,19 @@ export default function Dashboard() {
                           <p className="text-sm text-lightText">Remaining</p>
                         </div>
                       </div>
-                      {/* Request payout */}
-                      {/* <p
-                        className="text-primaryPurple text-sm py-3 cursor-pointer"
-                        onClick={() => setOpenRequestPayout(true)}
-                      >
-                        Request payout
-                      </p> */}
 
-                      {/* Payment under verification */}
-                      {/* <p
+                      {isAccountOwner ? (
+                        <>
+                          {/* Request payout */}
+                          <p
+                            className="text-primaryPurple text-sm py-3 cursor-pointer"
+                            onClick={() => setOpenRequestPayout(true)}
+                          >
+                            Request payout
+                          </p>
+
+                          {/* Payment under verification */}
+                          {/* <p
                         className="text-sm p-1 my-4 flex items-center gap-2 bg-lightOrange rounded-md"
                         onClick={() => setOpenRequestPayout(true)}
                       >
@@ -288,8 +305,8 @@ export default function Dashboard() {
                         </p>
                       </p> */}
 
-                      {/* Payment verified */}
-                      <div
+                          {/* Payment verified */}
+                          {/* <div
                         className="text-sm p-1 my-4 flex items-center justify-between bg-lightGreen rounded-md"
                         onClick={() => setOpenRequestPayout(true)}
                       >
@@ -302,7 +319,9 @@ export default function Dashboard() {
                         <p className="cursor-pointer text-primaryPurple text-sm">
                           View
                         </p>
-                      </div>
+                      </div> */}
+                        </>
+                      ) : null}
                     </div>
                   </div>
                 </div>
@@ -387,21 +406,30 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
-          <div className="flex items-center justify-between mt-4 md:mt-10 mb-8  w-[92%] mx-auto">
-            <h2 className="font-medium md:font-semibold text-xl md:text-2xl">
-              Sales
-            </h2>
+          {isAccountOwner ? (
+            <>
+              <div className="flex items-center justify-between mt-4 md:mt-10 mb-8  w-[92%] mx-auto">
+                <h2 className="font-medium md:font-semibold text-xl md:text-2xl">
+                  Sales
+                </h2>
 
-            <Link href="/dashboard/sales">
-              <p className="text-primaryPurple text-xs md:text-sm">View all</p>
-            </Link>
-          </div>
+                <Link href="/dashboard/sales">
+                  <p className="text-primaryPurple text-xs md:text-sm">
+                    View all
+                  </p>
+                </Link>
+              </div>
 
-          <div className="w-[95%] mx-auto">
-            <div className="mb-6">
-              <GlobalTable columns={salesColumns} rows={salesDataFormatted} />
-            </div>
-          </div>
+              <div className="w-[95%] mx-auto">
+                <div className="mb-6">
+                  <GlobalTable
+                    columns={salesColumns}
+                    rows={salesDataFormatted}
+                  />
+                </div>
+              </div>
+            </>
+          ) : null}
         </main>
       )}
 

@@ -73,7 +73,6 @@ const Login = () => {
     setIsProcessing(true);
     const userCred = { ...loginCredential };
     if (invite) {
-      //@ts-ignore
       userCred.invite = invite;
     }
     const res = await signIn("credentials", {
