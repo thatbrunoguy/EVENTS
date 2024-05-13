@@ -136,6 +136,7 @@ export default function Event() {
           status,
           lowestPrice,
           highestPrice,
+          slug: event.slug || null,
         };
       });
 

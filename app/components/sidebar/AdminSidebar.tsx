@@ -33,7 +33,7 @@ const routes = [
     path: "event",
   },
 ];
-const Sidebar = () => {
+const AdminSidebar = () => {
   const path = usePathname().split("/");
 
   const handleSignOutClick = async () => {
@@ -97,4 +97,4 @@ const Sidebar = () => {
   );
 };
 
-export default Sidebar;
+export default AdminSidebar;
