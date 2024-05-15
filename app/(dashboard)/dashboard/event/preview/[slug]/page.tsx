@@ -185,16 +185,16 @@ const EventDetails = ({ params }: { params: { slug: string } }) => {
                 )}
               </div>
 
-              <Link href={`${params.slug}/checkout`}>
+              <Link href={`/dashboard/event`}>
                 <button className="text-white hidden md:grid hover:bg-opacity-60 rounded-lg transition-all duration-300 ease-linear bg-primaryPurple w-full h-12  place-content-center">
-                  <p>Get a Ticket</p>
+                  <p>Go back</p>
                 </button>
               </Link>
             </div>
             <div className=" md:hidden   h-24 fixed left-0 right-0 bg-white border-t flex items-center justify-center bottom-0">
-              <Link href={`${params.slug}/checkout`}>
+              <Link href={`/dashboard/event`}>
                 <button className="h-10 w-[186px] rounded-md bg-primaryPurple hover:bg-opacity-50 text-sm text-white  grid place-content-center">
-                  <p>Get a ticket</p>
+                  <p>Go back</p>
                 </button>
               </Link>
             </div>
