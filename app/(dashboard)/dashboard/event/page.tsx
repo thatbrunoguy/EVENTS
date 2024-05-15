@@ -304,6 +304,11 @@ export default function Event() {
                                               router.push(
                                                 `/dashboard/event/edit-event/${item?.id}`
                                               )
+                                          : index === 1
+                                          ? () =>
+                                              router.push(
+                                                `/dashboard/event/preview/${item?.slug}`
+                                              )
                                           : index === 2
                                           ? () =>
                                               handleEventStatusChange(
