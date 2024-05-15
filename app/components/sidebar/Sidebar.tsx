@@ -26,6 +26,7 @@ import {
   removeFromLocalStorage,
 } from "@/app/utils/localstorage";
 import { roles } from "@/app/utils/endpoints/teammate";
+import { BiLogOutCircle } from "react-icons/bi";
 
 const routes = [
   {
@@ -161,10 +162,7 @@ const Sidebar = () => {
       {session?.user && (
         <div className="flex justify-between items-center border-t fixed bottom-0 left-0 w-[284px] border-r py-6 px-4 bg-white">
           <div className="flex space-x-3">
-            <div
-              onClick={handleSignOutClick}
-              className="relative w-[47px] h-[47px] grid place-content-center bg-lightPurple rounded-full overflow-hidden"
-            >
+            <div className="relative w-[47px] h-[47px] grid place-content-center bg-lightPurple rounded-full overflow-hidden">
               <p className="text-2xl text-primaryPurple font-medium">
                 {/* @ts-ignore */}
                 {session?.user?.user?.first_name.charAt(0).toUpperCase()}
@@ -189,7 +187,7 @@ const Sidebar = () => {
           </div>
           <div className="cursor-pointer">
             <Menu
-              className="w-full"
+              className="w-full relative z-30"
               direction="right"
               menuStyle={{
                 backgroundColor: "white",
@@ -231,6 +229,15 @@ const Sidebar = () => {
                   </MenuItem>
                 ))}
               </MenuGroup>
+              <MenuItem
+                onClick={handleSignOutClick}
+                className="absolute bottom-0 w-full left-0 cursor-pointer pl-3"
+              >
+                <div className="flex gap-3 items-center p-3 text-primaryOrange cursor-pointer">
+                  <BiLogOutCircle />
+                  <p>Sign out</p>
+                </div>
+              </MenuItem>
             </Menu>
           </div>
         </div>

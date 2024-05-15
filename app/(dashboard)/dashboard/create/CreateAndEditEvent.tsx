@@ -56,6 +56,7 @@ import { FadeLoader } from "react-spinners";
 import { EventInfoType, FaqType } from "@/app/types";
 import PrimaryLoading from "@/app/components/loaders/PrimaryLoading";
 import { CiWarning } from "react-icons/ci";
+import moment from "moment";
 
 const ticketOptions = [
   { icon: <IoEyeSharp />, title: "View ticket type" },
@@ -109,7 +110,7 @@ const CreateAndEditEvent = () => {
   const [isLoadingBanner, setIsLoadingBanner] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
   const [checkSlugStatus, setCheckSlugStatus] = useState(false);
-
+  console.log("startDate", startDate);
   // TICKET
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
@@ -323,7 +324,7 @@ const CreateAndEditEvent = () => {
   }, [event]);
 
   const computeDateTime = useCallback((date: any, time: any) => {
-    const dateString = date?.toISOString()?.split("T")[0];
+    const dateString = moment(date).format("YYYY-MM-DD");
     const dateTimeString = `${dateString}T${time}`;
     return dateTimeString;
   }, []);
@@ -884,6 +885,7 @@ const CreateAndEditEvent = () => {
                 />
               </div>
             ) : creationStatus.details ? (
+              //Preview section, adding image and updating slug
               <section className="mb-20  w-[94%] mx-auto md:w-full   ">
                 <div className="flex items-center justify-between">
                   <p className="text-sm w-full text-gray-700 mb-2">
@@ -1037,7 +1039,7 @@ const CreateAndEditEvent = () => {
                   )}
                 </div>
 
-                {/* Custom url */}
+                {/* Custom url --> Slug setup */}
                 <div className="mt-8">
                   {!eventDetails.isEditCustomUrl ? (
                     <div className=" w-full py-5 border-[.3px] border-gray-300 px-6 shadow-lg rounded-md relative">

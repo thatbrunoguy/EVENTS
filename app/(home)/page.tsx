@@ -81,6 +81,7 @@ const Home = () => {
           desc,
           img,
           address,
+          slug: event.slug,
         };
       });
 
