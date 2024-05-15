@@ -25,6 +25,7 @@ type FormattedEvent = {
     address: string;
     lowestPrice: number;
     highestPrice: number;
+    slug: string;
   };
 };
 
@@ -38,6 +39,7 @@ export const Card = ({ event }: FormattedEvent) => {
     img,
     lowestPrice,
     highestPrice,
+    slug,
   } = event;
   return (
     <div className="w-[95%] mx-auto md:mx-0 md:w-[295px] cursor-pointer border-[.6px] rounded-xl hover:shadow-xl  transition-all duration-300 bg-white pt-3">
@@ -91,7 +93,7 @@ export const Card = ({ event }: FormattedEvent) => {
             </>
           )}
         </p>
-        <Link href={`/events/${id}`}>
+        <Link href={`/events/${slug}`}>
           <button className=" w-[131px] h-9 grid place-content-center border-[.5px]  rounded hover:bg-primaryPurple hover:text-white transition-all duration-300 border-primaryPurple text-primaryPurple">
             <p className="text-sm  ">Get Tickets</p>
           </button>
