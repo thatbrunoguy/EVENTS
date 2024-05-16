@@ -31,7 +31,7 @@ const OrganizationProfile = ({
 }: Iprops) => {
   const [isImageUploadEnabled, setIsImageUploadEnabled] = useState(false);
   const [isLoadingBanner, setIsLoadingBanner] = useState(false);
-  const countries = [{ value: "ng", label: "Nigeria" }];
+  const countries = [{ value: "Nigeria", label: "Nigeria" }];
   const queryClient = useQueryClient();
 
   const isAccountInfoValid = useMemo(() => {
@@ -237,7 +237,7 @@ const OrganizationProfile = ({
                 setSelectedOption={(selected: any) =>
                   setAccountInfo((prev) => ({
                     ...prev,
-                    country: selected?.value || "",
+                    country: selected?.label || "",
                   }))
                 }
                 options={countries}
