@@ -68,10 +68,8 @@ const AttendeeList = () => {
       return attendeeList?.orders?.events?.filter(
         (attendee: any) =>
           attendee.status === 2 &&
-          attendeeList.orders?.events.some(
-            //@ts-ignore
-            (event) => event.ticket.type === ticketType[activeTab]
-          )
+          //@ts-ignore
+          attendee.ticket.type === ticketType[activeTab]
       );
     }
   }, [attendeeList, activeTab, ticketType]);

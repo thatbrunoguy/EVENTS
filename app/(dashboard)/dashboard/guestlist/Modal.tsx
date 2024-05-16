@@ -106,7 +106,7 @@ const GuestlistModal = ({
               </div>
               <div className="basis-1/2">
                 <p className="text-lightText text-xs">Order date</p>
-                <p>{formatDate2(selectedOrder?.date as string)}</p>
+                <p>{selectedOrder?.date as string}</p>
               </div>
             </div>
           </div>

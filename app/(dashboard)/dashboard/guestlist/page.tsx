@@ -21,6 +21,7 @@ import {
 } from "@/app/utils/endpoints";
 import { PrimaryLoading2 } from "@/app/components/loaders/PrimaryLoading";
 import { formatDate, formatDate2, formatTime } from "@/app/helpers";
+import moment from "moment";
 
 export interface OrderData {
   name: string;
@@ -73,49 +74,29 @@ export default function Guestlist() {
     enabled: selectedEvent.eventId ? true : false,
     select: (data) => {
       const selectedData = data.map((item: any) => {
-        console.log(item, "item");
-        const { user, tickets, order_number, order_date, quantity } = item;
-        const amount = tickets[0].price * quantity;
-        let fees = 0;
-
-        if (amount === 0) {
-          fees = 0;
-        } else if (amount >= 2000) {
-          fees = amount * 0.05 + 100;
-        } else if (amount < 2000) {
-          fees = amount * 0.05;
-        }
-
-        const ticketCounts: { [ticketName: string]: number } = {};
-
-        data.forEach((item: any) => {
-          const { tickets } = item;
-          const ticketName = tickets[0].ticket.name;
-          ticketCounts[ticketName] = (ticketCounts[ticketName] || 0) + 1;
-        });
-
-        const stat = Object.entries(ticketCounts).map(
-          ([ticketName, count]) => ({
-            ticketName,
-            count,
-          })
-        );
+        const {
+          user,
+          tickets,
+          order_number,
+          order_date,
+          total_amount,
+          total_fees,
+        } = item;
 
         return {
           name: tickets[0].ticket?.name,
           quantity: tickets.length,
           buyerName: user.full_name,
           orderNumber: order_number,
-          date: new Date(order_date).toLocaleDateString(),
+          date: moment(order_date).format("Do MMMM YYYY "),
           email: user.email,
           price: tickets[0].ticket.price,
           stockQuantity: tickets[0].stock_qty,
-          amount: amount,
-          fees: fees,
-          stat: stat,
+          amount: total_amount,
+          fees: total_fees,
         };
       });
-      console.log("selectedData", selectedData);
+
       return selectedData;
     },
   });
@@ -230,16 +211,16 @@ export default function Guestlist() {
                         </thead>
                         {guestlistOrders &&
                           guestlistOrders.map((item: any, index: number) => (
-                            <tr key={item.id} className="border-b">
+                            <tr key={item?.id} className="border-b">
                               <td className="p-3">
                                 <h4 className="font-semibold col-span-3">
-                                  {item.name}
+                                  {item?.name}
                                 </h4>
                               </td>
-                              <td className="p-3">{item.quantity}</td>
-                              <td className="p-3">{item.buyerName}</td>
+                              <td className="p-3">{item?.quantity}</td>
+                              <td className="p-3">{item?.buyerName}</td>
                               <td>{item.orderNumber}</td>
-                              <td>{`${formatDate(item.date)} `}</td>
+                              <td>{item?.date}</td>
                               <td>
                                 <div
                                   onClick={() => {
