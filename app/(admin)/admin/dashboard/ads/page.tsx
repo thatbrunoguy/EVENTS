@@ -112,53 +112,53 @@ const AdsCampaign = () => {
               </tr>
             </thead>
             <tbody>
-              {adsCampaign.map((ads: any) => (
-                <tr>
-                  <td>24/09/2024</td>
-                  <td>
-                    <div className="flex flex-col">
-                      <p className="text-sm">oniademola001@gmail.com</p>
-                      <a className="bg-lightPurple text-primaryPurple p-2 w-[100px] flex justify-center items-center rounded-lg gap-3 cursor-pointer">
-                        Send email
-                      </a>
-                    </div>
-                  </td>
-                  <td>
-                    <div className="flex gap-3 items-center">
-                      <p>Eko convention centre</p>
-                      <BiChevronDown size={20} />
-                    </div>
-                  </td>
-                  <td>22/09/2024 | 07:00pm</td>
-                  <td>22/09/2024 | 07:00pm</td>
-                  <td>200</td>
-                  <td>
-                    <div className="flex gap-3 items-center">
-                      <img
-                        src="/assets/banner-detail.png"
-                        className="h-[72px] w-[72px] rounded-lg"
-                        alt=""
-                      />
-                      <button className="bg-lightPurple text-primaryPurple p-2 w-[100px] flex justify-center items-center rounded-lg gap-3 cursor-pointer">
-                        Download
-                      </button>
-                    </div>
-                  </td>
-                  <td>
-                    <StatusRender status="new" />
-                  </td>
-                  <td>
-                    <div
-                      onClick={() => {
-                        setOpenPreviewModal(true);
-                      }}
-                      className="text-sm font-semibold text-primaryPurple cursor-pointer"
-                    >
-                      view
-                    </div>
-                  </td>
-                </tr>
-              ))}
+              {/* {adsCampaign.map((ads: any) => ( */}
+              <tr>
+                <td>24/09/2024</td>
+                <td>
+                  <div className="flex flex-col">
+                    <p className="text-sm">oniademola001@gmail.com</p>
+                    <a className="bg-lightPurple text-primaryPurple p-2 w-[100px] flex justify-center items-center rounded-lg gap-3 cursor-pointer">
+                      Send email
+                    </a>
+                  </div>
+                </td>
+                <td>
+                  <div className="flex gap-3 items-center">
+                    <p>Eko convention centre</p>
+                    <BiChevronDown size={20} />
+                  </div>
+                </td>
+                <td>22/09/2024 | 07:00pm</td>
+                <td>22/09/2024 | 07:00pm</td>
+                <td>200</td>
+                <td>
+                  <div className="flex gap-3 items-center">
+                    <img
+                      src="/assets/banner-detail.png"
+                      className="h-[72px] w-[72px] rounded-lg"
+                      alt=""
+                    />
+                    <button className="bg-lightPurple text-primaryPurple p-2 w-[100px] flex justify-center items-center rounded-lg gap-3 cursor-pointer">
+                      Download
+                    </button>
+                  </div>
+                </td>
+                <td>
+                  <StatusRender status="new" />
+                </td>
+                <td>
+                  <div
+                    onClick={() => {
+                      setOpenPreviewModal(true);
+                    }}
+                    className="text-sm font-semibold text-primaryPurple cursor-pointer"
+                  >
+                    view
+                  </div>
+                </td>
+              </tr>
+              {/* ))} */}
             </tbody>
           </table>
         </div>
