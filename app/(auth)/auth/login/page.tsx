@@ -12,7 +12,7 @@ import PrimaryLoading from "@/app/components/loaders/PrimaryLoading";
 import toast, { Toaster } from "react-hot-toast";
 import { useRouter, useSearchParams } from "next/navigation";
 import { addToLocalStorage, storeData } from "@/app/utils/localstorage";
-import { EVENTSPARROT_USER } from "@/app/constants";
+import { EVENTSPARROT_ADMIN, EVENTSPARROT_USER } from "@/app/constants";
 import { authFunctions } from "@/app/utils/endpoints";
 
 const Login = () => {
@@ -58,6 +58,13 @@ const Login = () => {
 
   useLayoutEffect(() => {
     if (status === "authenticated") {
+      //@ts-ignore
+      if (session?.user?.admin) {
+        storeData(EVENTSPARROT_ADMIN, session.user);
+        router.push("/admin/dashboard/ads");
+        console.log("I am authenticated");
+        return;
+      }
       storeData(EVENTSPARROT_USER, session.user);
       getAccounts();
     }

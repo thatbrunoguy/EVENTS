@@ -31,6 +31,7 @@ const Checkout = ({ params }: { params: { slug: string } }) => {
     select: (data) => {
       const selectedData = {
         id: data.id,
+        stockQuantity: data.tickets[0].stock_qty,
         name: data.name || null,
         img: data?.medias?.[0]?.original || null,
         tickets:

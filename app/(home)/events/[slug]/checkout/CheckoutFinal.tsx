@@ -4,6 +4,7 @@ import { formatDate } from "@/app/helpers";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import { toast } from "react-hot-toast";
 import { FaMinus, FaPlus } from "react-icons/fa6";
 
 const CheckoutFinal = ({
@@ -16,6 +17,10 @@ const CheckoutFinal = ({
 
   const increaseQuantity = (index: number) => {
     const updatedTickets = [...tickets];
+    if (updatedTickets[index].quantity >= updatedTickets[index].qty_left) {
+      toast.error("This ticket is no more available");
+      return;
+    }
     updatedTickets[index].quantity = Math.max(
       0,
       updatedTickets[index].quantity + 1
@@ -31,6 +36,8 @@ const CheckoutFinal = ({
     );
     setTickets(updatedTickets);
   };
+
+  console.log("tickets", tickets);
 
   return (
     <div className=" w-[94%] md:w-[50%] md:pl-8">

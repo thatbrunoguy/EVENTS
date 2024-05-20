@@ -1,4 +1,5 @@
 export const EVENTSPARROT_USER = "eventsparrot-user";
+export const EVENTSPARROT_ADMIN = "eventsparrot-admin";
 
 /**
  * @param {string} text text string to be truncated

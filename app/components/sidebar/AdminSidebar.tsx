@@ -44,16 +44,11 @@ const AdminSidebar = () => {
     }
   };
 
-  const { data: workspace } = useQuery({
-    queryKey: ["user-account"],
-    queryFn: authFunctions.getUserAccount,
-    staleTime: Infinity,
-  });
-
-  // if(status === "authenticated"){
-  //   storeData(EVENTSPARROT_USER, session.user);
-
-  // }
+  // const { data: workspace } = useQuery({
+  //   queryKey: ["user-account"],
+  //   queryFn: authFunctions.getUserAccount,
+  //   staleTime: Infinity,
+  // });
 
   return (
     <div className="h-screen min-w-[284px] w-[284px] hidden md:block py-[25px] border-r relative">
