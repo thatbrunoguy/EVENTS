@@ -8,6 +8,7 @@ import React, { useState } from "react";
 import { BiChevronDown } from "react-icons/bi";
 import StatisticsModal from "./StatisticsModal";
 import PreviewModal from "./PreviewModal";
+import { formatDate, formatTime } from "@/app/helpers";
 
 const tablist_ = [
   {
@@ -46,10 +47,45 @@ const AdsCampaign = () => {
     useState<boolean>(false);
   const [openPreviewModal, setOpenPreviewModal] = useState<boolean>(false);
 
-  // const { data: adsCampaign } = useQuery({
-  //   queryKey: ["admin-ads-campaign"],
-  //   queryFn: adsFn.getCampaigns,
-  // });
+  const { data: adsCampaign } = useQuery({
+    queryKey: ["admin-ads-campaign"],
+    queryFn: adsFn.getCampaigns,
+    // select: (data) => {
+    //   const selectedCampaign = data.events.map((campaign: any) => {
+    //     const startDate = campaign.start_date
+    //       ? `${formatDate(campaign.start_date)} | ${formatTime(
+    //           campaign.start_date
+    //         )}`
+    //           .split("|")[0]
+    //           .trim()
+    //       : null;
+    //     const endDate = campaign.end_date
+    //       ? `${formatDate(campaign.end_date)} | ${formatTime(
+    //           campaign.end_date
+    //         )}`
+    //           .split("|")[0]
+    //           .trim()
+    //       : null;
+    //     const img = campaign.event.medias[0]?.original || null;
+    //     const status = campaign.event.status === 1 ? "Active" : "Disabled";
+    //     const targetCity = campaign.target_city;
+    //     const targetCountry = campaign.target_country;
+
+    //     return {
+    //       id: campaign.id || null,
+    //       name: campaign.event.name || null,
+    //       startDate,
+    //       img,
+    //       endDate,
+    //       status,
+    //     };
+    //   });
+
+    //   return selectedCampaign;
+    // },
+  });
+
+  console.log(adsCampaign);
 
   return (
     <section className="flex max-w-[100vw]">
@@ -76,51 +112,53 @@ const AdsCampaign = () => {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>24/09/2024</td>
-                <td>
-                  <div className="flex flex-col">
-                    <p className="text-sm">oniademola001@gmail.com</p>
-                    <a className="bg-lightPurple text-primaryPurple p-2 w-[100px] flex justify-center items-center rounded-lg gap-3 cursor-pointer">
-                      Send email
-                    </a>
-                  </div>
-                </td>
-                <td>
-                  <div className="flex gap-3 items-center">
-                    <p>Eko convention centre</p>
-                    <BiChevronDown size={20} />
-                  </div>
-                </td>
-                <td>22/09/2024 | 07:00pm</td>
-                <td>22/09/2024 | 07:00pm</td>
-                <td>200</td>
-                <td>
-                  <div className="flex gap-3 items-center">
-                    <img
-                      src="/assets/banner-detail.png"
-                      className="h-[72px] w-[72px] rounded-lg"
-                      alt=""
-                    />
-                    <button className="bg-lightPurple text-primaryPurple p-2 w-[100px] flex justify-center items-center rounded-lg gap-3 cursor-pointer">
-                      Download
-                    </button>
-                  </div>
-                </td>
-                <td>
-                  <StatusRender status="new" />
-                </td>
-                <td>
-                  <div
-                    onClick={() => {
-                      setOpenPreviewModal(true);
-                    }}
-                    className="text-sm font-semibold text-primaryPurple cursor-pointer"
-                  >
-                    view
-                  </div>
-                </td>
-              </tr>
+              {adsCampaign.map((ads: any) => (
+                <tr>
+                  <td>24/09/2024</td>
+                  <td>
+                    <div className="flex flex-col">
+                      <p className="text-sm">oniademola001@gmail.com</p>
+                      <a className="bg-lightPurple text-primaryPurple p-2 w-[100px] flex justify-center items-center rounded-lg gap-3 cursor-pointer">
+                        Send email
+                      </a>
+                    </div>
+                  </td>
+                  <td>
+                    <div className="flex gap-3 items-center">
+                      <p>Eko convention centre</p>
+                      <BiChevronDown size={20} />
+                    </div>
+                  </td>
+                  <td>22/09/2024 | 07:00pm</td>
+                  <td>22/09/2024 | 07:00pm</td>
+                  <td>200</td>
+                  <td>
+                    <div className="flex gap-3 items-center">
+                      <img
+                        src="/assets/banner-detail.png"
+                        className="h-[72px] w-[72px] rounded-lg"
+                        alt=""
+                      />
+                      <button className="bg-lightPurple text-primaryPurple p-2 w-[100px] flex justify-center items-center rounded-lg gap-3 cursor-pointer">
+                        Download
+                      </button>
+                    </div>
+                  </td>
+                  <td>
+                    <StatusRender status="new" />
+                  </td>
+                  <td>
+                    <div
+                      onClick={() => {
+                        setOpenPreviewModal(true);
+                      }}
+                      className="text-sm font-semibold text-primaryPurple cursor-pointer"
+                    >
+                      view
+                    </div>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
