@@ -17,6 +17,16 @@ const CheckoutFinal = ({
 
   const increaseQuantity = (index: number) => {
     const updatedTickets = [...tickets];
+    if (
+      updatedTickets[index].quantity >= updatedTickets[index].purchase_limit
+    ) {
+      toast.error(
+        "You can not purchase more than " +
+          updatedTickets[index].purchase_limit +
+          " tickets"
+      );
+      return;
+    }
     if (updatedTickets[index].quantity >= updatedTickets[index].qty_left) {
       toast.error("This ticket is no more available");
       return;
