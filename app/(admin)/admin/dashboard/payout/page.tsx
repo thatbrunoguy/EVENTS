@@ -1,11 +1,10 @@
 "use client";
 
 import AdminSidebar from "@/app/components/sidebar/AdminSidebar";
-import { adsFn } from "@/app/utils/endpoints/admin";
+import { adsFn, payoutFn } from "@/app/utils/endpoints/admin";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import React, { useEffect, useMemo, useState } from "react";
 import { BiChevronDown } from "react-icons/bi";
-import StatisticsModal from "./StatisticsModal";
 import PreviewModal from "./PreviewModal";
 import { formatDate, formatTime } from "@/app/helpers";
 import moment from "moment";
@@ -77,14 +76,9 @@ const AdsCampaign = () => {
       status: 1,
     },
     {
-      title: "Ongoing",
+      title: "Paid",
       isActive: false,
       status: 2,
-    },
-    {
-      title: "Done",
-      isActive: false,
-      status: 4,
     },
     {
       title: "Blocked",
@@ -92,8 +86,6 @@ const AdsCampaign = () => {
       status: 3,
     },
   ]);
-  const [openStatisticsModal, setOpenStatisticsModal] =
-    useState<boolean>(false);
   const [openPreviewModal, setOpenPreviewModal] = useState<boolean>(false);
   const [selectedCampaign, setSelectedCampaign] = useState({});
   const [filter, setFilter] = useState({ status: 1 });
@@ -105,7 +97,7 @@ const AdsCampaign = () => {
     refetch,
   } = useQuery({
     queryKey: ["admin-ads-campaign"],
-    queryFn: () => adsFn.getCampaigns(filter),
+    queryFn: () => payoutFn.getAllPayOut(filter),
     select: (data) => {
       const selectedCampaign = data.events.map((campaign: any) => {
         const startDate = campaign.start_date
@@ -147,7 +139,7 @@ const AdsCampaign = () => {
   });
 
   const updateCampaign = useMutation({
-    mutationFn: adsFn.updateCampaign,
+    mutationFn: payoutFn.getAllPayOut,
     onError: async (error, variables, context) => {},
     onSuccess: async (data, variables, context) => {
       queryClient.invalidateQueries({ queryKey: ["admin-ads-campaign"] });
@@ -207,16 +199,12 @@ const AdsCampaign = () => {
           </div>
         </div>
         <div className="w-[95%] mx-auto overflow-x-scroll overflow-y-auto">
-          <table className="w-full md:min-w-[1200px] text-xs md:text-sm mt-4">
+          <table className="w-full md:min-w-[800px] text-xs md:text-sm mt-4">
             <thead className="h-[50px] font-normal">
               <tr className="py-3 px-4 bg-[#FBFAFC]">
                 <th className="text-left font-normal">Date submitted</th>
                 <th className="text-left font-normal">Client email</th>
-                <th className="text-left font-normal">Event</th>
-                <th className="text-left font-normal">Campaign start date</th>
-                <th className="text-left font-normal">Campaign end date</th>
-                <th className="text-left font-normal">Token</th>
-                <th className="text-left font-normal">Images</th>
+                <th className="text-left font-normal">Amount requested</th>
                 <th className="text-left font-normal">Status</th>
                 <th className="text-left font-normal"></th>
               </tr>
@@ -286,9 +274,6 @@ const AdsCampaign = () => {
           </table>
         </div>
       </main>
-      {openStatisticsModal && (
-        <StatisticsModal setIsModalOpen={setOpenStatisticsModal} />
-      )}
 
       {openPreviewModal && (
         <PreviewModal

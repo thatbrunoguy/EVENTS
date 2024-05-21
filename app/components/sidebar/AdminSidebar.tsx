@@ -35,7 +35,6 @@ const routes = [
 ];
 const AdminSidebar = () => {
   const path = usePathname().split("/");
-  console.log(path, "path");
 
   const handleSignOutClick = async () => {
     try {

@@ -8,6 +8,12 @@ export const adminStatus: { [key: number]: string } = {
   3: "blocked",
 };
 
+export const payoutStatus: { [key: number]: string } = {
+  1: "new",
+  2: "paid",
+  3: "blocked",
+};
+
 /**
  * @param {string} text text string to be truncated
  * @param {number} cutOff number of characters before truncating
