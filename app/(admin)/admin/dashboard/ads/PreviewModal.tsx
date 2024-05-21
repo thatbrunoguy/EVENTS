@@ -1,6 +1,7 @@
 import Image from "next/image";
 import React from "react";
 import { AiOutlineClose } from "react-icons/ai";
+import { FaLocationDot, FaRegCalendar } from "react-icons/fa6";
 
 type Iprops = {
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -24,7 +25,7 @@ const PreviewModal = ({
       <div className=" w-[98%] md:w-[482px] h-[95%] rounded-2xl bg-white z-50 fixed top-1/2 right-1/2 translate-x-1/2 md:translate-x-0 transform md:right-6 -translate-y-1/2">
         <header className="py-5 px-10 flex items-center justify-between  border-b">
           <h4 className="font-semibold text-xl ">
-            Order #{selectedOrder?.orderNumber}
+            Event name: {selectedOrder?.name}
           </h4>
           <div
             onClick={() => setIsModalOpen(false)}
@@ -36,62 +37,59 @@ const PreviewModal = ({
 
         <section className=" w-full px-8 mt-6">
           <div className="flex items-center space-x-5 p-3 pb-6 border-b">
-            <div className="h-[72px] w-[72px] relative rounded overflow-hidden">
-              {selectedEvent?.img && (
+            <div className="h-[102px] w-[146px] relative rounded overflow-hidden">
+              {selectedOrder?.img && (
                 <Image
                   fill
-                  src={selectedEvent?.img}
-                  alt={selectedEvent?.name}
+                  src={selectedOrder?.img}
+                  alt={selectedOrder?.name}
                   objectFit="cover"
                 />
               )}
             </div>
-            <div>
-              <h4 className="font-semibold mb-1">{selectedEvent?.name}</h4>
-              <p className="text-lightText">
-                {selectedEvent?.address || "Online"}
+            <div className="flex flex-col gap-2">
+              <h4 className="font-semibold mb-1 text-ellipsis">
+                {selectedOrder?.name}
+              </h4>
+              <p className="text-lightText flex gap-2 items-center">
+                <FaLocationDot /> {selectedOrder?.address || "Online"}
               </p>
-              <p className="text-lightText">{selectedEvent?.startDate}</p>
+              <p className="text-lightText flex gap-2 items-center">
+                <FaRegCalendar /> {selectedOrder?.startDate}
+              </p>
             </div>
           </div>
           {/* --------------------------- */}
-          <div className="mt-6">
-            <div>
-              <p className="text-lightText text-xs">Start date</p>
-              <p>{selectedOrder?.buyerName}</p>
-            </div>
-            <div className="flex items-center justify-between gap-10 my-5">
-              <div className="basis-1/2">
-                <p className="text-lightText text-xs">End date</p>
-                <p>{selectedOrder?.name}</p>
+          <div className="mt-6 flex gap-10">
+            <div className="flex flex-col gap-5">
+              <div>
+                <p className="text-lightText text-xs">Start date</p>
+                <p className="whitespace-nowrap">{selectedOrder?.startDate}</p>
               </div>
-              {/* <div className="basis-1/2">
-                <p className="text-lightText text-xs">Ticket name</p>
-                <p>{selectedOrder?.name}</p>
-              </div> */}
-            </div>
-            {/* ------------------------------------- */}
-            <div className="flex items-center justify-between gap-10  my-5">
-              <div className="basis-1/2 w-[45%] break-words">
+              <div className="basis-1/2 w-[45%] whitespace-nowrap">
                 <p className="text-lightText text-xs">Target country</p>
-                <p>{selectedOrder?.email}</p>
+                <p>{selectedOrder?.targetCountry}</p>
               </div>
-              <div className="basis-1/2">
-                <p className="text-lightText text-xs">Target city</p>
-                <p>{selectedOrder?.quantity}</p>
-              </div>
-            </div>
-            {/* ------------------------------------- */}
-            <div className="flex items-center justify-between gap-10  my-5">
               <div className="basis-1/2">
                 <p className="text-lightText text-xs">Token</p>
-                <p>{selectedOrder?.amount}</p>
-              </div>
-              <div className="basis-1/2">
-                <p className="text-lightText text-xs">Eventparrot Fees</p>
-                <p>{selectedOrder?.fees}</p>
+                <p>{selectedOrder?.token}</p>
               </div>
             </div>
+            {/* ------------------------------------- */}
+            <div className="flex flex-col gap-5">
+              <div className="flex items-center justify-between gap-10 ">
+                <div className="basis-1/2">
+                  <p className="text-lightText text-xs">End date</p>
+                  <p className="whitespace-nowrap">{selectedOrder?.endDate}</p>
+                </div>
+              </div>
+
+              <div className="basis-1/2">
+                <p className="text-lightText text-xs">Target city</p>
+                <p>{selectedOrder?.targetCity}</p>
+              </div>
+            </div>
+            {/* ------------------------------------- */}
           </div>
         </section>
       </div>
