@@ -18,7 +18,7 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   (config) => {
     const TOKEN = getData(EVENTSPARROT_ADMIN)?.token;
-    if (token) {
+    if (TOKEN) {
       config.headers["Authorization"] = `Bearer ${TOKEN}`;
     }
     return config;
@@ -29,16 +29,14 @@ axiosInstance.interceptors.request.use(
 );
 
 export const adsFn = {
-  getCampaigns: async () => {
-    const TOKEN = getData(EVENTSPARROT_ADMIN)?.token;
+  getCampaigns: async (filter) => {
     try {
-      const response = await axios.get(`${ADMIN_BASE_URL}/adsCampaign`, {
-        headers: {
-          "Content-type": "application/json; charset=UTF-8",
-          "X-APP-KEY": APP_KEY,
-          Authorization: `Bearer ${TOKEN}`,
-        },
-      });
+      const response = await axiosInstance.get(
+        `${ADMIN_BASE_URL}/adsCampaign`,
+        {
+          params: filter,
+        }
+      );
       if (response.data && response.data.status === true) {
         toast.success(response.data.message);
         return response.data.data;
@@ -46,7 +44,24 @@ export const adsFn = {
         throw new Error(response.data.message);
       }
     } catch (error) {
-      console.error("Error fetching data:", error.response.data.message);
+      toast.error(error.response.data.message);
+      throw error;
+    }
+  },
+  //update the status  of the campaign
+  updateCampaign: async ({ campaignId, status }) => {
+    try {
+      const response = await axiosInstance.put(
+        `${ADMIN_BASE_URL}/adsCampaign/${campaignId}`,
+        { status }
+      );
+      if (response.data && response.data.status === true) {
+        toast.success(response.data.message);
+        return response.data.data;
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
       toast.error(error.response.data.message);
       throw error;
     }
@@ -54,17 +69,11 @@ export const adsFn = {
 };
 
 export const payoutFn = {
-  getCampaigns: async () => {
-    const TOKEN = getData(EVENTSPARROT_ADMIN)?.token;
+  getAllPayOut: async (filter) => {
     try {
-      const response = await axios.get(`${ADMIN_BASE_URL}/payouts`, {
-        headers: {
-          "Content-type": "application/json; charset=UTF-8",
-          "X-APP-KEY": APP_KEY,
-          Authorization: `Bearer ${TOKEN}`,
-        },
+      const response = await axiosInstance.get(`${ADMIN_BASE_URL}/payouts`, {
+        params: filter,
       });
-      console.log("response", response);
       if (response.data && response.data.status === true) {
         toast.success(response.data.message);
         return response.data.data;
@@ -72,7 +81,6 @@ export const payoutFn = {
         throw new Error(response.data.message);
       }
     } catch (error) {
-      console.error("Error fetching data:", error.response.data.message);
       toast.error(error.response.data.message);
       throw error;
     }

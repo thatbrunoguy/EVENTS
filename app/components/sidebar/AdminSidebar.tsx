@@ -25,7 +25,7 @@ const routes = [
   {
     title: "Ads Campaign",
     icon: <WalletIcon />,
-    path: "",
+    path: "/ads",
   },
   {
     title: "Payouts",
@@ -68,20 +68,14 @@ const AdminSidebar = () => {
         {routes.map((item) => (
           <Link
             className={`flex items-center space-x-3 text-base px-4 py-3 text-gray-500 rounded-2xl hover:bg-lightPurple hover:text-primaryPurple hover:font-semibold ${
-              (path.length < 3 && item.path === "") ||
-              (path.length > 2 &&
-                path[2] === "dashboard" &&
-                item.path === "") ||
-              (path.length > 2 &&
-                path[2] !== "dashboard" &&
-                path[2] === item.path.split("/")[0])
+              path[3].includes(item.path)
                 ? "bg-lightPurple text-primaryPurple font-semibold"
                 : path.length > 3 &&
                   `${path[2]}/${path[3]}` === item.path &&
                   "bg-lightPurple text-primaryPurple font-semibold"
             }`}
             key={item.title}
-            href={`/dashboard/${item.path}`}
+            href={`/admin/dashboard/${item.path}`}
           >
             <div className="text-2xl">{item.icon}</div>
             <p>{item.title}</p>
