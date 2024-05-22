@@ -38,7 +38,6 @@ const authOptions: NextAuthOptions = {
         if (credentials?.email === "info@eventsparrot.com") {
           url = ADMIN_BASE_URL;
         }
-        console.log("url", url);
         const res = await fetch(`${url}/login`, {
           method: "POST",
           headers: {
@@ -70,7 +69,6 @@ const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async jwt({ token, user }) {
-      console.log("token", token);
       return { ...token, ...user };
     },
     async session({ session, token, user }) {
