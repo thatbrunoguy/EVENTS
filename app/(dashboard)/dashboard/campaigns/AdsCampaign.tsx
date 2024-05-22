@@ -28,6 +28,7 @@ import "swiper/css/pagination";
 // import required modules
 import { Pagination } from "swiper/modules";
 import { BsPersonRolodex } from "react-icons/bs";
+import { adminStatus } from "@/app/constants";
 
 const tablist_ = [
   {
@@ -50,6 +51,13 @@ const actionOptions = [
     title: "Edit campaign",
   },
 ];
+
+const statusMap: { [key: number]: string } = {
+  1: "pending",
+  2: "ongoing",
+  3: "blocked",
+  4: "done",
+};
 
 export default function AdsCampaign() {
   const [tablist, setTablist] = useState([...tablist_]);
@@ -74,7 +82,7 @@ export default function AdsCampaign() {
               .trim()
           : null;
         const img = campaign.event.medias[0]?.original || null;
-        const status = campaign.event.status === 1 ? "Active" : "Disabled";
+        const status = campaign.status;
 
         return {
           id: campaign.id || null,
@@ -202,12 +210,16 @@ export default function AdsCampaign() {
                       <td>
                         <p
                           className={`p-3 rounded-[15px] w-[100px] text-center  ${
-                            item?.status === "Active"
+                            item?.status === 4
                               ? "bg-[#EDFCF6] text-[#308760]"
+                              : item?.status === 2
+                              ? "bg-[#F5EDFC] text-[#802280]"
+                              : item?.status === 3
+                              ? "text-[#803C19] bg-[#FCEFE8]"
                               : " text-[#df4951]"
                           }`}
                         >
-                          {item?.status}
+                          {statusMap[item?.status]}
                         </p>
                       </td>
                       {/* <td>
