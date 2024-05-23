@@ -102,15 +102,20 @@ const Payout = () => {
       const selectedCampaign = data.events.map((payout: any) => {
         const status = payout.status;
         const submissionDate = moment(payout.created_at).format("YYYY-MM-DD");
-        const email = payout.requester.email;
-        const amountRequested = payout.amount;
 
         return {
           id: payout.id || null,
           submissionDate,
           status,
-          email,
-          amountRequested,
+          email: payout.requester.email,
+          amountRequested: payout.amount,
+          image: payout.account.avatar || "/assets/external-hero.jpeg",
+          userName: payout.account.name,
+          accountName: payout.bank.account_name,
+          accountNumber: payout.bank.account_number,
+          bankName: payout.bank.bank_name,
+          requesterName: payout.requester.full_name,
+          requesterEmail: payout.requester.email,
         };
       });
 

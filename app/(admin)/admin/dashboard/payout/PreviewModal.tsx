@@ -9,11 +9,8 @@ type Iprops = {
   selectedEvent?: any;
 };
 
-const PreviewModal = ({
-  setIsModalOpen,
-  selectedOrder,
-  selectedEvent,
-}: Iprops) => {
+const PreviewModal = ({ setIsModalOpen, selectedOrder }: Iprops) => {
+  console.log("selectedOrder", selectedOrder);
   return (
     <>
       <div
@@ -24,9 +21,7 @@ const PreviewModal = ({
 
       <div className=" w-[98%] md:w-[482px] h-[95%] rounded-2xl bg-white z-50 fixed top-1/2 right-1/2 translate-x-1/2 md:translate-x-0 transform md:right-6 -translate-y-1/2">
         <header className="py-5 px-10 flex items-center justify-between  border-b">
-          <h4 className="font-semibold text-xl ">
-            Event name: {selectedOrder?.name}
-          </h4>
+          <h4 className="font-semibold text-xl ">Payout details</h4>
           <div
             onClick={() => setIsModalOpen(false)}
             className="w-9 h-9 rounded-full grid place-content-center cursor-pointer bg-[#FBFAFC] hover:bg-gray-200"
@@ -38,24 +33,21 @@ const PreviewModal = ({
         <section className=" w-full px-8 mt-6">
           <div className="flex items-center space-x-5 p-3 pb-6 border-b">
             <div className="h-[102px] w-[146px] relative rounded overflow-hidden">
-              {selectedOrder?.img && (
+              {selectedOrder?.image && (
                 <Image
                   fill
-                  src={selectedOrder?.img}
-                  alt={selectedOrder?.name}
+                  src={selectedOrder?.image}
+                  alt={selectedOrder?.userName}
                   objectFit="cover"
                 />
               )}
             </div>
             <div className="flex flex-col gap-2">
               <h4 className="font-semibold mb-1 text-ellipsis">
-                {selectedOrder?.name}
+                {selectedOrder?.userName}
               </h4>
               <p className="text-lightText flex gap-2 items-center">
-                <FaLocationDot /> {selectedOrder?.address || "Online"}
-              </p>
-              <p className="text-lightText flex gap-2 items-center">
-                <FaRegCalendar /> {selectedOrder?.startDate}
+                {selectedOrder?.email}
               </p>
             </div>
           </div>
@@ -63,30 +55,38 @@ const PreviewModal = ({
           <div className="mt-6 flex gap-10">
             <div className="flex flex-col gap-5">
               <div>
-                <p className="text-lightText text-xs">Start date</p>
-                <p className="whitespace-nowrap">{selectedOrder?.startDate}</p>
+                <p className="text-lightText text-xs">Account name</p>
+                <p className="whitespace-nowrap">
+                  {selectedOrder?.accountName}
+                </p>
               </div>
               <div className="basis-1/2 w-[45%] whitespace-nowrap">
-                <p className="text-lightText text-xs">Target country</p>
-                <p>{selectedOrder?.targetCountry}</p>
+                <p className="text-lightText text-xs">Account number</p>
+                <p>{selectedOrder?.accountNumber}</p>
               </div>
               <div className="basis-1/2">
-                <p className="text-lightText text-xs">Token</p>
-                <p>{selectedOrder?.token}</p>
+                <p className="text-lightText text-xs">Bank name</p>
+                <p>{selectedOrder?.bankName}</p>
+              </div>
+              <div className="basis-1/2">
+                <p className="text-lightText text-xs">Amount requested</p>
+                <p>₦{selectedOrder?.amountRequested}</p>
               </div>
             </div>
             {/* ------------------------------------- */}
             <div className="flex flex-col gap-5">
               <div className="flex items-center justify-between gap-10 ">
                 <div className="basis-1/2">
-                  <p className="text-lightText text-xs">End date</p>
-                  <p className="whitespace-nowrap">{selectedOrder?.endDate}</p>
+                  <p className="text-lightText text-xs">Requester name</p>
+                  <p className="whitespace-nowrap">
+                    {selectedOrder?.requesterName}
+                  </p>
                 </div>
               </div>
 
               <div className="basis-1/2">
-                <p className="text-lightText text-xs">Target city</p>
-                <p>{selectedOrder?.targetCity}</p>
+                <p className="text-lightText text-xs">Requester email</p>
+                <p>{selectedOrder?.requesterEmail}</p>
               </div>
             </div>
             {/* ------------------------------------- */}
