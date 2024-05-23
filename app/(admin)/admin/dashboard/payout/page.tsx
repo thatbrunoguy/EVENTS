@@ -11,7 +11,7 @@ import moment from "moment";
 import { Menu, MenuItem, MenuButton } from "@szhsin/react-menu";
 import "@szhsin/react-menu/dist/index.css";
 import "@szhsin/react-menu/dist/transitions/slide.css";
-import { adminStatus } from "@/app/constants";
+import { adminStatus, payoutStatus } from "@/app/constants";
 import PrimaryLoading from "@/app/components/loaders/PrimaryLoading";
 
 type StatusRenderProps = {
@@ -27,8 +27,7 @@ const StatusRender = ({
 }: StatusRenderProps) => {
   const statusObj = [
     { name: "New", value: 1, className: "text-[#CB1C6F] bg-[#FCEDF6]" },
-    { name: "Start", value: 2, className: "text-[#039855] bg-[#EDFCF6]" },
-    { name: "End", value: 4, className: "text-[#D90BD9] bg-[#FCEDFC]" },
+    { name: "Paid", value: 2, className: "text-[#039855] bg-[#EDFCF6]" },
     { name: "Blocked", value: 3, className: "text-[#CC0000] bg-[#FCEDED]" },
   ];
 
@@ -43,15 +42,16 @@ const StatusRender = ({
           <p
             className={`text-sm font-medium p-2 rounded-xl ${activeStat?.className}  flex items-center justify-center capitalize`}
           >
-            {adminStatus[status]}
+            {payoutStatus[status]}
           </p>
           <BiChevronDown size={20} />
         </MenuButton>
       }
       transition
     >
-      {statusObj.map((item) => (
+      {statusObj.map((item, index) => (
         <MenuItem
+          key={index}
           value={item.value}
           onClick={() => updateStatus(campaignId, item.value)}
           className="flex items-center gap-3"
@@ -68,7 +68,7 @@ const StatusRender = ({
   );
 };
 
-const AdsCampaign = () => {
+const Payout = () => {
   const [tablist, setTablist] = useState([
     {
       title: "New",
@@ -92,45 +92,30 @@ const AdsCampaign = () => {
   const queryClient = useQueryClient();
 
   const {
-    data: adsCampaign,
+    data: payouts,
     isLoading,
     refetch,
   } = useQuery({
-    queryKey: ["admin-ads-campaign"],
+    queryKey: ["admin-payout"],
     queryFn: () => payoutFn.getAllPayOut(filter),
     select: (data) => {
-      const selectedCampaign = data.events.map((campaign: any) => {
-        const startDate = campaign.start_date
-          ? `${formatDate(campaign.start_date)} | ${formatTime(
-              campaign.start_date
-            )}`
-          : null;
-        const endDate = campaign.end_date
-          ? `${formatDate(campaign.end_date)} | ${formatTime(
-              campaign.end_date
-            )}`
-          : null;
-        const img = campaign.event.medias[0]?.original || null;
-        const status = campaign.status;
-        const targetCity = campaign.target_city;
-        const targetCountry = campaign.target_country;
-        const submissionDate = moment(campaign.created_at).format("YYYY-MM-DD");
-        const address = campaign.event.address;
-        const email = campaign.event.account.owner[0].email;
+      const selectedCampaign = data.events.map((payout: any) => {
+        const status = payout.status;
+        const submissionDate = moment(payout.created_at).format("YYYY-MM-DD");
 
         return {
-          id: campaign.id || null,
-          name: campaign.event.name || null,
+          id: payout.id || null,
           submissionDate,
-          startDate,
-          img,
-          endDate,
           status,
-          targetCity,
-          targetCountry,
-          token: campaign.token || null,
-          address,
-          email,
+          email: payout.requester.email,
+          amountRequested: payout.amount,
+          image: payout.account.avatar || "/assets/external-hero.jpeg",
+          userName: payout.account.name,
+          accountName: payout.bank.account_name,
+          accountNumber: payout.bank.account_number,
+          bankName: payout.bank.bank_name,
+          requesterName: payout.requester.full_name,
+          requesterEmail: payout.requester.email,
         };
       });
 
@@ -138,17 +123,17 @@ const AdsCampaign = () => {
     },
   });
 
-  const updateCampaign = useMutation({
-    mutationFn: payoutFn.getAllPayOut,
+  const updatePayout = useMutation({
+    mutationFn: payoutFn.updatePayout,
     onError: async (error, variables, context) => {},
     onSuccess: async (data, variables, context) => {
-      queryClient.invalidateQueries({ queryKey: ["admin-ads-campaign"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-payout"] });
     },
   });
 
   //handles status update
-  const handleUpdate = (campaignId: any, status: any) => {
-    updateCampaign.mutate({ campaignId, status });
+  const handleUpdate = (payoutId: any, status: any) => {
+    updatePayout.mutate({ payoutId, status });
   };
 
   //handle tab switching
@@ -210,7 +195,7 @@ const AdsCampaign = () => {
               </tr>
             </thead>
             <tbody>
-              {adsCampaign?.map((ads: any, index: number) => (
+              {payouts?.map((ads: any, index: number) => (
                 <tr key={index} className="bg-white border-b border-[#eaeaea]">
                   <td className="py-4">{ads?.submissionDate}</td>
                   <td className="py-4">
@@ -224,32 +209,7 @@ const AdsCampaign = () => {
                       </a>
                     </div>
                   </td>
-                  <td className="py-4">
-                    <div className="flex gap-3 items-center">
-                      <p>{ads.name}</p>
-                      {/* <BiChevronDown size={20} /> */}
-                    </div>
-                  </td>
-                  <td className="py-4">{ads?.startDate}</td>
-                  <td className="py-4">{ads.endDate}</td>
-                  <td className="py-4">{ads.token}</td>
-                  <td className="py-4">
-                    <div className="flex gap-3 items-center">
-                      <img
-                        src={ads?.img}
-                        className="h-[72px] w-[72px] rounded-lg"
-                        alt={ads.name}
-                      />
-                      <a
-                        href={ads.img}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="bg-lightPurple text-primaryPurple hover:text-lightPurple hover:bg-primaryPurple p-2 w-[100px] flex justify-center items-center rounded-lg gap-3 cursor-pointer"
-                      >
-                        Download
-                      </a>
-                    </div>
-                  </td>
+                  <td className="py-4">₦{ads.amountRequested}</td>
                   <td className="py-4">
                     <StatusRender
                       status={ads?.status}
@@ -285,4 +245,4 @@ const AdsCampaign = () => {
   );
 };
 
-export default AdsCampaign;
+export default Payout;
