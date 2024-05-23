@@ -69,11 +69,31 @@ export const adsFn = {
 };
 
 export const payoutFn = {
+  //get all payouts
   getAllPayOut: async (filter) => {
     try {
       const response = await axiosInstance.get(`${ADMIN_BASE_URL}/payouts`, {
         params: filter,
       });
+      if (response.data && response.data.status === true) {
+        toast.success(response.data.message);
+        return response.data.data;
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      toast.error(error.response.data.message);
+      throw error;
+    }
+  },
+
+  //update the status  of the payout
+  updatePayout: async ({ payoutId, status }) => {
+    try {
+      const response = await axiosInstance.put(
+        `${ADMIN_BASE_URL}/payouts/${payoutId}`,
+        { status }
+      );
       if (response.data && response.data.status === true) {
         toast.success(response.data.message);
         return response.data.data;

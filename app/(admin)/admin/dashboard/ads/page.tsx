@@ -51,8 +51,9 @@ const StatusRender = ({
       }
       transition
     >
-      {statusObj.map((item) => (
+      {statusObj.map((item, index) => (
         <MenuItem
+          key={index}
           value={item.value}
           onClick={() => updateStatus(campaignId, item.value)}
           className="flex items-center gap-3"
