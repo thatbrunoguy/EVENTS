@@ -94,6 +94,7 @@ const CheckInModal = ({ setIsModalOpen, selectedEventId }: Iprops) => {
           <>
             {scanCode && (
               <QrReader
+                constraints={{ facingMode: "environment" }}
                 onResult={(result, error) => {
                   if (!!result) {
                     //@ts-ignore
