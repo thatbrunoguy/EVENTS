@@ -4,14 +4,54 @@ import {
   SolidButton,
   TransparentButton,
 } from "@/app/components/buttons/button";
+import {
+  eventsManagamentFunctions,
+  guestFunctions,
+} from "@/app/utils/endpoints";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
+import { QrReader } from "react-qr-reader";
+
 type Iprops = {
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  checkInAttendee?: any;
+  selectedEventId?: string;
 };
 
-const CheckInModal = ({ setIsModalOpen }: Iprops) => {
+type ticketDetail = {
+  attendee?: string;
+  ticket_type?: string;
+};
+
+const CheckInModal = ({ setIsModalOpen, selectedEventId }: Iprops) => {
   const router = useRouter();
+  const queryClient = useQueryClient();
+  const [customerId, setCustomerId] = useState("");
+  const [scanCode, setScanCode] = useState(false);
+  const [ticketDetail, setTicketDetail] = useState<ticketDetail>({});
+  const [errorState, setErrorState] = useState(false);
+
+  const checkInAttendee = useMutation({
+    mutationFn: eventsManagamentFunctions.checkInAttendeeWithCode,
+    onError: async (error, variables, context) => {},
+    onSuccess: async (data, variables, context) => {
+      setIsModalOpen(false);
+      queryClient.invalidateQueries({ queryKey: ["get-attendee-list"] });
+    },
+  });
+
+  const getTicketDetail = useMutation({
+    mutationFn: guestFunctions.getTicketInfo,
+    onError: async (error, variables, context) => {
+      setErrorState(true);
+    },
+    onSuccess: async (data, variables, context) => {
+      setErrorState(false);
+      setTicketDetail(data);
+    },
+  });
+
   return (
     <>
       <div
@@ -34,25 +74,65 @@ const CheckInModal = ({ setIsModalOpen }: Iprops) => {
             </label>
             <input
               type="text"
-              //   placeholder="Select category"
+              onChange={(e) => setCustomerId(e.target.value)}
+              value={customerId}
               className="h-[56px] text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
             />
           </div>
 
-          <div className="">
-            <div className="rounded-md bg-purple-50 py-3 px-3  flex justify-between">
-              <p className="text-sm basis-1/2">Attendee</p>
-              <p className="text-sm basis-1/2">Ticket type</p>
-            </div>
-            <div className="flex justify-between items-center mt-8 border-b-[.6px] pb-8 px-4">
-              <p className="basis-1/2">Timilehin Adegbulugbe</p>
-              <div className="  p-2 basis-1/2">
-                <div className="rounded-md bg-lightPurple w-[100px] p-2 flex justify-center text-xs text-primaryPurple">
-                  <p>Free Ticket</p>
+          <div className="flex items-center space-x-4 my-5">
+            <div className="basis-1/2 h-[.8px] bg-[#E7E4EB]" />
+            <p
+              className="text-sm text-[#706D73] whitespace-nowrap cursor-pointer"
+              onClick={() => setScanCode(true)}
+            >
+              or <span className="text-primaryPurple">SCAN QR code</span>
+            </p>
+            <div className="basis-1/2 h-[.8px] bg-[#E7E4EB]" />
+          </div>
+
+          <>
+            {scanCode && (
+              <QrReader
+                constraints={{ facingMode: "environment" }}
+                onResult={(result, error) => {
+                  if (!!result) {
+                    //@ts-ignore
+                    const res = JSON.parse(result.text);
+                    setCustomerId(res.ticket_number);
+                    setScanCode((prev) => (prev = false));
+                  }
+
+                  if (!!error) {
+                    console.info(error);
+                  }
+                }}
+                //@ts-ignore
+                style={{ width: "100%" }}
+              />
+            )}
+          </>
+          {ticketDetail?.attendee ? (
+            <div className="">
+              <div className="rounded-md bg-purple-50 py-3 px-3  flex justify-between">
+                <p className="text-sm basis-1/2">Attendee</p>
+                <p className="text-sm basis-1/2">Ticket type</p>
+              </div>
+              <div className="flex justify-between items-center mt-8 border-b-[.6px] pb-8 px-4">
+                <p className="basis-1/2">{ticketDetail?.attendee}</p>
+                <div className="  p-2 basis-1/2">
+                  <div className="rounded-md bg-lightPurple w-[100px] p-2 flex justify-center text-xs text-primaryPurple">
+                    <p>{ticketDetail?.ticket_type}</p>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          ) : null}
+          {errorState ? (
+            <div className="bg-lightOrange text-sm text-primaryOrange p-3 rounded-xl">
+              Ticket not valid
+            </div>
+          ) : null}
         </div>
 
         <footer className="h-[70px] fixed bottom-0 left-0 bg-white shadow-lg right-0 px-2 md:pr-9 flex justify-center md:justify-end space-x-6 items-center border-t-[.8px] border-gray-300">
@@ -66,11 +146,24 @@ const CheckInModal = ({ setIsModalOpen }: Iprops) => {
               height: "41px",
             }}
           />
-          <SolidButton
-            onClickHandler={() => router.push("/dashboard/payment/success")}
-            title="Allow"
-            styles={{ width: "160px", height: "41px" }}
-          />
+          {ticketDetail?.attendee ? (
+            <SolidButton
+              onClickHandler={() => {
+                checkInAttendee.mutate(customerId);
+              }}
+              title="Admit Attendee"
+              styles={{ width: "160px", height: "41px" }}
+            />
+          ) : (
+            <SolidButton
+              onClickHandler={() => {
+                setIsModalOpen(true);
+                getTicketDetail.mutate(customerId);
+              }}
+              title="Allow"
+              styles={{ width: "160px", height: "41px" }}
+            />
+          )}
         </footer>
       </div>
     </>

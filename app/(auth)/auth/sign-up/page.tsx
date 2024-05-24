@@ -9,10 +9,12 @@ import { FcGoogle } from "react-icons/fc";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { authFunctions } from "@/app/utils/endpoints";
 import PrimaryLoading from "@/app/components/loaders/PrimaryLoading";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 const SignUp = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const searchParams = useSearchParams();
+  const invite = searchParams.get("invite");
 
   const [isGoogleAuth, setIsGoogleAuth] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -46,18 +48,25 @@ const SignUp = () => {
     mutationFn: authFunctions.register,
     onError: async (error, variables, context) => {
       // An error happened!
-      console.log(`rolling back optimistic update with id ${error}`);
+      // console.log(`rolling back optimistic update with id ${error}`);
     },
     onSuccess: async (data, variables, context) => {
-      // Boom baby!
-      console.log("data", data);
-      router.push("/auth/otp");
+      if (invite) {
+        router.push("/dashboard");
+      } else {
+        router.push("/auth/otp");
+      }
     },
   });
 
   const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    createRegisterMutation.mutate(userCredentials);
+    const userCred = { ...userCredentials };
+    if (invite) {
+      //@ts-ignore
+      userCred.invite = invite;
+    }
+    createRegisterMutation.mutate(userCred);
   };
 
   return (
@@ -198,7 +207,7 @@ const SignUp = () => {
               {/* </Link> */}
             </form>
           )}
-          <div className="flex items-center space-x-4 my-4 md:my-5">
+          {/* <div className="flex items-center space-x-4 my-4 md:my-5">
             <div className="basis-1/2 h-[.8px] bg-[#E7E4EB]" />
             <p className="text-sm text-[#706D73] ">or</p>
             <div className="basis-1/2 h-[.8px] bg-[#E7E4EB]" />
@@ -212,7 +221,7 @@ const SignUp = () => {
               <FcGoogle />
             </div>
             <p>Sign up with Google</p>
-          </div>
+          </div> */}
 
           <div className="mt-6 md:mt-11 text-sm">
             <p>

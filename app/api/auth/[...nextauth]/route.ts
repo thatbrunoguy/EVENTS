@@ -4,6 +4,13 @@ import toast from "react-hot-toast";
 
 const BASE_URL = process.env.BASE_URL || "";
 const APP_KEY = process.env.X_APP_KEY || "";
+const ADMIN_BASE_URL = process.env.ADMIN_BASE_URL || "";
+
+if (!BASE_URL || !APP_KEY || !ADMIN_BASE_URL) {
+  throw new Error(
+    "Environment variables BASE_URL, X_APP_KEY, or ADMIN_BASE_URL are not set."
+  );
+}
 
 const authOptions: NextAuthOptions = {
   session: {
@@ -27,7 +34,11 @@ const authOptions: NextAuthOptions = {
       },
       async authorize(credentials, req) {
         // Add logic here to look up the user from the credentials supplied
-        const res = await fetch(`${BASE_URL}/login`, {
+        let url = BASE_URL;
+        if (credentials?.email === "info@eventsparrot.com") {
+          url = ADMIN_BASE_URL;
+        }
+        const res = await fetch(`${url}/login`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -39,7 +50,6 @@ const authOptions: NextAuthOptions = {
           }),
         });
         const user = await res.json();
-        console.log("user", user.data);
         if (res.ok && user.status === true) {
           // Any object returned will be saved in `user` property of the JWT
           return user.data;

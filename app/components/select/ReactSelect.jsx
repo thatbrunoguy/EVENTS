@@ -17,6 +17,7 @@ export default function ReactSelectOptions({
   return (
     <div>
       <Select
+        id="eventsparrot"
         defaultValue={selectedOption}
         onChange={setSelectedOption}
         options={options}

@@ -5,52 +5,176 @@ import { MdAdsClick } from "react-icons/md";
 import { PiSpeakerHigh } from "react-icons/pi";
 import { Menu, MenuButton, MenuItem } from "@szhsin/react-menu";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IoChevronDown, IoClose } from "react-icons/io5";
 import { MdInfo } from "react-icons/md";
 import DatePicker from "react-date-picker";
-import TimePicker from "react-time-picker";
 import "react-time-picker/dist/TimePicker.css";
 import "react-clock/dist/Clock.css";
 import "react-date-picker/dist/DatePicker.css";
 import "react-calendar/dist/Calendar.css";
-import { Value } from "@/app/(dashboard)/dashboard/create/basic-info/page";
-import ReactSelectOptions from "@/app/components/select/ReactSelect";
+// import { Value } from "@/app/(dashboard)/dashboard/create/basic-info/page";
 import Faq from "../Faq";
 import { FaMinus, FaPlus } from "react-icons/fa6";
 import BuyTokenModal from "./BuyTokenModal";
+import {
+  authFunctions,
+  eventsManagamentFunctions,
+} from "@/app/utils/endpoints";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { formatDate, formatDateTime, formatTime } from "@/app/helpers";
+import { EventData } from "../../../event/page";
+import PrimaryLoading from "@/app/components/loaders/PrimaryLoading";
+import GoogleLocationSearch from "@/app/components/googleLocationSearch";
+import { campaignFn } from "@/app/utils/endpoints/campaign";
+import { toast } from "react-hot-toast";
+import { useRouter } from "next/navigation";
+import { countries } from "@/app/utils/countries";
+import { Value } from "../../../create/CreateAndEditEvent";
 
 const CreateAdsCampaign = () => {
-  const [selectedOption, setSelectedOption] = useState({});
-  const [options, setOptions] = useState([
-    {
-      title: " Eko convections centre",
-      desc: "Lekki paradise estate 3, chevron drive",
-      date: "Saturday, October 22, 2023 | 7:30pm",
-    },
-    {
-      title: " Eko convections centre",
-      desc: "Lekki paradise estate 3, chevron drive",
-      date: "Saturday, October 22, 2023 | 7:30pm",
-    },
-    {
-      title: " Eko convections centre",
-      desc: "Lekki paradise estate 3, chevron drive",
-      date: "Saturday, October 22, 2023 | 7:30pm",
-    },
-    {
-      title: " Eko convections centre",
-      desc: "Lekki paradise estate 3, chevron drive",
-      date: "Saturday, October 22, 2023 | 7:30pm",
-    },
-  ]);
+  const router = useRouter();
   const [startDate, setStartDate] = useState<Value>(new Date());
-  const [startTime, setStartTime] = useState<any>("10:00");
+  const [endDate, setEndDate] = useState<any>(new Date());
   const [tokens, setTokens] = useState<number>(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [locationValue, setLocationValue] = useState<null | any>(null);
+  const [cityValue, setCityValue] = useState<null | any>(null);
+  const [tokenAmount, setTokenAmount] = useState(0);
+
+  //get events
+  const { data: events, isLoading } = useQuery({
+    queryKey: ["events"],
+    queryFn: eventsManagamentFunctions.getEvents,
+    select: (data) => {
+      const selectedEvents = data.map((event: EventData) => {
+        const startDate = event.start_date
+          ? `${formatDate(event.start_date)} | ${formatTime(event.start_date)}`
+          : null;
+
+        const desc = event.tickets[0]?.description || null;
+        const img = event.medias[0]?.original || null;
+        const address = event.locations[0]?.address || "Online";
+        const status = event.status;
+
+        return {
+          id: event.id || null,
+          name: event.name || null,
+          startDate,
+          desc,
+          img,
+          address,
+          status,
+        };
+      });
+
+      return selectedEvents;
+    },
+  });
+
+  //user token
+  const { data: userToken } = useQuery({
+    queryKey: ["getToken"],
+    queryFn: authFunctions.getUserToken,
+    select: (data) => {
+      return {
+        currency: data.currency,
+        token_balance: data.token_balance,
+      };
+    },
+  });
+
+  const createAdsCampaign = useMutation({
+    mutationFn: campaignFn.createAdsCampaign,
+    onError: async (error: string) => {
+      toast.error(error);
+    },
+    onSuccess: async (data) => {
+      // Boom baby!
+      toast.success(data);
+      router.push("/dashboard/campaigns");
+    },
+  });
+
+  const [selectedEvent, setSelectedEvent] = useState(events && events[0]);
+  const [data, setData] = useState({
+    objective: "",
+    start_date: "",
+    end_date: "",
+    target_country: "",
+    target_city: "",
+    token: 0,
+  });
+
+  const submitCreateEvent = async () => {
+    if (data.token < 5) {
+      toast.error("Campaign cannot be created with token less than 5");
+      return;
+    }
+    createAdsCampaign.mutate({ eventId: selectedEvent.id, body: data });
+  };
+
+  //update start date
+  useEffect(() => {
+    setData((prev) => ({
+      ...prev,
+      start_date: formatDateTime(startDate),
+    }));
+  }, [startDate]);
+
+  //update end date
+  useEffect(() => {
+    setData((prev) => ({
+      ...prev,
+      end_date: formatDateTime(endDate),
+    }));
+  }, [endDate]);
+
+  //update country location
+  useEffect(() => {
+    setData((prev) => ({
+      ...prev,
+      target_country: locationValue?.label,
+    }));
+  }, [locationValue]);
+
+  //update city location
+  useEffect(() => {
+    setData((prev) => ({
+      ...prev,
+      target_city: cityValue?.label,
+    }));
+  }, [cityValue]);
+
+  //update user t
+  useEffect(() => {
+    if (userToken?.token_balance < data.token) {
+      setTokenAmount(data?.token - userToken?.token_balance);
+    }
+  }, [userToken, data.token]);
+
+  const disableButton =
+    data.token < 5 ||
+    !data.objective ||
+    !data.end_date ||
+    !data.start_date ||
+    !data.target_city ||
+    !data.target_country;
+
+  console.log("data", data);
+
+  if (isLoading) {
+    return <PrimaryLoading />;
+  }
+
   return (
     <section className="w-full min-h-screen flex">
-      {isModalOpen && <BuyTokenModal setIsModalOpen={setIsModalOpen} />}
+      {isModalOpen && (
+        <BuyTokenModal
+          setIsModalOpen={setIsModalOpen}
+          tokenAmount={tokenAmount}
+        />
+      )}
 
       <div className="p-2 py-4 md:p-12 bg-white w-full md:basis-[55%]">
         <h3 className="font-semibold text-xl mb-2">📢 Eventparrot Ads</h3>
@@ -74,15 +198,19 @@ const CreateAdsCampaign = () => {
                     <div className="h-[72px] w-[72px] relative rounded overflow-hidden">
                       <Image
                         fill
-                        src="/assets/event.jpeg"
-                        alt={options[0].title}
+                        src={selectedEvent?.img}
+                        alt={selectedEvent?.name}
                         objectFit="cover"
                       />
                     </div>
                     <div>
-                      <h4 className="font-semibold mb-1">{options[0].title}</h4>
-                      <p className="text-lightText">{options[0].desc}</p>
-                      <p className="text-lightText">{options[0].date}</p>
+                      <h4 className="font-semibold mb-1">
+                        {selectedEvent?.name}
+                      </h4>
+                      <p className="text-lightText">{selectedEvent?.desc}</p>
+                      <p className="text-lightText">
+                        {selectedEvent?.startDate}
+                      </p>
                     </div>
                   </div>
                   <div className="text-xl">
@@ -94,24 +222,25 @@ const CreateAdsCampaign = () => {
             transition
           >
             <div className="shadow-xl mt-6  bg-white">
-              {options.map((item, index) => (
+              {events?.map((item: any, index: number) => (
                 <MenuItem
                   className="hover:bg-gray-100 hover:border-b cursor-pointer"
                   key={index}
+                  onClick={() => setSelectedEvent(item)}
                 >
                   <div className="flex items-center w-full md:w-[575px] space-x-3 md:space-x-5 md:p-3 ">
                     <div className="h-[42px] md:h-[72px] w-[42px] md:w-[72px] relative rounded overflow-hidden">
                       <Image
                         fill
-                        src="/assets/event.jpeg"
-                        alt={item.title}
+                        src={item.img}
+                        alt={item.name}
                         objectFit="cover"
                       />
                     </div>
                     <div className="w-full">
-                      <h4 className="font-semibold mb-1">{item.title}</h4>
+                      <h4 className="font-semibold mb-1">{item.name}</h4>
                       <p className="text-lightText">{item.desc}</p>
-                      <p className="text-lightText">{item.date}</p>
+                      <p className="text-lightText">{item.startDate}</p>
                     </div>
                   </div>
                 </MenuItem>
@@ -120,6 +249,7 @@ const CreateAdsCampaign = () => {
           </Menu>
         </div>
 
+        {/* Set an objective */}
         <div className="w-full mt-9 h-auto border rounded-md p-5">
           <h4 className="text-lg">Set an Objective</h4>
 
@@ -135,6 +265,13 @@ const CreateAdsCampaign = () => {
               <input
                 type="radio"
                 className="block w-5 h-5 cursor-pointer accent-primaryPurple"
+                onClick={() =>
+                  setData((prev) => ({
+                    ...prev,
+                    objective: "Get registrations",
+                  }))
+                }
+                checked={data.objective === "Get registrations"}
               />
             </div>
           </div>
@@ -151,6 +288,13 @@ const CreateAdsCampaign = () => {
               <input
                 type="radio"
                 className="block w-5 h-5 cursor-pointer accent-primaryPurple"
+                onClick={() =>
+                  setData((prev) => ({
+                    ...prev,
+                    objective: "Drive traffic",
+                  }))
+                }
+                checked={data.objective === "Drive traffic"}
               />
             </div>
           </div>
@@ -167,6 +311,13 @@ const CreateAdsCampaign = () => {
               <input
                 type="radio"
                 className="block w-5 h-5 cursor-pointer accent-primaryPurple"
+                onClick={() =>
+                  setData((prev) => ({
+                    ...prev,
+                    objective: "Increase awareness",
+                  }))
+                }
+                checked={data.objective === "Increase awareness"}
               />
             </div>
           </div>
@@ -176,7 +327,8 @@ const CreateAdsCampaign = () => {
 
         <div className="w-full mt-9 h-auto border rounded-md p-5">
           <h4 className="text-lg">Build your ad</h4>
-          <div className="flex items-center w-full space-x-6 mt-6">
+          <p className="mt-4">Duration</p>
+          <div className="flex items-center w-full space-x-6 mt-4">
             <div className="basis-1/2">
               <label
                 className="text-sm block mb-2 text-gray-800"
@@ -185,7 +337,11 @@ const CreateAdsCampaign = () => {
                 Event start date <span className="text-red-500">*</span>
               </label>
               <div>
-                <DatePicker onChange={setStartDate} value={startDate} />
+                <DatePicker
+                  minDate={new Date()}
+                  onChange={setStartDate}
+                  value={startDate}
+                />
               </div>
             </div>
             <div className="basis-1/2">
@@ -193,10 +349,10 @@ const CreateAdsCampaign = () => {
                 className="text-sm block mb-2 text-gray-800"
                 htmlFor="organizerName"
               >
-                Event end time <span className="text-red-500">*</span>
+                Event end date <span className="text-red-500">*</span>
               </label>
               <div>
-                <TimePicker onChange={setStartTime} value={startTime} />
+                <DatePicker onChange={setEndDate} value={endDate} />
               </div>
             </div>
           </div>
@@ -209,31 +365,29 @@ const CreateAdsCampaign = () => {
 
           <div className="flex items-center w-full space-x-6 mt-2">
             <div className="my-6 basis-1/2">
-              <label
-                className="text-sm mb-2 block text-gray-800"
-                htmlFor="organizerName"
-              >
-                Location <span className="text-red-500">*</span>
-              </label>
-
-              <ReactSelectOptions
-                selectedOption={selectedOption}
-                setSelectedOption={setSelectedOption}
-                options={[]}
+              <GoogleLocationSearch
+                label="Country"
+                value={locationValue}
+                setValue={setLocationValue}
+                apiOptions={{
+                  types: ["country"],
+                  componentRestrictions: {
+                    types: ["geocode", "political"],
+                  },
+                }}
               />
             </div>
             <div className="my-6 basis-1/2">
-              <label
-                className="text-sm mb-2 block text-gray-800"
-                htmlFor="organizerName"
-              >
-                City <span className="text-red-500">*</span>
-              </label>
-
-              <ReactSelectOptions
-                selectedOption={selectedOption}
-                setSelectedOption={setSelectedOption}
-                options={[]}
+              <GoogleLocationSearch
+                label="City"
+                value={cityValue}
+                setValue={setCityValue}
+                apiOptions={{
+                  types: ["geocode"],
+                  componentRestrictions: {
+                    types: ["country", "locality", "political"],
+                  },
+                }}
               />
             </div>
           </div>
@@ -242,15 +396,17 @@ const CreateAdsCampaign = () => {
         {/* -----BUY TOKEN---- */}
 
         <div className="w-full relative mt-9 h-auto border rounded-md p-5">
-          <div className=" w-full hover:bg-[#FF5602] group flex items-center justify-between  rounded-md px-4 hover:text-white bg-[#FCEFE8] text-xs h-9 ">
-            <div className="flex items-center space-x-2">
-              <div className="text-xl text-[#FF5602] group-hover:text-white">
-                <MdInfo />
+          {userToken?.token_balance > 0 && (
+            <div className=" w-full hover:bg-[#FF5602] group flex items-center justify-between  rounded-md px-4 hover:text-white bg-[#FCEFE8] text-xs h-9 ">
+              <div className="flex items-center space-x-2">
+                <div className="text-xl text-[#FF5602] group-hover:text-white">
+                  <MdInfo />
+                </div>
+                <p>You have {userToken?.token_balance} Tokens</p>
               </div>
-              <p>You have free 5 Tokens</p>
+              <IoClose className="text-xl cursor-pointer" />
             </div>
-            <IoClose className="text-xl cursor-pointer" />
-          </div>
+          )}
           <div className="my-6">
             <h4 className="text-lg">Tokens</h4>
             <p className="text-lightText text-sm">Buy some token</p>
@@ -258,35 +414,52 @@ const CreateAdsCampaign = () => {
 
           <div className="flex items-center w-full space-x-6 my-6">
             <div className="bg-[#F8F8F8] flex items-center justify-between px-7 h-14 flex-1">
-              <p>{tokens}</p>
+              <p>{data?.token}</p>
               <p>Tokens</p>
             </div>
             <div className="flex items-center space-x-3">
               <button
-                onClick={() => setTokens((prev) => (prev += 1))}
-                className="w-14 h-14 bg-lightPurple hover:bg-primaryPurple hover:text-white text-primaryPurple rounded-md grid place-content-center"
-              >
-                <p>
-                  <FaPlus />
-                </p>
-              </button>
-              <button
-                onClick={() => setTokens((prev) => (prev -= 1))}
+                onClick={() =>
+                  setData((prev) => ({
+                    ...prev,
+                    token: Math.max(prev.token - 1, 0),
+                  }))
+                }
                 className="w-14 h-14 bg-lightPurple hover:bg-primaryPurple hover:text-white text-primaryPurple rounded-md grid place-content-center"
               >
                 <p>
                   <FaMinus />
                 </p>
               </button>
+              <button
+                onClick={() =>
+                  setData((prev) => ({ ...prev, token: prev.token + 1 }))
+                }
+                className="w-14 h-14 bg-lightPurple hover:bg-primaryPurple hover:text-white text-primaryPurple rounded-md grid place-content-center"
+              >
+                <p>
+                  <FaPlus />
+                </p>
+              </button>
             </div>
           </div>
-
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="text-primaryPurple w-full bg-lightPurple grid place-content-center h-10 rounded-md hover:bg-primaryPurple hover:text-white"
-          >
-            <p>Buy</p>
-          </button>
+          {userToken?.token_balance < 5 ||
+          userToken?.token_balance < data.token ? (
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="text-primaryPurple w-full bg-lightPurple grid place-content-center h-10 rounded-md hover:bg-primaryPurple hover:text-white"
+            >
+              <p>Buy</p>
+            </button>
+          ) : (
+            <button
+              onClick={submitCreateEvent}
+              className="text-primaryPurple w-full bg-lightPurple grid place-content-center h-10 rounded-md hover:bg-primaryPurple hover:text-white"
+              disabled={disableButton}
+            >
+              <p>Submit Campaign</p>
+            </button>
+          )}
         </div>
       </div>
 
@@ -297,18 +470,19 @@ const CreateAdsCampaign = () => {
           <h4 className="text-xl w-full font-semibold">Preview</h4>
 
           <div className="flex items-center bg-white w-full mt-6 mb-12 border-[.4px] rounded-md space-x-6 shadow-xl p-5 ">
-            <div className="h-[72px] w-[72px] relative rounded overflow-hidden">
+            <div className="h-[102px] w-[146px] relative rounded overflow-hidden">
               <Image
                 fill
-                src="/assets/event.jpeg"
-                alt={options[0].title}
+                src={selectedEvent?.img}
+                alt={selectedEvent?.name}
                 objectFit="cover"
               />
             </div>
             <div>
-              <h4 className="font-semibold mb-1">{options[0].title}</h4>
-              <p className="text-lightText">{options[0].desc}</p>
-              <p className="text-lightText">{options[0].date}</p>
+              <p className="text-[#7431B8] text-sm">Promoted</p>
+              <h4 className="font-semibold mb-1">{selectedEvent?.name}</h4>
+              <p className="text-lightText">{selectedEvent?.desc}</p>
+              <p className="text-lightText">{selectedEvent?.startDate}</p>
             </div>
           </div>
 

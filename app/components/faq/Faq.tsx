@@ -1,6 +1,6 @@
 "use client";
 
-import { EventInfoType } from "@/app/(dashboard)/dashboard/create/basic-info/page";
+import { EventInfoType } from "@/app/types";
 import React, { useEffect, useState } from "react";
 import { GoPlus } from "react-icons/go";
 import { RiDeleteBin6Fill } from "react-icons/ri";
@@ -28,7 +28,7 @@ const Faq = ({ faqs, setFaqs, setEventInfo }: Iprops) => {
   };
 
   const deleteFaqHandler = (index: number) => {
-    console.log("index", index);
+    // console.log("index", index);
     setFaqs((prevFaqs) => {
       const updatedFaqs = prevFaqs.filter((faq, i) => i !== index);
 

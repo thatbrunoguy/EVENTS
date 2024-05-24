@@ -16,7 +16,7 @@ const OTP = () => {
   const [user, setUser] = useState<any>({});
   useEffect(() => {
     setUser(getData(EVENTSPARROT_USER));
-    console.log("user", user);
+    // console.log("user", user);
   }, []);
 
   const [otp, setOtp] = useState("");
@@ -26,11 +26,11 @@ const OTP = () => {
     mutationFn: authFunctions.verifyOTP,
     onError: async (error, variables, context) => {
       // An error happened!
-      console.log(`rolling back optimistic update with id ${error}`);
+      // console.log(`rolling back optimistic update with id ${error}`);
     },
     onSuccess: async (data, variables, context) => {
       // Boom baby!
-      console.log("data", data);
+      // console.log("data", data);
       router.push("/auth/login");
     },
   });
@@ -39,11 +39,11 @@ const OTP = () => {
     mutationFn: authFunctions.resendOTP,
     onError: async (error, variables, context) => {
       // An error happened!
-      console.log(`rolling back optimistic update with id ${error}`);
+      // console.log(`rolling back optimistic update with id ${error}`);
     },
     onSuccess: async (data, variables, context) => {
       // Boom baby!
-      console.log("data", data);
+      // console.log("data", data);
       router.push("/auth/otp");
     },
   });

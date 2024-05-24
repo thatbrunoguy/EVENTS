@@ -20,47 +20,10 @@ import { MdHideSource } from "react-icons/md";
 import { IoTrash } from "react-icons/io5";
 import { useCopyToClipboard } from "@/app/hooks";
 import toast from "react-hot-toast";
+import { IoMdSettings } from "react-icons/io";
 import ConfirmDeleteModal from "@/app/components/modals/ConfirmDelete";
-
-type Ticket = {
-  id: string;
-  event_id: string;
-  name: string;
-  description: string;
-  price: number;
-  stock: string;
-  stock_qty: number;
-  purchase_limit: number;
-  quantity_limit_per_person: number | null;
-  currency: string;
-  type: number;
-  status: number;
-  created_at: string;
-  updated_at: string;
-};
-
-type Media = {
-  original: string;
-  thumb: string;
-};
-
-type Location = {
-  id: string;
-  event_id: string;
-  type: number;
-  latitude: string;
-  longitude: string;
-  country_code: string | null;
-  country: string | null;
-  city: string | null;
-  zipcode: string | null;
-  address: string;
-  link: string | null;
-  meta: any | null;
-  status: number;
-  created_at: string;
-  updated_at: string;
-};
+import { Location, Media, Ticket } from "@/app/types";
+import { useRouter } from "next/navigation";
 
 export type EventData = {
   id: string;
@@ -78,6 +41,7 @@ export type EventData = {
   status: number;
   tickets: Ticket[];
   locations: Location[];
+  slug: string;
 };
 type FormattedEvent = {
   id: string;
@@ -92,14 +56,14 @@ type FormattedEvent = {
 export default function Event() {
   const [copiedText, copy] = useCopyToClipboard();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  // const [selectedEvent, setSelectedEvent] = useState({ id: "" });
+  const router = useRouter();
 
   const queryClient = useQueryClient();
 
   const handleCopy = (text: string) => () => {
     copy(text)
       .then(() => {
-        console.log("Copied!", { text });
+        // console.log("Copied!", { text });
         toast.success("Event link copied");
       })
       .catch((error) => {
@@ -110,11 +74,11 @@ export default function Event() {
     mutationFn: eventsManagamentFunctions.toggleEventStatus,
     onError: async (error, variables, context) => {
       // An error happened!
-      console.log(` ${error}`);
+      // console.log(` ${error}`);
     },
     onSuccess: async (data, variables, context) => {
       queryClient.invalidateQueries({ queryKey: ["events"] });
-      console.log("data", data);
+      // console.log("data", data);
     },
   });
 
@@ -122,17 +86,13 @@ export default function Event() {
     mutationFn: eventsManagamentFunctions.deleteEvent,
     onError: async (error, variables, context) => {
       // An error happened!
-      console.log(` ${error}`);
+      // console.log(` ${error}`);
     },
     onSuccess: async (data, variables, context) => {
       // Boom baby!
-      console.log("data", data);
+      // console.log("data", data);
     },
   });
-
-  const deleteEventHandler = (id: string) => {
-    deleteEvent.mutate({ eventId: id });
-  };
 
   const handleEventStatusChange = (status: number, id: string) => {
     toggleEventStatus.mutate({ status: status, eventId: id });
@@ -140,9 +100,8 @@ export default function Event() {
 
   const {
     data: events,
-    isError,
     isLoading,
-    status,
+    refetch: refetchEvent,
   } = useQuery({
     queryKey: ["events"],
     queryFn: eventsManagamentFunctions.getEvents,
@@ -155,8 +114,6 @@ export default function Event() {
           event.tickets[0]?.stock_qty != null
             ? event.tickets[0].stock_qty
             : null;
-        // const price =
-        //   event.tickets[0]?.price != null ? event.tickets[0].price : null;
         const lowestPrice = Math.min(
           ...event.tickets.map((ticket: any) => ticket.price)
         );
@@ -173,13 +130,13 @@ export default function Event() {
           name: event.name || null,
           startDate,
           quantity,
-          // price,
           desc,
           img,
           address,
           status,
           lowestPrice,
           highestPrice,
+          slug: event.slug || null,
         };
       });
 
@@ -187,18 +144,29 @@ export default function Event() {
     },
   });
 
+  const deleteEventHandler = (id: string) => {
+    deleteEvent.mutate({ eventId: id });
+    refetchEvent();
+  };
+
   const actionOptions = [
     {
       icon: <HiPencil />,
       title: "Edit event",
     },
     {
+      icon: <IoMdSettings />,
+      title: "Manage event",
+    },
+    {
       icon: <MdHideSource />,
       title: "Make event inactive",
+      callback: () => console.log("edit event"),
     },
     {
       icon: <IoTrash />,
       title: "Delete event",
+      callback: () => setIsDeleteModalOpen(true),
     },
   ];
 
@@ -207,7 +175,6 @@ export default function Event() {
     title: "Copy event link",
   };
 
-  console.log("events", events);
   return (
     <section className="flex">
       <Sidebar />
@@ -264,7 +231,7 @@ export default function Event() {
                     <p className="">Ticket price</p>
                     <p className=""></p>
                   </header>
-                  {events?.map((item: any, index: number) => (
+                  {events?.map((item: any) => (
                     <div
                       key={item.id}
                       className="flex w-[130vw] md:w-full border-b items-center justify-between"
@@ -287,10 +254,10 @@ export default function Event() {
                         </div>
 
                         <div className="grid grid-cols-3 flex-1 justify-items-end">
-                          <div className=" md:mr-4">
+                          <div className="flex items-center md:mr-4">
                             {item.quantity || "unlimited"}
                           </div>
-                          <div className="">
+                          <div className="flex items-center">
                             <p className="relative md:left-5">
                               {item.highestPrice === item.lowestPrice
                                 ? `₦${item.lowestPrice}`
@@ -305,8 +272,9 @@ export default function Event() {
                                 backgroundColor: "white",
                                 border: "1px solid #E7E4EB",
                                 borderRadius: 8,
+                                zIndex: 50,
                                 width: 230,
-                                height: 204,
+                                height: 240,
                                 padding: 6,
                                 boxShadow:
                                   "0px 4px 6px -2px #88868A0D, 0px 12px 16px -4px #88868A1A",
@@ -332,21 +300,26 @@ export default function Event() {
                                     <div
                                       onClick={
                                         index === 0
-                                          ? () => {}
+                                          ? () =>
+                                              router.push(
+                                                `/dashboard/event/edit-event/${item?.id}`
+                                              )
                                           : index === 1
-                                          ? () => {
+                                          ? () =>
+                                              router.push(
+                                                `/dashboard/event/preview/${item?.slug}`
+                                              )
+                                          : index === 2
+                                          ? () =>
                                               handleEventStatusChange(
                                                 item.status,
                                                 item.id
-                                              );
-                                            }
-                                          : () => {
-                                              setIsDeleteModalOpen(true);
-                                            }
+                                              )
+                                          : opt.callback
                                       }
                                       className="flex items-center w-full space-x-3 py-1"
                                     >
-                                      {index === 1 ? (
+                                      {index === 2 ? (
                                         <>
                                           <div
                                             className={`${
@@ -388,7 +361,7 @@ export default function Event() {
                               <MenuItem className="py-2 cursor-pointer pl-4 hover:bg-lightPurple mx-auto border-t">
                                 <div
                                   onClick={handleCopy(
-                                    `https://eventsparrot.vercel.app/events/${item.id}`
+                                    `https://eventsparrot.vercel.app/events/${item.slug}`
                                   )}
                                   className="flex items-center w-full cursor-pointer  space-x-3 py-1"
                                 >
@@ -405,7 +378,7 @@ export default function Event() {
                               <ConfirmDeleteModal
                                 title="Are you sure want to delete this event?"
                                 setIsDeleteModalOpen={setIsDeleteModalOpen}
-                                deleteTicket={deleteEventHandler(item.id)}
+                                deleteTicket={() => deleteEventHandler(item.id)}
                               />
                             )}
                           </div>

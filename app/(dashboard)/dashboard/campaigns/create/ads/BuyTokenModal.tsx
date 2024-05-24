@@ -4,14 +4,42 @@ import {
   SolidButton,
   TransparentButton,
 } from "@/app/components/buttons/button";
+import { campaignFn } from "@/app/utils/endpoints/campaign";
+import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
+import { toast } from "react-hot-toast";
+// import {campaignFn} from "@/app/utils/"
 type Iprops = {
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  tokenAmount?: number;
 };
 
-const BuyTokenModal = ({ setIsModalOpen }: Iprops) => {
+const BuyTokenModal = ({ setIsModalOpen, tokenAmount }: Iprops) => {
   const router = useRouter();
+  const [token, setToken] = useState<any | number>(tokenAmount ?? 10);
+  const [enabled, setEnabled] = useState(false);
+
+  const { data: buy_token } = useQuery({
+    queryKey: ["buyToken"],
+    queryFn: () => campaignFn.buyToken({ token_qty: token }),
+    enabled: enabled,
+  });
+
+  const handleBuyToken = () => {
+    if (token < 5) {
+      toast.error("Token  cannot be less than 5");
+      return;
+    } else if (token > 50) {
+      toast.error("Token should not be greater than 50");
+      return;
+    } else if (token % 5 > 0) {
+      toast.error("Token should multiple of 5");
+      return;
+    }
+    setEnabled(true);
+  };
+
   return (
     <>
       <div
@@ -25,9 +53,13 @@ const BuyTokenModal = ({ setIsModalOpen }: Iprops) => {
         </div>
 
         <div className="w-[90%] mx-auto rounded-md border mt-8 mb-6 p-7 py-4">
-          <h3 className="text-2xl font-medium">
-            10 <span className="text-sm font-normal">Tokens</span>
-          </h3>
+          <input
+            type="number"
+            value={token}
+            onChange={(e) => setToken(Number(e.target.value))}
+            className="outline-none h-[100%] text-[30px] w-20 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+          />
+          <span className="text-sm font-normal">Tokens</span>
         </div>
 
         <div className="w-[90%] mx-auto mb-28">
@@ -35,7 +67,7 @@ const BuyTokenModal = ({ setIsModalOpen }: Iprops) => {
             Currency price of Token <span className="text-red-600">*</span>
           </p>
           <div className="bg-[#F8F8F8]  flex items-center justify-between px-7 h-14 flex-1">
-            <p className="text-gray-700">100,000</p>
+            <p className="text-gray-700">{token * 10000}</p>
             <p>Naira</p>
           </div>
         </div>
@@ -52,7 +84,7 @@ const BuyTokenModal = ({ setIsModalOpen }: Iprops) => {
             }}
           />
           <SolidButton
-            onClickHandler={() => router.push("/payment/success")}
+            onClickHandler={handleBuyToken}
             title="Buy Now"
             styles={{ width: "160px", height: "41px" }}
           />

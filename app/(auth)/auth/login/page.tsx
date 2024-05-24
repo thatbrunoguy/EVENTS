@@ -1,28 +1,72 @@
 "use client";
 
-import { Login } from "@/app/types";
+import { AccountInfo, Login } from "@/app/types";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useLayoutEffect, useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { signIn } from "next-auth/react";
 import { useSession } from "next-auth/react";
 import PrimaryLoading from "@/app/components/loaders/PrimaryLoading";
 import toast, { Toaster } from "react-hot-toast";
-import { useRouter } from "next/navigation";
-import { storeData } from "@/app/utils/localstorage";
-import { EVENTSPARROT_USER } from "@/app/constants";
+import { useRouter, useSearchParams } from "next/navigation";
+import { addToLocalStorage, storeData } from "@/app/utils/localstorage";
+import { EVENTSPARROT_ADMIN, EVENTSPARROT_USER } from "@/app/constants";
+import { authFunctions } from "@/app/utils/endpoints";
 
 const Login = () => {
   const router = useRouter();
   const { data: session, status } = useSession();
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [accountInfo, setAccountInfo] = useState<AccountInfo | {}>({});
+  const searchParams = useSearchParams();
+  const invite = searchParams.get("invite");
+
+  const { getAccountInfo, getUserAccount } = authFunctions;
+
+  const getAccount = async () => {
+    try {
+      const res = await getAccountInfo();
+      if (res) {
+        setAccountInfo(res);
+      }
+    } catch (error) {
+      console.log("Unable to get account info");
+    }
+  };
+
+  const getAccounts = async () => {
+    try {
+      const res = await getUserAccount();
+
+      if (res) {
+        addToLocalStorage(EVENTSPARROT_USER, "account", res[0]);
+        await getAccount();
+
+        if (res[0].events_count > 0) {
+          router.push("/dashboard");
+        } else if (res[0].events_count === 0) {
+          router.push("/dashboard/event");
+        }
+      }
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+
   useLayoutEffect(() => {
     if (status === "authenticated") {
-      router.push("/dashboard");
+      //@ts-ignore
+      if (session?.user?.admin) {
+        storeData(EVENTSPARROT_ADMIN, session.user);
+        router.push("/admin/dashboard/ads");
+        console.log("I am authenticated");
+        return;
+      }
       storeData(EVENTSPARROT_USER, session.user);
+      getAccounts();
     }
   }, [status]);
 
@@ -34,28 +78,26 @@ const Login = () => {
   const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsProcessing(true);
+    const userCred = { ...loginCredential };
+    if (invite) {
+      userCred.invite = invite;
+    }
     const res = await signIn("credentials", {
-      ...loginCredential,
+      ...userCred,
       redirect: false,
       // callbackUrl: "/",
     });
     if (res?.ok) {
       setIsProcessing(false);
     }
-    console.log("res", res);
+
     if (res?.error) {
       toast.error(res.error as string);
       setIsProcessing(false);
     }
   };
 
-  // console.log("status", status);
-  // console.log("session", session);
-
-  // if (status === "authenticated") {
-  //   return <p>Signed in as {session.user.email}</p>
-  // }
-  if (status === "loading") {
+  if (status === "loading" && !accountInfo) {
     return <PrimaryLoading />;
   }
 
@@ -147,18 +189,18 @@ const Login = () => {
           </button>
           {/* </Link> */}
 
-          <div className="flex items-center space-x-4 my-5">
+          {/* <div className="flex items-center space-x-4 my-5">
             <div className="basis-1/2 h-[.8px] bg-[#E7E4EB]" />
             <p className="text-sm text-[#706D73] ">or</p>
             <div className="basis-1/2 h-[.8px] bg-[#E7E4EB]" />
-          </div>
+          </div> */}
 
-          <div className="border rounded-lg h-12 flex items-center justify-center space-x-3">
+          {/* <div className="border rounded-lg h-12 flex items-center justify-center space-x-3">
             <div className="text-2xl">
               <FcGoogle />
             </div>
             <p>Sign in with Google</p>
-          </div>
+          </div> */}
 
           <div className="mt-11 text-sm">
             <p>

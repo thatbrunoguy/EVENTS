@@ -14,7 +14,7 @@ const GuestlistModal = ({
   selectedOrder,
   selectedEvent,
 }: Iprops) => {
-  console.log("selectedEvent", selectedEvent);
+  console.log("selectedEvent", selectedOrder);
   return (
     <>
       <div
@@ -82,7 +82,7 @@ const GuestlistModal = ({
               </div>
               <div className="basis-1/2">
                 <p className="text-lightText text-xs">Order quantity</p>
-                <p>3</p>
+                <p>{selectedOrder?.quantity}</p>
               </div>
             </div>
 
@@ -102,11 +102,11 @@ const GuestlistModal = ({
             <div className="flex items-center justify-between gap-10  my-5">
               <div className="basis-1/2">
                 <p className="text-lightText text-xs">Order number</p>
-                <p>#T2LQR0JAYZ</p>
+                <p>#{selectedOrder?.orderNumber}</p>
               </div>
               <div className="basis-1/2">
                 <p className="text-lightText text-xs">Order date</p>
-                <p>{formatDate2(selectedOrder?.date as string)}</p>
+                <p>{selectedOrder?.date as string}</p>
               </div>
             </div>
           </div>

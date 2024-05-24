@@ -8,7 +8,6 @@ import { RiDeleteBin6Fill } from "react-icons/ri";
 import { FaAngleDown } from "react-icons/fa6";
 import ReactSelectOptions from "@/app/components/select/ReactSelect";
 import ReactQuillEditor from "@/app/components/Reactquill";
-import { Value } from "../basic-info/page";
 import { TransparentButton } from "@/app/components/buttons/button";
 import { GoSearch } from "react-icons/go";
 import DatePicker from "react-date-picker";
@@ -16,6 +15,7 @@ import TimePicker from "react-time-picker";
 import MainFooter from "@/app/components/footer/MainFooter";
 import { updateLocalStorageField } from "@/app/utils/localstorage";
 import { useRouter } from "next/navigation";
+import { Value } from "../CreateAndEditEvent";
 
 const Details = () => {
   const [eventPhoto, setEventPhoto] = useState<any>([]);
@@ -43,6 +43,7 @@ const Details = () => {
           onLoad={() => {
             URL.revokeObjectURL(file.preview);
           }}
+          alt={file.name}
         />
       </div>
     </div>

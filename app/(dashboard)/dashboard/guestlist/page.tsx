@@ -14,9 +14,14 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
 import { IoMailOpenSharp } from "react-icons/io5";
 import MobileFooter from "../../../components/footer/MobileFooter";
-import { useQuery } from "@tanstack/react-query";
-import { eventsManagamentFunctions } from "@/app/utils/endpoints";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  eventsManagamentFunctions,
+  guestFunctions,
+} from "@/app/utils/endpoints";
 import { PrimaryLoading2 } from "@/app/components/loaders/PrimaryLoading";
+import { formatDate, formatDate2, formatTime } from "@/app/helpers";
+import moment from "moment";
 
 export interface OrderData {
   name: string;
@@ -26,111 +31,110 @@ export interface OrderData {
   date: string;
   email: string;
   stockQuantity: number;
-  amount: number;
+  amount: number | string;
   fees: number;
   stat?: any;
 }
 
 export default function Guestlist() {
+  const queryClient = useQueryClient();
   const [isGuestlistModalOpen, setIsGuestlistModalOpen] =
     useState<boolean>(false);
   const [selectedEvent, setSelectedEvent] = useState({
     name: "",
-    ticketId: "",
+    eventId: "",
     location: "",
     date: "",
     img: "",
   });
 
   const [selectedOrder, setSelectedOrder] = useState<OrderData>();
+  const [downloadCsv, setDownloadCsv] = useState(false);
 
-  console.log("selectedEvent-Guestlist", selectedEvent);
-  const {
-    data: guestlistOrders,
-    isError,
-    isLoading,
-    status,
-  } = useQuery({
-    queryKey: ["events-guestlist-order"],
-    queryFn: () =>
-      eventsManagamentFunctions.getEventSales(selectedEvent?.ticketId),
-    enabled: selectedEvent.ticketId ? true : false,
-    select: (data): OrderData[] => {
-      return data.map((item: any) => {
-        const { user, ticket, order_number, created_at, quantity } = item;
-        const amount = ticket.price * quantity;
-        let fees = 0;
+  //export csv fn
+  const { isLoading: loadingDownloadCsv, data } = useQuery({
+    queryKey: ["export-guestList-csv"],
+    queryFn: eventsManagamentFunctions.downloadGuestListCsv,
+    enabled: downloadCsv,
+  });
 
-        if (amount === 0) {
-          fees = 0;
-        } else if (amount >= 2000) {
-          fees = amount * 0.05 + 100;
-        } else if (amount < 2000) {
-          fees = amount * 0.05;
-        }
-
-        const ticketCounts: { [ticketName: string]: number } = {};
-
-        data.forEach((item: any) => {
-          const { ticket } = item;
-          const ticketName = ticket.name;
-          ticketCounts[ticketName] = (ticketCounts[ticketName] || 0) + 1;
-        });
-
-        const stat = Object.entries(ticketCounts).map(
-          ([ticketName, count]) => ({
-            ticketName,
-            count,
-          })
-        );
-
-        return {
-          name: ticket.name,
-          quantity: ticket.stock_qty,
-          buyerName: `${user.first_name} ${user.last_name}`,
-          orderNumber: order_number,
-          date: new Date(created_at).toLocaleDateString(),
-          email: user.email,
-          price: ticket.price,
-          stockQuantity: ticket.stock_qty,
-          amount: amount,
-          fees: fees,
-          stat: stat,
-        };
-      });
+  // ticket sale data
+  const { data: ticketsData } = useQuery({
+    queryFn: guestFunctions.getTicketsData,
+    queryKey: ["ticket-sale-data"],
+    select: (data) => {
+      return data;
     },
   });
 
-  console.log("guestlistOrders-with stat", guestlistOrders);
+  const { data: guestlistOrders, isLoading } = useQuery({
+    queryKey: ["events-guestlist-order"],
+    queryFn: () =>
+      eventsManagamentFunctions.getEventGuestlist(selectedEvent?.eventId),
+    enabled: selectedEvent.eventId ? true : false,
+    select: (data) => {
+      const selectedData = data.map((item: any) => {
+        const {
+          user,
+          tickets,
+          order_number,
+          order_date,
+          total_amount,
+          total_fees,
+        } = item;
+
+        return {
+          name: tickets[0].ticket?.name,
+          quantity: tickets.length,
+          buyerName: user.full_name,
+          orderNumber: order_number,
+          date: moment(order_date).format("Do MMMM YYYY "),
+          email: user.email,
+          price: tickets[0].ticket.price,
+          stockQuantity: tickets[0].stock_qty,
+          amount: total_amount,
+          fees: total_fees,
+        };
+      });
+
+      return selectedData;
+    },
+  });
 
   const exportCSV = () => {
-    toast(
-      <div className="flex gap-4 p-6 py-4">
-        <div className="min-w-9 h-9 bg-lightPurple rounded-full hover:bg-primaryPurple hover:text-white text-primaryPurple grid place-content-center">
-          <IoMailOpenSharp />
-        </div>
-        <div>
-          <h3 className="mb-3 text-black text-base">
-            CSV file exported successfully
-          </h3>
-          <p>
-            The csv format of your guestlist has been exported to your mail.
-            Check spam folder if you can&apos;t see it.
-          </p>
-        </div>
-      </div>,
-      {
-        position: "top-left",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      }
-    );
+    setDownloadCsv((prev) => (prev = true));
+    if (data.status) {
+      queryClient.invalidateQueries({ queryKey: ["export-guestList-csv"] });
+      setDownloadCsv(false);
+      toast(
+        <div className="flex gap-4 p-6 py-4">
+          <div className="min-w-9 h-9 bg-lightPurple rounded-full hover:bg-primaryPurple hover:text-white text-primaryPurple grid place-content-center">
+            <IoMailOpenSharp />
+          </div>
+          <div>
+            <h3 className="mb-3 text-black text-base">
+              CSV file exported successfully
+            </h3>
+            <p>
+              The csv format of your guestlist has been exported to your mail.
+              Check spam folder if you can&apos;t see it.
+            </p>
+          </div>
+        </div>,
+        {
+          position: "top-left",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        }
+      );
+    }
   };
+
   return (
     <section className="flex">
       <ToastContainer
@@ -171,7 +175,7 @@ export default function Guestlist() {
               ) : (
                 <div className="w-[95%] mt-6 mx-auto">
                   <div className="w-full mb-9">
-                    <DashHeader stat={guestlistOrders[0].stat} />
+                    <DashHeader stat={ticketsData} />
                   </div>
                   {isGuestlistModalOpen && (
                     <GuestlistModal
@@ -185,6 +189,7 @@ export default function Guestlist() {
                   <button
                     onClick={exportCSV}
                     className="bg-purple-700  mb-10 ml-auto py-[10px] px-5 w-auto h-[41px] text-white text-sm rounded-lg flex items-center space-x-[4px]"
+                    disabled={loadingDownloadCsv}
                   >
                     <div>
                       <PiShareLight />
@@ -193,44 +198,43 @@ export default function Guestlist() {
                   </button>
                   <div className="w-full overflow-x-scroll">
                     <div className="w-[250vw] lg:w-full ">
-                      <header className="w-full bg-[#FBFAFC] text-sm grid grid-flow-col  py-3 px-4 ">
-                        <p className="col-span-3">Ticket name</p>
-                        <p className="">Ticket quantity</p>
-                        <p className="col-span-4 justify-self-center">
-                          Buyer name
-                        </p>
-                        <p className="col-span-2">Order number</p>
-                        <p className="">Order date</p>
-                        <p className="w-1/6"></p>
-                      </header>
-                      {guestlistOrders &&
-                        guestlistOrders?.map((item: any, index: number) => (
-                          <div
-                            key={index}
-                            className="w-full border-b grid grid-flow-col  p-3 py-4 text-sm"
-                          >
-                            <h4 className="font-semibold col-span-3">
-                              {item.name}
-                            </h4>
-                            <p className="text-lightText ml-20">
-                              {item.quantity}
-                            </p>
-                            <p className="text-lightText col-span-4 justify-self-center">
-                              {item.buyerName}
-                            </p>
-                            <div className="col-span-2">{item.orderNumber}</div>
-                            <div className="">{item.date}</div>
-                            <div
-                              onClick={() => {
-                                setSelectedOrder(item);
-                                setIsGuestlistModalOpen(true);
-                              }}
-                              className="text-sm font-semibold text-primaryPurple cursor-pointer"
-                            >
-                              view
-                            </div>
-                          </div>
-                        ))}
+                      <table className="w-full text-xs md:text-sm">
+                        <thead className="h-[50px]">
+                          <tr className="py-3 px-4 bg-[#FBFAFC]">
+                            <th className="text-left">Ticket name</th>
+                            <th className="text-left">Ticket quantity</th>
+                            <th className="text-left">Buyer name</th>
+                            <th className="text-left">Order number</th>
+                            <th className="text-left">Order date</th>
+                            <th className="text-left"></th>
+                          </tr>
+                        </thead>
+                        {guestlistOrders &&
+                          guestlistOrders.map((item: any, index: number) => (
+                            <tr key={item?.id} className="border-b">
+                              <td className="p-3">
+                                <h4 className="font-semibold col-span-3">
+                                  {item?.name}
+                                </h4>
+                              </td>
+                              <td className="p-3">{item?.quantity}</td>
+                              <td className="p-3">{item?.buyerName}</td>
+                              <td>{item.orderNumber}</td>
+                              <td>{item?.date}</td>
+                              <td>
+                                <div
+                                  onClick={() => {
+                                    setSelectedOrder(item);
+                                    setIsGuestlistModalOpen(true);
+                                  }}
+                                  className="text-sm font-semibold text-primaryPurple cursor-pointer"
+                                >
+                                  view
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                      </table>
                     </div>
                   </div>
                 </div>

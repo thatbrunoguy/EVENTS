@@ -3,7 +3,7 @@ import "@/app/globals.css";
 import HomeHeader from "../components/home/Header";
 import HomeFooter from "../components/home/Footer";
 export const metadata: Metadata = {
-  title: "Eventparrot",
+  title: "Eventsparrot",
   description: "Start creating your events today",
 };
 

@@ -31,7 +31,7 @@ const OrganizationProfile = ({
 }: Iprops) => {
   const [isImageUploadEnabled, setIsImageUploadEnabled] = useState(false);
   const [isLoadingBanner, setIsLoadingBanner] = useState(false);
-  const countries = [{ value: "ng", label: "Nigeria" }];
+  const countries = [{ value: "Nigeria", label: "Nigeria" }];
   const queryClient = useQueryClient();
 
   const isAccountInfoValid = useMemo(() => {
@@ -72,14 +72,14 @@ const OrganizationProfile = ({
   }, [isAccountStatus]);
 
   useEffect(() => {
-    console.log("data", data);
+    // console.log("data", data);
 
     if (data?.url && status === "success" && !imageUrl) {
       const imageUpploadFinalHandler = async () => {
         setIsLoadingBanner(true);
         try {
           const res = await uploadImage(data.url, accountPhoto[0]);
-          console.log("res-image", res);
+          // console.log("res-image", res);
           setIsImageUploadEnabled(false);
           toast.success("Avatar uploaded successfully!!!");
           setImageUrl(extractUrlBeforeQueryString(data.url as string));
@@ -107,26 +107,27 @@ const OrganizationProfile = ({
       ) {
         toast.success("Account created successfully");
       }
-      console.log(` ${error}`);
+      // console.log(` ${error}`);
     },
     onSuccess: async (data, variables, context) => {
-      console.log("dddddd", data);
+      // console.log("dddddd", data);
       queryClient.invalidateQueries({ queryKey: ["account-info"] });
     },
   });
-  console.log("imageUrl", imageUrl);
+  // console.log("imageUrl", imageUrl);
   const thumbs = accountPhoto.map((file: any) => (
     <div key={file.name}>
       <div>
         <img
           src={imageUrl ? imageUrl : file.preview}
+          alt={file.name}
           // src={imageUrl ? imageUrl : file.preview}
           className="w-full h-[248px] object-cover"
           // Revoke data uri after image is loaded
           onLoad={() => {
-            console.log("file-from-me", file);
-            console.log("status-from-me", status);
-            console.log("isError", isError);
+            // console.log("file-from-me", file);
+            // console.log("status-from-me", status);
+            // console.log("isError", isError);
 
             setIsImageUploadEnabled(true);
             URL.revokeObjectURL(file.preview);
@@ -144,7 +145,7 @@ const OrganizationProfile = ({
     }
   }, [accountPhoto]);
 
-  console.log("accountInfo", accountInfo);
+  // console.log("accountInfo", accountInfo);
 
   const saveAccountHandler = () => {
     createAccount.mutate(accountInfo);
@@ -236,7 +237,7 @@ const OrganizationProfile = ({
                 setSelectedOption={(selected: any) =>
                   setAccountInfo((prev) => ({
                     ...prev,
-                    country: selected?.value || "",
+                    country: selected?.label || "",
                   }))
                 }
                 options={countries}

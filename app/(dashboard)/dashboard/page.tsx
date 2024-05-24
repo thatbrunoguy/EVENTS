@@ -1,34 +1,43 @@
 "use client";
 
-import Image from "next/image";
 import Header from "../../components/header/Header";
 import Sidebar from "../../components/sidebar/Sidebar";
-import { HiOutlinePlusSm } from "react-icons/hi";
 import Link from "next/link";
 import { HiOutlineSpeakerWave } from "react-icons/hi2";
 import { GoInfo } from "react-icons/go";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   FaFacebook,
   FaInstagram,
   FaLinkedin,
   FaMoneyBills,
+  FaTelegram,
   FaXTwitter,
 } from "react-icons/fa6";
-import { PiShareLight } from "react-icons/pi";
+import {
+  FacebookShareButton,
+  LinkedinShareButton,
+  TelegramShareButton,
+  TwitterShareButton,
+} from "react-share";
 import MobileFooter from "../../components/footer/MobileFooter";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   authFunctions,
   eventsManagamentFunctions,
 } from "../../utils/endpoints";
-import { addToLocalStorage } from "../../utils/localstorage";
+import { addToLocalStorage, getData } from "../../utils/localstorage";
 import { EVENTSPARROT_USER } from "../../constants";
 import GlobalTable from "@/app/components/table/GlobalTable";
 import { SalesAnalyticsData } from "./sales/page";
 import toast from "react-hot-toast";
 import { useCopyToClipboard } from "@/app/hooks";
 import { PrimaryLoading2 } from "@/app/components/loaders/PrimaryLoading";
+import RequestPayoutModal from "./payout/RequestPayoutModal";
+import AccountType from "./payout/AccountType";
+import AccountSubmission from "./payout/AccountSubmission";
+import VerificationPending from "./payout/VerificationPending";
+import { IoIosAlert } from "react-icons/io";
 
 const emailCampaign = [
   {
@@ -56,107 +65,28 @@ const emailCampaign = [
 export default function Dashboard() {
   const [selectedEvent, setSelectedEvent] = useState({
     name: "",
-    ticketId: "",
+    eventId: "",
+    slug: "",
   });
   const [copiedText, copy] = useCopyToClipboard();
-  const eventURL = `  https://eventsparrot.vercel.app/events/${selectedEvent.ticketId}`;
+  const eventURL = `https://eventsparrot.com/events/${
+    selectedEvent.slug ? selectedEvent.slug : selectedEvent.eventId
+  }`;
+  const [openRequestPayout, setOpenRequestPayout] = useState(false);
+  const [openAccountSelect, setOpenAccountSelect] = useState<boolean>(false);
+  const [openBankDetails, setOpenBankDetails] = useState<boolean>(false);
+  const [openPending, setOpenPending] = useState<boolean>(false);
+  const [accountType, setAccountType] = useState("individual");
+
   const handleCopy = (text: string) => () => {
     copy(text)
       .then(() => {
-        console.log("Copied!", { text });
         toast.success("Event link copied");
       })
       .catch((error) => {
         console.error("Failed to copy!", error);
       });
   };
-
-  const [tickets, setTickets] = useState<any>([
-    {
-      name: " Diamond Pass",
-      quantity: 127,
-      revenue: "₦77,500.00",
-      fees: "₦15,500.00",
-      net: "₦70,000.00",
-    },
-    {
-      name: " Diamond Pass",
-      quantity: 127,
-      revenue: "₦77,500.00",
-      fees: "₦15,500.00",
-      net: "₦70,000.00",
-    },
-    {
-      name: " Diamond Pass",
-      quantity: 127,
-      revenue: "₦77,500.00",
-      fees: "₦15,500.00",
-      net: "₦70,000.00",
-    },
-    {
-      name: " Diamond Pass",
-      quantity: 127,
-      revenue: "₦77,500.00",
-      fees: "₦15,500.00",
-      net: "₦70,000.00",
-    },
-    {
-      name: " Diamond Pass",
-      quantity: 127,
-      revenue: "₦77,500.00",
-      fees: "₦15,500.00",
-      net: "₦70,000.00",
-    },
-    {
-      name: " Diamond Pass",
-      quantity: 127,
-      revenue: "₦77,500.00",
-      fees: "₦15,500.00",
-      net: "₦70,000.00",
-    },
-    {
-      name: " Diamond Pass",
-      quantity: 127,
-      revenue: "₦77,500.00",
-      fees: "₦15,500.00",
-      net: "₦70,000.00",
-    },
-    {
-      name: " Diamond Pass",
-      quantity: 127,
-      revenue: "₦77,500.00",
-      fees: "₦15,500.00",
-      net: "₦70,000.00",
-    },
-    {
-      name: " Diamond Pass",
-      quantity: 127,
-      revenue: "₦77,500.00",
-      fees: "₦15,500.00",
-      net: "₦70,000.00",
-    },
-    {
-      name: " Diamond Pass",
-      quantity: 127,
-      revenue: "₦77,500.00",
-      fees: "₦15,500.00",
-      net: "₦70,000.00",
-    },
-    {
-      name: " Diamond Pass",
-      quantity: 127,
-      revenue: "₦77,500.00",
-      fees: "₦15,500.00",
-      net: "₦70,000.00",
-    },
-    {
-      name: " Diamond Pass",
-      quantity: 127,
-      revenue: "₦77,500.00",
-      fees: "₦15,500.00",
-      net: "₦70,000.00",
-    },
-  ]);
 
   const recommended = [
     "Send announcements to your registrants ",
@@ -176,11 +106,6 @@ export default function Dashboard() {
     { key: "net", name: "Net sales revenue" },
   ];
 
-  const salesRows = tickets.map((ticket: any, index: number) => ({
-    id: index,
-    ...ticket,
-  }));
-
   const {
     data: userAccount,
     isError,
@@ -192,9 +117,24 @@ export default function Dashboard() {
     staleTime: Infinity,
   });
 
+  const { data: accountInfo } = useQuery({
+    queryKey: ["user-account-info"],
+    queryFn: authFunctions.getAccountInfo,
+    staleTime: Infinity,
+  });
+
+  const isAccountOwner = useMemo(() => {
+    if (accountInfo && userAccount) {
+      return accountInfo?.owner[0]?.full_name === userAccount[0]?.name;
+    } else {
+      return false;
+    }
+  }, [accountInfo, userAccount]);
+
   if (status === "success") {
-    console.log("userAccount", userAccount[0]);
-    addToLocalStorage(EVENTSPARROT_USER, "account", userAccount[0]);
+    const activeAccount = getData(EVENTSPARROT_USER)?.account;
+    const updatedAccount = activeAccount ? activeAccount : userAccount[0];
+    addToLocalStorage(EVENTSPARROT_USER, "account", updatedAccount);
   }
 
   const {
@@ -203,10 +143,10 @@ export default function Dashboard() {
     isLoading: isSalesLoading,
     status: salesStatus,
   } = useQuery({
-    queryKey: ["events-sales-analytics"],
+    queryKey: ["events-sales-analytics", selectedEvent.eventId],
     queryFn: () =>
-      eventsManagamentFunctions.getEventSalesAnalytics(selectedEvent?.ticketId),
-    enabled: selectedEvent.ticketId ? true : false,
+      eventsManagamentFunctions.getEventSalesAnalytics(selectedEvent?.eventId),
+    enabled: selectedEvent.eventId ? true : false,
     select: (data): SalesAnalyticsData => {
       let type1Count = 0;
       let type2Count = 0;
@@ -250,8 +190,6 @@ export default function Dashboard() {
       };
     },
   });
-
-  console.log("salesAnalytics", salesAnalytics);
 
   const salesDataFormatted = useMemo(() => {
     if (!salesAnalytics) return [];
@@ -314,9 +252,9 @@ export default function Dashboard() {
 
                       {i === 1 && (
                         <p className="text-xs overflow-ellipsis text-[#706D73]">
-                          {`${salesAnalytics?.type1Count || 0} Paid  ${
+                          {`${salesAnalytics?.type1Count || 0} Free  ${
                             salesAnalytics?.type2Count || 0
-                          } Free `}
+                          } Paid `}
                         </p>
                       )}
                     </div>
@@ -329,7 +267,7 @@ export default function Dashboard() {
                   <p className="text-lg font-medium">Payouts</p>
 
                   <div className="flex items-center mt-3 md:mt-5">
-                    <div className=" bg-white h-[122px] w-full border-[.6px] shadow-lg p-4 rounded-md">
+                    <div className=" bg-white min-h-[122px] h-auto w-full border-[.6px] shadow-lg p-4 pb-2 rounded-md">
                       <div className="flex space-x-4">
                         <div className="basis-1/2 border-r border-dashed">
                           <h3 className="font-medium md:font-semibold text-2xl mb-2">
@@ -345,9 +283,45 @@ export default function Dashboard() {
                           <p className="text-sm text-lightText">Remaining</p>
                         </div>
                       </div>
-                      <p className="text-primaryPurple text-sm py-3">
-                        Add account
-                      </p>
+
+                      {isAccountOwner ? (
+                        <>
+                          {/* Request payout */}
+                          <p
+                            className="text-primaryPurple text-sm py-3 cursor-pointer"
+                            onClick={() => setOpenRequestPayout(true)}
+                          >
+                            Request payout
+                          </p>
+
+                          {/* Payment under verification */}
+                          {/* <p
+                        className="text-sm p-1 my-4 flex items-center gap-2 bg-lightOrange rounded-md"
+                        onClick={() => setOpenRequestPayout(true)}
+                      >
+                        <IoIosAlert color="#FF5602" />
+                        <p className="text-sm text-[#332F2F]">
+                          Payout is undergoing verification
+                        </p>
+                      </p> */}
+
+                          {/* Payment verified */}
+                          {/* <div
+                        className="text-sm p-1 my-4 flex items-center justify-between bg-lightGreen rounded-md"
+                        onClick={() => setOpenRequestPayout(true)}
+                      >
+                        <div className="flex gap-1 items-center">
+                          <img src="/assets/done.svg" alt="" />
+                          <p className="text-sm text-[#332F2F]">
+                            Payout verified
+                          </p>
+                        </div>
+                        <p className="cursor-pointer text-primaryPurple text-sm">
+                          View
+                        </p>
+                      </div> */}
+                        </>
+                      ) : null}
                     </div>
                   </div>
                 </div>
@@ -357,10 +331,10 @@ export default function Dashboard() {
                 <div className="w-full lg:basis-1/2">
                   <p className="text-lg font-medium">Share</p>
 
-                  <div className="mt-3 md:mt-5 rounded-md bg-white h-[122px] shadow-lg p-4 border-[.6px]">
+                  <div className="mt-3 md:mt-5 rounded-md bg-white min-h-[122px] h-auto shadow-lg p-4 border-[.6px]">
                     <p className="text-xs text-lightText mb-1">Event Url</p>
                     <div className="">
-                      <div className="w-[90%]  overflow-x-hidden">
+                      <div className="w-full  overflow-x-hidden">
                         <p
                           title="click to copy url"
                           onClick={handleCopy(eventURL)}
@@ -378,10 +352,35 @@ export default function Dashboard() {
                     <div className="mt-3 ">
                       <p className="text-xs text-lightText mb-1">Share on</p>
                       <div className="flex items-center space-x-6 text-2xl text-gray-500">
-                        <FaFacebook />
-                        <FaXTwitter />
-                        <FaLinkedin />
-                        <FaInstagram />
+                        <FacebookShareButton
+                          url={eventURL}
+                          title={`Hi, Checkout out our latest event ${selectedEvent?.name} on Eventsparrot`}
+                          hashtag={`#${selectedEvent?.name}`}
+                        >
+                          <FaFacebook className="hover:text-[#0866FF]" />
+                        </FacebookShareButton>
+
+                        <LinkedinShareButton
+                          url={eventURL}
+                          title={`Hi, Checkout out our latest event ${selectedEvent?.name} on Eventsparrot`}
+                        >
+                          <FaLinkedin className="hover:text-[#0077B5]" />
+                        </LinkedinShareButton>
+
+                        <TwitterShareButton
+                          url={eventURL}
+                          hashtags={[`#${selectedEvent.name}`, `#Eventsparrot`]}
+                          title={`Hi, Checkout out our latest event ${selectedEvent?.name} on Eventsparrot`}
+                        >
+                          <FaXTwitter className="hover:text-black" />
+                        </TwitterShareButton>
+
+                        <TelegramShareButton
+                          url={eventURL}
+                          title={`Hi, Checkout out our latest event ${selectedEvent?.name} on Eventsparrot`}
+                        >
+                          <FaTelegram className="hover:text-[#27A7E7]" />
+                        </TelegramShareButton>
                       </div>
                     </div>
                   </div>
@@ -390,7 +389,7 @@ export default function Dashboard() {
             </div>
 
             {/* RIGHT */}
-            <div className="w-full  xl:w-[30%]">
+            <div className="w-full hidden  xl:w-[30%]">
               <h3 className="text-lg mt-4 mb-5 font-medium">Recommended</h3>
 
               <div>
@@ -407,23 +406,58 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
-          <div className="flex items-center justify-between mt-4 md:mt-10 mb-8  w-[92%] mx-auto">
-            <h2 className="font-medium md:font-semibold text-xl md:text-2xl">
-              Sales
-            </h2>
+          {isAccountOwner ? (
+            <>
+              <div className="flex items-center justify-between mt-4 md:mt-10 mb-8  w-[92%] mx-auto">
+                <h2 className="font-medium md:font-semibold text-xl md:text-2xl">
+                  Sales
+                </h2>
 
-            <Link href="/dashboard/sales">
-              <p className="text-primaryPurple text-xs md:text-sm">View all</p>
-            </Link>
-          </div>
+                <Link href="/dashboard/sales">
+                  <p className="text-primaryPurple text-xs md:text-sm">
+                    View all
+                  </p>
+                </Link>
+              </div>
 
-          <div className="w-[95%] mx-auto">
-            <div className="mb-6">
-              <GlobalTable columns={salesColumns} rows={salesDataFormatted} />
-            </div>
-          </div>
+              <div className="w-[95%] mx-auto">
+                <div className="mb-6">
+                  <GlobalTable
+                    columns={salesColumns}
+                    rows={salesDataFormatted}
+                  />
+                </div>
+              </div>
+            </>
+          ) : null}
         </main>
       )}
+
+      {openRequestPayout && (
+        <RequestPayoutModal
+          setIsModalOpen={setOpenRequestPayout}
+          setOpenNextModal={setOpenAccountSelect}
+        />
+      )}
+
+      {openAccountSelect && (
+        <AccountType
+          setIsModalOpen={setOpenAccountSelect}
+          setOpenNextModal={setOpenBankDetails}
+          accountType={accountType}
+          setAccountType={setAccountType}
+        />
+      )}
+
+      {openBankDetails && (
+        <AccountSubmission
+          setIsModalOpen={setOpenBankDetails}
+          accountType={accountType}
+          setOpenNextModal={setOpenPending}
+        />
+      )}
+
+      {openPending && <VerificationPending setIsModalOpen={setOpenPending} />}
     </section>
   );
 }

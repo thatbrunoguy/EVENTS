@@ -27,20 +27,6 @@ const Right = () => {
 };
 
 const DashHeader = ({ stat }: any) => {
-  const list: ListItem[] = [
-    { title: "Diamond pass", total: 300 },
-    { title: "Diamond pass", total: 300 },
-    { title: "Diamond pass", total: 300 },
-    { title: "Diamond pass", total: 300 },
-    { title: "Diamond pass", total: 300 },
-    { title: "Diamond pass", total: 300 },
-    { title: "Diamond pass", total: 300 },
-    { title: "Diamond pass", total: 300 },
-    { title: "Diamond pass", total: 300 },
-    { title: "Diamond pass", total: 300 },
-    { title: "Diamond pass", total: 300 },
-    { title: "Diamond pass", total: 300 },
-  ];
   return (
     <ScrollingCarousel
       rightIcon={<Left />}
@@ -49,8 +35,8 @@ const DashHeader = ({ stat }: any) => {
     >
       {stat?.map((item: any, i: number) => (
         <div key={i} className="mx-10">
-          <h1 className="font-semibold text-4xl text-center">{item.count}</h1>
-          <p className="text-lightText">{item.ticketName}</p>
+          <h1 className="font-semibold text-4xl text-center">{item?.total}</h1>
+          <p className="text-lightText">{item?.name}</p>
         </div>
       ))}
     </ScrollingCarousel>

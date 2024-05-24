@@ -26,16 +26,16 @@ const tablist_ = [
     title: "Team Management",
     isActive: false,
   },
-  {
-    title: "Plan Management",
-    isActive: false,
-  },
+  // {
+  //   title: "Plan Management",
+  //   isActive: false,
+  // },
 ];
 export default function SettingsPage() {
   const [tablist, setTablist] = useState([...tablist_]);
   const [selectedEvent, setSelectedEvent] = useState({
     name: "",
-    ticketId: "",
+    eventId: "",
   });
 
   const [accountInfo, setAccountInfo] = useState<AccountInfo>({
@@ -81,9 +81,7 @@ export default function SettingsPage() {
               <TeamManagement />
             </div>
           ) : (
-            <div>
-              <PlanManagement />
-            </div>
+            <div>{/* <PlanManagement /> */}</div>
           )}
         </div>
       </main>
