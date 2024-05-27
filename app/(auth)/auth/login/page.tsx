@@ -1,6 +1,6 @@
 "use client";
 
-import { AccountInfo, Login } from "@/app/types";
+import { AccountInfo, Login as LoginSchema } from "@/app/types";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useLayoutEffect, useState } from "react";
@@ -70,7 +70,7 @@ const Login = () => {
     }
   }, [status]);
 
-  const [loginCredential, setLoginCredential] = useState<Login>({
+  const [loginCredential, setLoginCredential] = useState<LoginSchema>({
     email: "",
     password: "",
   });
