@@ -4,8 +4,8 @@ import toast from "react-hot-toast";
 import { getData } from "../localstorage";
 import { EVENTSPARROT_ADMIN } from "@/app/constants";
 
-const APP_KEY = process.env.NEXT_PUBLIC_X_APP_KEY;
-const ADMIN_BASE_URL = process.env.NEXT_PUBLIC_ADMIN_BASE_URL || "";
+const APP_KEY = process.env.NEXT_ADMIN_PUBLIC_X_APP_KEY;
+const ADMIN_BASE_URL = process.env.NEXT_PUBLIC_ADMIN_X_APP_KEY || "";
 
 const axiosInstance = axios.create({
   baseURL: ADMIN_BASE_URL,

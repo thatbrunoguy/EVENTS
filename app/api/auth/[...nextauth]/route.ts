@@ -4,7 +4,10 @@ import toast from "react-hot-toast";
 
 const BASE_URL = process.env.BASE_URL || "";
 const APP_KEY = process.env.X_APP_KEY || "";
+const ADMIN_APP_KEY = process.env.X_ADMIN_APP_KEY || "";
 const ADMIN_BASE_URL = process.env.ADMIN_BASE_URL || "";
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "";
+console.log("ADMIN_EMAIL", ADMIN_EMAIL);
 
 if (!BASE_URL || !APP_KEY || !ADMIN_BASE_URL) {
   throw new Error(
@@ -35,14 +38,17 @@ const authOptions: NextAuthOptions = {
       async authorize(credentials, req) {
         // Add logic here to look up the user from the credentials supplied
         let url = BASE_URL;
-        if (credentials?.email === "info@eventsparrot.com") {
+        let appKey = APP_KEY;
+        if (credentials?.email === ADMIN_EMAIL) {
+          console.log(ADMIN_EMAIL);
           url = ADMIN_BASE_URL;
+          appKey = ADMIN_APP_KEY;
         }
         const res = await fetch(`${url}/login`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "X-APP-KEY": APP_KEY,
+            "X-APP-KEY": appKey,
           },
           body: JSON.stringify({
             email: credentials?.email,
