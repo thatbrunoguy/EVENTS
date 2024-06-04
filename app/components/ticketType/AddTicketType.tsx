@@ -22,7 +22,7 @@ export type TicketInfo = {
   name: string;
   stock: string;
   stock_qty?: number;
-  purchase_limit: number | null;
+  purchase_limit?: number;
   price: number;
   description?: string;
 };
@@ -81,7 +81,6 @@ const AddTicketType = ({
       name: "",
       stock: "",
       stock_qty: 0,
-      purchase_limit: null,
       price: 0,
       description: "",
     });
@@ -285,7 +284,7 @@ const AddTicketType = ({
                 Ticket purchase limit <span className="text-red-500">*</span>
               </label>
               <input
-                value={ticketInfo.purchase_limit}
+                value={ticketInfo.purchase_limit ?? 0}
                 onChange={(e) => {
                   if (/^\d*$/.test(e.target.value)) {
                     setTicketInfo((prev) => ({

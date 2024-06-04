@@ -123,7 +123,6 @@ const CreateAndEditEvent = () => {
     type: 1,
     name: "",
     stock: "unlimited",
-    purchase_limit: 0,
     price: 0,
     // description: "",
   });
