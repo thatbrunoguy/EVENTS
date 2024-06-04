@@ -406,7 +406,6 @@ export const eventsManagamentFunctions = {
       );
 
       if (response.data && response.data.status === true) {
-        console.log("res", response?.data.message);
         return response.data.data.event;
       } else {
         throw new Error(response.data.message);

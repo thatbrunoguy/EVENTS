@@ -246,7 +246,7 @@ const CreateAndEditEvent = () => {
     faqs: [],
     tickets: [],
   });
-
+  console.log("event", event);
   //update initial state when editing event
   useEffect(() => {
     if (event && eventId) {
@@ -283,6 +283,7 @@ const CreateAndEditEvent = () => {
       }
       eventInfo.tickets = event.tickets.map((obj: any) => {
         return {
+          id: obj.id,
           name: obj.name,
           description: obj.description,
           price: obj.price,
@@ -296,6 +297,7 @@ const CreateAndEditEvent = () => {
       setTickets(
         event.tickets.map((obj: any) => {
           return {
+            id: obj.id,
             name: obj.name,
             description: obj.description,
             price: obj.price,
@@ -321,7 +323,7 @@ const CreateAndEditEvent = () => {
       setEventPhoto([mediaUrl]);
     }
   }, [event]);
-
+  console.log(selectedOption, "selectedOption");
   const computeDateTime = useCallback((date: any, time: any) => {
     const dateString = moment(date).format("YYYY-MM-DD");
     const dateTimeString = `${dateString}T${time}`;
@@ -461,8 +463,15 @@ const CreateAndEditEvent = () => {
         //@ts-ignore
         delete ticket?.stock_qty;
       }
+      if (updatedEventInfo.timezone === null || !updatedEventInfo.timezone) {
+        delete updatedEventInfo?.timezone;
+      }
     });
     if (eventId) {
+      console.log(tickets, "ticket");
+      console.log(event.tickets, " event ticket");
+      //@ts-ignore
+      if (event?.slug === updatedEventInfo.slug) delete updatedEventInfo?.slug;
       updateEvent.mutate({ eventId: eventId, data: updatedEventInfo });
     } else {
       createEvent.mutate({ data: updatedEventInfo });
