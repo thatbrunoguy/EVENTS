@@ -110,7 +110,7 @@ const CreateAndEditEvent = () => {
   const [isLoadingBanner, setIsLoadingBanner] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
   const [checkSlugStatus, setCheckSlugStatus] = useState(false);
-  console.log("startDate", startDate);
+
   // TICKET
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
@@ -123,7 +123,6 @@ const CreateAndEditEvent = () => {
     type: 1,
     name: "",
     stock: "unlimited",
-    purchase_limit: 0,
     price: 0,
     // description: "",
   });
