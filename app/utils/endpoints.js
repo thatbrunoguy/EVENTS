@@ -74,7 +74,6 @@ export const authFunctions = {
         throw new Error(response.data.message);
       }
     } catch (error) {
-      console.error("Error fetching data:", error.response.data.message);
       toast.error(error.response.data.message);
       throw error;
     }
@@ -102,7 +101,6 @@ export const authFunctions = {
         throw new Error(response.data.message);
       }
     } catch (error) {
-      console.error("Error fetching data:", error.response.data.message);
       toast.error(error.response.data.message);
       throw error;
     }
@@ -126,7 +124,6 @@ export const authFunctions = {
         throw new Error(response.data.message);
       }
     } catch (error) {
-      console.error("Error fetching data:", error.response.data.message);
       toast.error(error.response.data.message);
       throw error;
     }
@@ -150,7 +147,6 @@ export const authFunctions = {
         throw new Error(response?.data?.message);
       }
     } catch (error) {
-      console.error("Error fetching data:", error.response?.data?.message);
       toast.error(error.response?.data?.message);
       throw error;
     }
@@ -174,7 +170,6 @@ export const authFunctions = {
         throw new Error(response.data.message);
       }
     } catch (error) {
-      console.error("Error fetching data:", error.response.data.message);
       toast.error(error.response.data.message);
       throw error;
     }
@@ -203,7 +198,6 @@ export const authFunctions = {
         throw new Error(response.data.message);
       }
     } catch (error) {
-      console.error("Error fetching data:", error.response.data.message);
       toast.error(error.response.data.message);
       throw error;
     }
@@ -275,15 +269,13 @@ export const uploadImageFunctions = {
           },
         }
       );
-      // console.log("response", response);
+
       if (response.data && response.status === 200) {
-        // console.log("res", response?.data);
         return response.data;
       } else {
         throw new Error(response.status);
       }
     } catch (error) {
-      console.error("Error fetching data:", error.response.status);
       throw error;
     }
   },
@@ -315,7 +307,6 @@ export const eventsManagamentFunctions = {
         throw new Error(response.data.message);
       }
     } catch (error) {
-      console.error("Error fetching data:", error.response.data.message);
       toast.error(error.response.data.message);
       throw error;
     }
@@ -360,14 +351,12 @@ export const eventsManagamentFunctions = {
           },
         }
       );
-      console.log("response", response);
       if (response.data.status === true) {
         return response.data.data;
       } else {
         throw new Error(response.data.message);
       }
     } catch (error) {
-      console.error("Error fetching data:", error.response.data.message);
       toast.error(error.response.data.message);
       throw error;
     }
@@ -417,7 +406,6 @@ export const eventsManagamentFunctions = {
       );
 
       if (response.data && response.data.status === true) {
-        // toast.success(response.data.message);
         console.log("res", response?.data.message);
         return response.data.data.event;
       } else {
@@ -505,14 +493,11 @@ export const eventsManagamentFunctions = {
       );
       console.log("response.data", response.data);
       if (response?.data && response?.data?.status === true) {
-        toast.success(response?.data?.message);
         return response?.data?.data?.orders;
       } else {
         throw new Error(response?.data?.message);
       }
     } catch (error) {
-      console.error("Error fetching data:", error.response);
-      // toast.error(error.response.data.message);
       throw error;
     }
   },
@@ -532,13 +517,11 @@ export const eventsManagamentFunctions = {
       );
 
       if (response?.data && response?.data?.status === true) {
-        toast.success(response?.data?.message);
         return response?.data;
       } else {
         throw new Error(response?.data?.message);
       }
     } catch (error) {
-      console.error("Error fetching data:", error.response?.data?.message);
       throw error;
     }
   },
@@ -554,17 +537,13 @@ export const eventsManagamentFunctions = {
           Authorization: `Bearer ${TOKEN}`,
         },
       });
-      // console.log("response - orders", response);
+
       if (response?.data && response?.data?.status === true) {
-        toast.success(response?.data?.message);
-        // console.log("res", response?.data.message);
         return response?.data?.data?.orders;
       } else {
         throw new Error(response?.data?.message);
       }
     } catch (error) {
-      console.error("Error fetching data:", error.response?.data?.message);
-      // toast.error(error.response.data.message);
       throw error;
     }
   },
@@ -580,17 +559,12 @@ export const eventsManagamentFunctions = {
           Authorization: `Bearer ${TOKEN}`,
         },
       });
-      // console.log("response - orders", response);
       if (response?.data && response?.data?.status === true) {
-        toast.success(response?.data?.message);
-        // console.log("res", response?.data.message);
         return response?.data?.data;
       } else {
         throw new Error(response?.data?.message);
       }
     } catch (error) {
-      console.error("Error fetching data:", error.response?.data?.message);
-      // toast.error(error.response.data.message);
       throw error;
     }
   },
@@ -613,13 +587,11 @@ export const eventsManagamentFunctions = {
       // console.log("response", response);
       if (response.data && response.data.status === true) {
         toast.success(response.data.message);
-        // console.log("res", response?.data.message);
         return response.data.data;
       } else {
         throw new Error(response.data.message);
       }
     } catch (error) {
-      console.error("Error fetching data:", error.response.data.message);
       toast.error(error.response.data.message);
       throw error;
     }
@@ -671,7 +643,6 @@ export const eventsManagamentFunctions = {
         }
       );
       if (response.data && response.data.status === true) {
-        console.log("res", response?.data);
         return response.data.data.event;
       } else {
         throw new Error(response.data.message);
@@ -694,7 +665,7 @@ export const eventsManagamentFunctions = {
           Authorization: `Bearer ${TOKEN}`,
         },
       });
-      console.log("response", response);
+
       if (response.data) {
         return response.data;
       } else {
@@ -737,10 +708,8 @@ export const guestFunctions = {
           "X-APP-KEY": APP_KEY,
         },
       });
-      // console.log("response", response);
+
       if (response.data && response.data.status === true) {
-        // toast.success(response.data.message);
-        // console.log("res", response?.data.message);
         return response.data.data.event;
       } else {
         throw new Error(response.data.message);
@@ -760,17 +729,13 @@ export const guestFunctions = {
           "X-APP-KEY": APP_KEY,
         },
       });
-      // console.log("response", response);
+
       if (response.data && response.data.status === true) {
-        // toast.success(response.data.message);
-        // console.log("res", response?.data.message);
         return response.data.data.event;
       } else {
         throw new Error(response.data.message);
       }
     } catch (error) {
-      console.error("Error fetching data:", error.response.data.message);
-      // toast.error(error.response.data.message);
       throw error;
     }
   },
@@ -787,7 +752,6 @@ export const guestFunctions = {
           },
         }
       );
-      // console.log("response", response.data.data);
       if (response) {
         // toast.success(response.data.message);
         return response.data.data.url;
@@ -795,8 +759,6 @@ export const guestFunctions = {
         throw new Error(response.data.message);
       }
     } catch (error) {
-      console.error("Error fetching data:", "wrong");
-      // toast.error(error.response.data.message);
       throw error;
     }
   },
@@ -811,8 +773,6 @@ export const guestFunctions = {
       });
       // console.log("response", response);
       if (response.data && response.data.status === true) {
-        // toast.success(response.data.message);
-        // console.log("res", response?.data.message);
         return response.data.data.events;
       } else {
         throw new Error(response.data.message);
