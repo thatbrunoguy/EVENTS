@@ -22,7 +22,7 @@ export type TicketInfo = {
   name: string;
   stock: string;
   stock_qty?: number;
-  purchase_limit: number;
+  purchase_limit: number | null;
   price: number;
   description?: string;
 };
@@ -65,7 +65,7 @@ const AddTicketType = ({
         updatedTickets[viewTicketIndex] = {
           ...ticketInfo,
         };
-        // console.log("returned", updatedTickets);
+
         return updatedTickets;
       } else {
         return [...prevTickets, { ...ticketInfo }];
@@ -81,7 +81,7 @@ const AddTicketType = ({
       name: "",
       stock: "",
       stock_qty: 0,
-      purchase_limit: 0,
+      purchase_limit: null,
       price: 0,
       description: "",
     });

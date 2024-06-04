@@ -303,7 +303,7 @@ const CreateEmailCampaignContent = () => {
             <FileUpload setEventPhoto={setEventPhoto} />
           </div>
         )}
-        {eventPhoto.length > 0 && (
+        {/* {eventPhoto.length > 0 && (
           <div className="w-full relative overflow-hidden flex items-center justify-center h-[248px] border rounded-lg border-primaryPurple hover:bg-lightPurple">
             <div
               onClick={() => setEventPhoto([])}
@@ -318,15 +318,15 @@ const CreateEmailCampaignContent = () => {
             </div>
             <div className="w-full">{thumbs}</div>
           </div>
-        )}
+        )} */}
 
-        <p className="text-xs text-lightText mt-2">
+        {/* <p className="text-xs text-lightText mt-2">
           The content should be accompanied by an image placed above the main
           text. Ideally, the image should have a 2:1 aspect ratio (with a
           minimum size of 2160x1080 pixels) and be under 1MB in size.
-        </p>
+        </p> */}
 
-        <div className="mt-6 mb-2">
+        {/* <div className="mt-6 mb-2">
           <label className="text-sm text-gray-800" htmlFor="organizerName">
             Add text to make image more accessible{" "}
             <span className="text-red-500">*</span>
@@ -336,7 +336,7 @@ const CreateEmailCampaignContent = () => {
             // placeholder="Quick description of your Event name"
             className="h-[56px] text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
           />
-        </div>
+        </div> */}
       </div>
     </div>
   );
