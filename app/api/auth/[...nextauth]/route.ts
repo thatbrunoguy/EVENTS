@@ -7,7 +7,6 @@ const APP_KEY = process.env.X_APP_KEY || "";
 const ADMIN_APP_KEY = process.env.X_ADMIN_APP_KEY || "";
 const ADMIN_BASE_URL = process.env.ADMIN_BASE_URL || "";
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "";
-console.log("ADMIN_EMAIL", ADMIN_EMAIL);
 
 if (!BASE_URL || !APP_KEY || !ADMIN_BASE_URL) {
   throw new Error(
@@ -40,7 +39,6 @@ const authOptions: NextAuthOptions = {
         let url = BASE_URL;
         let appKey = APP_KEY;
         if (credentials?.email === ADMIN_EMAIL) {
-          console.log(ADMIN_EMAIL);
           url = ADMIN_BASE_URL;
           appKey = ADMIN_APP_KEY;
         }
@@ -57,14 +55,10 @@ const authOptions: NextAuthOptions = {
         });
         const user = await res.json();
         if (res.ok && user.status === true) {
-          // Any object returned will be saved in `user` property of the JWT
           return user.data;
         } else {
-          // If you return null then an error will be displayed advising the user to check their details.
           throw new Error(user.message);
           return null;
-
-          // You can also Reject this callback with an Error thus the user will be sent to the error page with the error message as a query parameter
         }
       },
     }),

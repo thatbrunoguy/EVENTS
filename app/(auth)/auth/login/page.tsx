@@ -62,7 +62,6 @@ const Login = () => {
       if (session?.user?.admin) {
         storeData(EVENTSPARROT_ADMIN, session.user);
         router.push("/admin/dashboard/ads");
-        console.log("I am authenticated");
         return;
       }
       storeData(EVENTSPARROT_USER, session.user);

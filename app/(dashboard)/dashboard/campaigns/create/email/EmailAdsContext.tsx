@@ -1,5 +1,5 @@
 import { eventsManagamentFunctions } from "@/app/utils/endpoints";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { ReactNode, createContext, useState } from "react";
 import { EventData } from "../../../event/page";
@@ -109,6 +109,8 @@ type IProps = {
 
 export const EmailAdContextProvider = ({ children }: IProps) => {
   const router = useRouter();
+  const queryClient = useQueryClient();
+
   const [data, setData] = useState({
     name: "Campaign Name",
     subject: "",
@@ -197,6 +199,7 @@ export const EmailAdContextProvider = ({ children }: IProps) => {
   const createEmailCampaign = () => {
     const newData = { ...data, from_name: data.name };
     createEmailCamp.mutate({ eventId: selectedEvent.id, body: newData });
+    queryClient.invalidateQueries({ queryKey: ["ad-campaign"] });
   };
 
   return (
