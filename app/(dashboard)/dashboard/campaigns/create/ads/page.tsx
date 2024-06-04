@@ -21,7 +21,7 @@ import {
   authFunctions,
   eventsManagamentFunctions,
 } from "@/app/utils/endpoints";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { formatDate, formatDateTime, formatTime } from "@/app/helpers";
 import { EventData } from "../../../event/page";
 import PrimaryLoading from "@/app/components/loaders/PrimaryLoading";
@@ -36,11 +36,12 @@ const CreateAdsCampaign = () => {
   const router = useRouter();
   const [startDate, setStartDate] = useState<Value>(new Date());
   const [endDate, setEndDate] = useState<any>(new Date());
-  const [tokens, setTokens] = useState<number>(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [locationValue, setLocationValue] = useState<null | any>(null);
   const [cityValue, setCityValue] = useState<null | any>(null);
   const [tokenAmount, setTokenAmount] = useState(0);
+
+  const queryClient = useQueryClient();
 
   //get events
   const { data: events, isLoading } = useQuery({
@@ -92,6 +93,7 @@ const CreateAdsCampaign = () => {
     onSuccess: async (data) => {
       // Boom baby!
       toast.success(data);
+      queryClient.invalidateQueries({ queryKey: ["ad-campaign"] });
       router.push("/dashboard/campaigns");
     },
   });

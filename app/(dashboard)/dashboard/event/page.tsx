@@ -63,7 +63,6 @@ export default function Event() {
   const handleCopy = (text: string) => () => {
     copy(text)
       .then(() => {
-        // console.log("Copied!", { text });
         toast.success("Event link copied");
       })
       .catch((error) => {
@@ -143,6 +142,8 @@ export default function Event() {
       return selectedEvents;
     },
   });
+
+  console.log(events, "event");
 
   const deleteEventHandler = (id: string) => {
     deleteEvent.mutate({ eventId: id });
@@ -225,47 +226,48 @@ export default function Event() {
                   <p>Create Event</p>
                 </Link>
                 <div className="w-full overflow-x-scroll">
-                  <header className=" w-[130vw] md:w-full text-xs  md:text-sm flex items-center justify-between py-3 px-4 bg-[#FBFAFC]">
-                    <p className="w-[45%]">Ticket name</p>
-                    <p className="">Ticket quantity</p>
-                    <p className="">Ticket price</p>
-                    <p className=""></p>
-                  </header>
-                  {events?.map((item: any) => (
-                    <div
-                      key={item.id}
-                      className="flex w-[130vw] md:w-full border-b items-center justify-between"
-                    >
-                      <div className="flex items-center text-xs md:text-sm justify-between space-x-5 p-3  w-full">
-                        <div className="flex items-center w-[45%] space-x-5">
-                          <div className="h-[72px] w-[72px] relative rounded overflow-hidden">
-                            <Image
-                              fill
-                              src={item.img}
-                              alt={item.name}
-                              className="object-cover"
-                            />
-                          </div>
-                          <div className="w-full  text-xs md:text-sm">
-                            <h4 className="font-semibold mb-1">{item.name}</h4>
-                            <p className="text-lightText">{item.address}</p>
-                            <p className="text-lightText">{item.startDate}</p>
-                          </div>
-                        </div>
-
-                        <div className="grid grid-cols-3 flex-1 justify-items-end">
-                          <div className="flex items-center md:mr-4">
-                            {item.quantity || "unlimited"}
-                          </div>
-                          <div className="flex items-center">
-                            <p className="relative md:left-5">
-                              {item.highestPrice === item.lowestPrice
-                                ? `₦${item.lowestPrice}`
-                                : "Multiple"}
-                            </p>
-                          </div>
-
-                          <div className="text-lg md:text-2xl  flex justify-end ">
+                  <table className="w-full text-xs md:text-sm">
+                    <thead className="h-[50px]">
+                      <tr className="py-3 px-4 bg-[#FBFAFC]">
+                        <th className="w-[30%] text-left">Ticket name</th>
+                        <th className="text-left">Ticket quantity</th>
+                        <th className="text-left">Ticket price</th>
+                        <th className="text-left"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {events.map((e: any) => (
+                        <tr key={e.id} className="border-b">
+                          <td className="p-3">
+                            <div className="flex items-center w-full space-x-5">
+                              <div className="h-[72px] w-[72px] relative rounded overflow-hidden">
+                                <Image
+                                  fill
+                                  src={e.img}
+                                  alt={e.name}
+                                  className="object-cover"
+                                />
+                              </div>
+                              <div className="w-full  text-xs md:text-sm">
+                                <h4 className="font-semibold mb-1 whitespace-nowrap">
+                                  {e.name}
+                                </h4>
+                                <p className="text-lightText whitespace-nowrap">
+                                  {e.address}
+                                </p>
+                                <p className="text-lightText whitespace-nowrap">
+                                  {e.startDate}
+                                </p>
+                              </div>
+                            </div>
+                          </td>
+                          <td>{e.quantity || "unlimited"}</td>
+                          <td>
+                            {e.highestPrice === e.lowestPrice
+                              ? `₦${e.lowestPrice}`
+                              : "Multiple"}
+                          </td>
+                          <td>
                             <Menu
                               direction="left"
                               menuStyle={{
@@ -302,18 +304,18 @@ export default function Event() {
                                         index === 0
                                           ? () =>
                                               router.push(
-                                                `/dashboard/event/edit-event/${item?.id}`
+                                                `/dashboard/event/edit-event/${e?.id}`
                                               )
                                           : index === 1
                                           ? () =>
                                               router.push(
-                                                `/dashboard/event/preview/${item?.slug}`
+                                                `/dashboard/event/preview/${e?.slug}`
                                               )
                                           : index === 2
                                           ? () =>
                                               handleEventStatusChange(
-                                                item.status,
-                                                item.id
+                                                e.status,
+                                                e.id
                                               )
                                           : opt.callback
                                       }
@@ -323,7 +325,7 @@ export default function Event() {
                                         <>
                                           <div
                                             className={`${
-                                              item.status === 2
+                                              e.status === 2
                                                 ? "text-red-500"
                                                 : "text-[#706D73]"
                                             } text-base`}
@@ -332,12 +334,12 @@ export default function Event() {
                                           </div>
                                           <p
                                             className={`${
-                                              item.status === 2
+                                              e.status === 2
                                                 ? "text-red-500 "
                                                 : "text-[#706D73]"
                                             } text-sm text-center`}
                                           >
-                                            {item.status === 1
+                                            {e.status === 1
                                               ? opt.title
                                               : "Make event active"}
                                           </p>
@@ -361,7 +363,7 @@ export default function Event() {
                               <MenuItem className="py-2 cursor-pointer pl-4 hover:bg-lightPurple mx-auto border-t">
                                 <div
                                   onClick={handleCopy(
-                                    `https://eventsparrot.vercel.app/events/${item.slug}`
+                                    `https://eventsparrot.vercel.app/events/${e.slug}`
                                   )}
                                   className="flex items-center w-full cursor-pointer  space-x-3 py-1"
                                 >
@@ -378,14 +380,14 @@ export default function Event() {
                               <ConfirmDeleteModal
                                 title="Are you sure want to delete this event?"
                                 setIsDeleteModalOpen={setIsDeleteModalOpen}
-                                deleteTicket={() => deleteEventHandler(item.id)}
+                                deleteTicket={() => deleteEventHandler(e.id)}
                               />
                             )}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </div>
             )}
