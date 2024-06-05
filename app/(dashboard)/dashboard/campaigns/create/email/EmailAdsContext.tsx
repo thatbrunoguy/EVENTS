@@ -145,9 +145,9 @@ export const EmailAdContextProvider = ({ children }: IProps) => {
 
   const { data: events, isLoading } = useQuery({
     queryKey: ["events"],
-    queryFn: eventsManagamentFunctions.getEvents,
+    queryFn: () => eventsManagamentFunctions.getEvents(1 as any),
     select: (data) => {
-      const selectedEvents = data.map((event: EventData) => {
+      const selectedEvents = data?.events?.map((event: EventData) => {
         const startDate = event.start_date
           ? `${formatDate(event.start_date)} | ${formatTime(event.start_date)}`
           : null;

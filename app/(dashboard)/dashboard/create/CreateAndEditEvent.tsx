@@ -282,38 +282,17 @@ const CreateAndEditEvent = () => {
         eventInfo.medias = [];
       }
       eventInfo.tickets = event.tickets.map((obj: any) => {
-        return {
-          name: obj.name,
-          description: obj.description,
-          price: obj.price,
-          type: obj.type,
-          stock: obj.stock,
-          stock_qty: obj.stock_qty,
-          purchase_limit: obj.purchase_limit,
-          quantity_limit_per_person: obj.quantity_limit_per_person,
-        };
+        return obj;
       });
       setTickets(
         event.tickets.map((obj: any) => {
-          return {
-            name: obj.name,
-            description: obj.description,
-            price: obj.price,
-            type: obj.type,
-            stock: obj.stock,
-            stock_qty: obj.stock_qty ?? 1,
-            purchase_limit: obj.purchase_limit,
-            quantity_limit_per_person: obj.quantity_limit_per_person,
-          };
+          return obj;
         })
       );
 
       setFaqs(
         event.faqs.map((obj: any) => {
-          return {
-            question: obj.question,
-            answer: obj.answer,
-          };
+          return obj;
         })
       );
 
@@ -461,8 +440,13 @@ const CreateAndEditEvent = () => {
         //@ts-ignore
         delete ticket?.stock_qty;
       }
+      if (updatedEventInfo.timezone === null || !updatedEventInfo.timezone) {
+        delete updatedEventInfo?.timezone;
+      }
     });
     if (eventId) {
+      //@ts-ignore
+      if (event?.slug === updatedEventInfo.slug) delete updatedEventInfo?.slug;
       updateEvent.mutate({ eventId: eventId, data: updatedEventInfo });
     } else {
       createEvent.mutate({ data: updatedEventInfo });

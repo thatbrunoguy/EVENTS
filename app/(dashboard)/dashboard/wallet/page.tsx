@@ -3,9 +3,7 @@
 import Image from "next/image";
 import Header from "../../../components/header/Header";
 import Sidebar from "../../../components/sidebar/Sidebar";
-import { HiOutlinePlusSm } from "react-icons/hi";
-import Link from "next/link";
-import { IoIosMore } from "react-icons/io";
+
 import { useState } from "react";
 import { PiShareLight } from "react-icons/pi";
 import DashHeader from "./Header";
@@ -14,106 +12,28 @@ import "react-toastify/dist/ReactToastify.min.css";
 import { IoMailOpenSharp } from "react-icons/io5";
 import MobileFooter from "../../../components/footer/MobileFooter";
 import BuyTokenModal from "../campaigns/create/ads/BuyTokenModal";
+import { authFunctions } from "@/app/utils/endpoints";
+import { useQuery } from "@tanstack/react-query";
+import moment from "moment";
+import PrimaryLoading from "@/app/components/loaders/PrimaryLoading";
+import Pagination from "@/app/components/pagination/Pagination";
 
 export default function Guestlist() {
-  const [selectedEvent, setSelectedEvent] = useState({
-    name: "",
-    eventId: "",
+  const [page, setPage] = useState<number>(1);
+  const { data: userTransaction, isLoading } = useQuery({
+    queryKey: ["getToken", { page }],
+    queryFn: () => authFunctions.getUserTransactions(page as any),
   });
 
-  const paymentHistory: any = [
-    // {
-    //   recipient: "889e90000e88e9e07889939",
-    //   account: "1 Jan 2024",
-    //   amount: "---------",
-    //   transferFee: "₦10,000.00",
-    //   payout: "1",
-    //   date: "Sep 29, 2023",
-    // },
-    // {
-    //   recipient: "889e90000e88e9e07889939",
-    //   account: "1 Jan 2024",
-    //   amount: "---------",
-    //   transferFee: "₦10,000.00",
-    //   payout: "1",
-    //   date: "Sep 29, 2023",
-    // },
-    // {
-    //   recipient: "889e90000e88e9e07889939",
-    //   account: "1 Jan 2024",
-    //   amount: "---------",
-    //   transferFee: "₦10,000.00",
-    //   payout: "1",
-    //   date: "Sep 29, 2023",
-    // },
-    // {
-    //   recipient: "889e90000e88e9e07889939",
-    //   account: "1 Jan 2024",
-    //   amount: "---------",
-    //   transferFee: "₦10,000.00",
-    //   payout: "1",
-    //   date: "Sep 29, 2023",
-    // },
-    // {
-    //   recipient: "889e90000e88e9e07889939",
-    //   account: "1 Jan 2024",
-    //   amount: "---------",
-    //   transferFee: "₦10,000.00",
-    //   payout: "1",
-    //   date: "Sep 29, 2023",
-    // },
-    // {
-    //   recipient: "889e90000e88e9e07889939",
-    //   account: "1 Jan 2024",
-    //   amount: "---------",
-    //   transferFee: "₦10,000.00",
-    //   payout: "1",
-    //   date: "Sep 29, 2023",
-    // },
-    // {
-    //   recipient: "889e90000e88e9e07889939",
-    //   account: "1 Jan 2024",
-    //   amount: "---------",
-    //   transferFee: "₦10,000.00",
-    //   payout: "1",
-    //   date: "Sep 29, 2023",
-    // },
-    // {
-    //   recipient: "889e90000e88e9e07889939",
-    //   account: "1 Jan 2024",
-    //   amount: "---------",
-    //   transferFee: "₦10,000.00",
-    //   payout: "1",
-    //   date: "Sep 29, 2023",
-    // },
-    // {
-    //   recipient: "889e90000e88e9e07889939",
-    //   account: "1 Jan 2024",
-    //   amount: "---------",
-    //   transferFee: "₦10,000.00",
-    //   payout: "1",
-    //   date: "Sep 29, 2023",
-    // },
-    // {
-    //   recipient: "889e90000e88e9e07889939",
-    //   account: "1 Jan 2024",
-    //   amount: "---------",
-    //   transferFee: "₦10,000.00",
-    //   payout: "1",
-    //   date: "Sep 29, 2023",
-    // },
-    // {
-    //   recipient: "889e90000e88e9e07889939",
-    //   account: "1 Jan 2024",
-    //   amount: "---------",
-    //   transferFee: "₦10,000.00",
-    //   payout: "1",
-    //   date: "Sep 29, 2023",
-    // },
-  ];
   const [openTokenModal, setOpenTokenModal] = useState<boolean>(false);
   const [isGuestlistModalOpen, setIsGuestlistModalOpen] =
     useState<boolean>(false);
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+  };
+
+  if (isLoading) return <PrimaryLoading />;
 
   const exportCSV = () => {
     toast(
@@ -153,11 +73,7 @@ export default function Guestlist() {
       <MobileFooter />
 
       <main className="h-screen overflow-y-scroll flex-1">
-        <Header
-          selectedEvent={selectedEvent}
-          setSelectedEvent={setSelectedEvent}
-        />
-        {!paymentHistory.length ? (
+        {!userTransaction?.events?.length ? (
           <div className="flex justify-center items-center w-full h-[80%]">
             <div className="w-[351px] flex flex-col items-center">
               <Image
@@ -168,7 +84,7 @@ export default function Guestlist() {
                 priority
               />
               <p className="py-5 text-center w-[75%] text-lightText">
-                Buy token to promote campaigns of all your events
+                Buy token to promote campaigns of all your event
               </p>
 
               <button
@@ -190,7 +106,7 @@ export default function Guestlist() {
             {/* -------- PAYMENT HISTORY --------- */}
 
             <div className="w-[95%] mt-12 mx-auto">
-              <div className="flex items-center justify-end mt-10 mb-8">
+              {/* <div className="flex items-center justify-end mt-10 mb-8">
                 <button
                   onClick={exportCSV}
                   className="border-primaryPurple border text-primaryPurple py-[10px] px-5 w-auto h-[41px] hover:bg-primaryPurple hover:text-white text-sm rounded-lg flex items-center space-x-[4px]"
@@ -199,32 +115,60 @@ export default function Guestlist() {
                     <PiShareLight />
                   </div>
                   <p>Export as CSV</p>
-                </button>
-              </div>
+                </button> */}
+              {/* </div> */}
 
               <div className="">
-                <header className="w-full bg-[#FBFAFC] text-sm grid grid-flow-col  py-3 px-4 ">
-                  <p className="col-span-1">Transactions ID</p>
-                  <p className="">Payment date</p>
-                  <p className="">Payment method </p>
-                  <p className="">Amount</p>
-                  <p className="">Tokens</p>
-                  <p className="">status</p>
-                  {/* <p className="w-1/6"></p> */}
-                </header>
-                {paymentHistory.map((item: any, index: number) => (
-                  <div
-                    key={index}
-                    className="w-full border-b grid grid-flow-col  p-3 py-4 text-sm"
-                  >
-                    <h4 className="font-semibold">{item.recipient}</h4>
-                    <p className="-ml-8">{item.account}</p>
-                    <p className="-ml-8">{item.amount}</p>
-                    <p className="">{item.transferFee}</p>
-                    <div className="">{item.payout}</div>
-                    <div className="">{item.date}</div>
-                  </div>
-                ))}
+                <table className="w-full text-xs md:text-sm">
+                  <thead className="h-[50px]">
+                    <tr className="py-3 px-4 bg-[#FBFAFC]">
+                      <th className="w-[30%] text-left">Transactions ID</th>
+                      <th className="text-left">Payment date</th>
+                      <th className="text-left">Payment method</th>
+                      <th className="text-left">Amount</th>
+                      <th className="text-left">Token</th>
+                      <th className="text-left">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {userTransaction?.events?.map((event: any) => (
+                      <tr key={event.id} className="border-b">
+                        <td className="whitespace-nowrap p-3 text-sm">
+                          {event?.txn_reference}
+                        </td>
+                        <td className="text-sm">
+                          {moment(event?.created_at).format("DD MMMM YYYY")}
+                        </td>
+                        <td className="capitalize text-sm">
+                          {event?.payment_method || "---------"}
+                        </td>
+                        <td className="text-sm">
+                          {event?.currency}
+                          {event?.amount}
+                        </td>
+                        <td className="text-sm">{event?.amount / 10000}</td>
+                        <td className="text-sm">
+                          {event?.status === 1 ? (
+                            <div className="text-sm p-2 rounded-xl text-[#228056] bg-[#EDFCF6] flex items-center justify-center ">
+                              Bought
+                            </div>
+                          ) : (
+                            <div className="text-sm p-2 rounded-xl text-[#CC0000] bg-[#FCEDED] flex items-center justify-center ">
+                              Failed
+                            </div>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                {userTransaction?.pagination?.meta?.last_page > 1 ? (
+                  <Pagination
+                    currentPage={page}
+                    totalPages={userTransaction?.pagination?.meta?.last_page}
+                    onPageChange={handlePageChange}
+                  />
+                ) : null}
               </div>
             </div>
           </>

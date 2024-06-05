@@ -29,7 +29,7 @@ export type EventInfoType = {
   location_details: LocationDetailsType;
   start_date: string;
   end_date: string;
-  timezone: string;
+  timezone?: string;
   categories: [string];
   registration_requirements: RequirementType[];
   medias: string[];
