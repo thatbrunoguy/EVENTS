@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import Header from "../../../components/header/Header";
 import Sidebar from "../../../components/sidebar/Sidebar";
 import { HiOutlinePlusSm, HiPencil } from "react-icons/hi";
 import Link from "next/link";
@@ -14,7 +13,6 @@ import PrimaryLoading, {
   PrimaryLoading2,
 } from "../../../components/loaders/PrimaryLoading";
 import { formatDate, formatTime } from "../../../helpers";
-import GlobalTable from "@/app/components/table/GlobalTable";
 import { Menu, MenuButton, MenuGroup, MenuItem } from "@szhsin/react-menu";
 import { MdHideSource } from "react-icons/md";
 import { IoTrash } from "react-icons/io5";
@@ -24,6 +22,8 @@ import { IoMdSettings } from "react-icons/io";
 import ConfirmDeleteModal from "@/app/components/modals/ConfirmDelete";
 import { Location, Media, Ticket } from "@/app/types";
 import { useRouter } from "next/navigation";
+import { BsArrowLeft, BsArrowRight } from "react-icons/bs";
+import Pagination from "@/app/components/pagination/Pagination";
 
 export type EventData = {
   id: string;
@@ -56,6 +56,7 @@ type FormattedEvent = {
 export default function Event() {
   const [copiedText, copy] = useCopyToClipboard();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [page, setPage] = useState<number>(1);
   const router = useRouter();
 
   const queryClient = useQueryClient();
@@ -83,14 +84,8 @@ export default function Event() {
 
   const deleteEvent = useMutation({
     mutationFn: eventsManagamentFunctions.deleteEvent,
-    onError: async (error, variables, context) => {
-      // An error happened!
-      // console.log(` ${error}`);
-    },
-    onSuccess: async (data, variables, context) => {
-      // Boom baby!
-      // console.log("data", data);
-    },
+    onError: async (error, variables, context) => {},
+    onSuccess: async (data, variables, context) => {},
   });
 
   const handleEventStatusChange = (status: number, id: string) => {
@@ -102,48 +97,57 @@ export default function Event() {
     isLoading,
     refetch: refetchEvent,
   } = useQuery({
-    queryKey: ["events"],
-    queryFn: eventsManagamentFunctions.getEvents,
+    queryKey: ["events", { page }],
+    queryFn: () => eventsManagamentFunctions.getEvents({ page } as any),
     select: (data) => {
-      const selectedEvents: EventData[] = data.map((event: EventData) => {
-        const startDate = event.start_date
-          ? `${formatDate(event.start_date)} | ${formatTime(event.start_date)}`
-          : null;
-        const quantity =
-          event.tickets[0]?.stock_qty != null
-            ? event.tickets[0].stock_qty
+      const selectedEvents: EventData[] = data?.events.map(
+        (event: EventData) => {
+          const startDate = event.start_date
+            ? `${formatDate(event.start_date)} | ${formatTime(
+                event.start_date
+              )}`
             : null;
-        const lowestPrice = Math.min(
-          ...event.tickets.map((ticket: any) => ticket.price)
-        );
-        const highestPrice = Math.max(
-          ...event.tickets.map((ticket: any) => ticket.price)
-        );
-        const desc = event.tickets[0]?.description || null;
-        const img = event.medias[0]?.original || null;
-        const address = event.locations[0]?.address || "Online";
-        const status = event.status;
+          const quantity =
+            event.tickets[0]?.stock_qty != null
+              ? event.tickets[0].stock_qty
+              : null;
+          const lowestPrice = Math.min(
+            ...event.tickets.map((ticket: any) => ticket.price)
+          );
+          const highestPrice = Math.max(
+            ...event.tickets.map((ticket: any) => ticket.price)
+          );
+          const desc = event.tickets[0]?.description || null;
+          const img = event.medias[0]?.original || null;
+          const address = event.locations[0]?.address || "Online";
+          const status = event.status;
 
-        return {
-          id: event.id || null,
-          name: event.name || null,
-          startDate,
-          quantity,
-          desc,
-          img,
-          address,
-          status,
-          lowestPrice,
-          highestPrice,
-          slug: event.slug || null,
-        };
-      });
+          return {
+            id: event.id || null,
+            name: event.name || null,
+            startDate,
+            quantity,
+            desc,
+            img,
+            address,
+            status,
+            lowestPrice,
+            highestPrice,
+            slug: event.slug || null,
+          };
+        }
+      );
 
-      return selectedEvents;
+      return {
+        events: selectedEvents,
+        pagination: data.pagination,
+      };
     },
   });
 
-  console.log(events, "event");
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+  };
 
   const deleteEventHandler = (id: string) => {
     deleteEvent.mutate({ eventId: id });
@@ -189,7 +193,7 @@ export default function Event() {
           </div>
         ) : (
           <div className="w-full flex  h-full justify-center items-center ">
-            {events === undefined || events?.length < 1 ? (
+            {events === undefined || events?.events?.length < 1 ? (
               <div className="w-[351px] flex flex-col items-center">
                 <Image
                   src="/assets/one.svg"
@@ -236,7 +240,7 @@ export default function Event() {
                       </tr>
                     </thead>
                     <tbody>
-                      {events.map((e: any) => (
+                      {events?.events?.map((e: any) => (
                         <tr key={e.id} className="border-b">
                           <td className="p-3">
                             <div className="flex items-center w-full space-x-5">
@@ -388,6 +392,13 @@ export default function Event() {
                       ))}
                     </tbody>
                   </table>
+                  {events?.pagination?.meta?.last_page > 1 ? (
+                    <Pagination
+                      currentPage={page}
+                      totalPages={events?.pagination?.meta?.last_page}
+                      onPageChange={handlePageChange}
+                    />
+                  ) : null}
                 </div>
               </div>
             )}
