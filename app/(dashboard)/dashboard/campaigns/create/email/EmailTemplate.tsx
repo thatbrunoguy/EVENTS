@@ -31,11 +31,11 @@ const EmailTemplate = () => {
     <>
       <div className="w-full flex items-center justify-between mb-9">
         <h2 className="text-[24px] font-semibold ">{data?.name}</h2>
-        <button>
+        {/* <button>
           <p className="text-primaryPurple hover:bg-primaryPurple hover:text-white bg-lightPurple h-10  px-5 grid place-content-center rounded-md">
             Send test email
           </p>
-        </button>
+        </button> */}
       </div>
       <div
         style={{
@@ -66,16 +66,15 @@ const EmailTemplate = () => {
           }}
         >
           {mailContent.media?.length ? (
-            <div style={{ height: "308px", width: "100%" }}>
-              <img
-                style={{ objectFit: "cover" }}
-                src={mailContent?.media[0]}
-                alt=""
-                width="100%"
-                height="100%"
-              />
-            </div>
-          ) : null}
+            // <div style={{ height: "308px", width: "100%" }}>
+            <img
+              style={{ objectFit: "cover" }}
+              src={mailContent?.media[0]}
+              alt=""
+              className="w-full h-[308px]"
+            />
+          ) : // </div>
+          null}
 
           <div
             style={{

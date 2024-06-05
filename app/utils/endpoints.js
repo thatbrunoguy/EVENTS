@@ -706,17 +706,13 @@ export const guestFunctions = {
           "X-APP-KEY": APP_KEY,
         },
       });
-      // console.log("response", response);
+
       if (response.data && response.data.status === true) {
-        // toast.success(response.data.message);
-        // console.log("res", response?.data.message);
         return response.data.data.events;
       } else {
         throw new Error(response.data.message);
       }
     } catch (error) {
-      console.error("Error fetching data:", error.response.data.message);
-      // toast.error(error.response.data.message);
       throw error;
     }
   },
