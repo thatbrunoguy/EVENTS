@@ -246,7 +246,7 @@ const CreateAndEditEvent = () => {
     faqs: [],
     tickets: [],
   });
-  console.log("event", event);
+
   //update initial state when editing event
   useEffect(() => {
     if (event && eventId) {
@@ -282,40 +282,17 @@ const CreateAndEditEvent = () => {
         eventInfo.medias = [];
       }
       eventInfo.tickets = event.tickets.map((obj: any) => {
-        return {
-          id: obj.id,
-          name: obj.name,
-          description: obj.description,
-          price: obj.price,
-          type: obj.type,
-          stock: obj.stock,
-          stock_qty: obj.stock_qty,
-          purchase_limit: obj.purchase_limit,
-          quantity_limit_per_person: obj.quantity_limit_per_person,
-        };
+        return obj;
       });
       setTickets(
         event.tickets.map((obj: any) => {
-          return {
-            id: obj.id,
-            name: obj.name,
-            description: obj.description,
-            price: obj.price,
-            type: obj.type,
-            stock: obj.stock,
-            stock_qty: obj.stock_qty ?? 1,
-            purchase_limit: obj.purchase_limit,
-            quantity_limit_per_person: obj.quantity_limit_per_person,
-          };
+          return obj;
         })
       );
 
       setFaqs(
         event.faqs.map((obj: any) => {
-          return {
-            question: obj.question,
-            answer: obj.answer,
-          };
+          return obj;
         })
       );
 
@@ -323,7 +300,7 @@ const CreateAndEditEvent = () => {
       setEventPhoto([mediaUrl]);
     }
   }, [event]);
-  console.log(selectedOption, "selectedOption");
+
   const computeDateTime = useCallback((date: any, time: any) => {
     const dateString = moment(date).format("YYYY-MM-DD");
     const dateTimeString = `${dateString}T${time}`;
@@ -468,8 +445,6 @@ const CreateAndEditEvent = () => {
       }
     });
     if (eventId) {
-      console.log(tickets, "ticket");
-      console.log(event.tickets, " event ticket");
       //@ts-ignore
       if (event?.slug === updatedEventInfo.slug) delete updatedEventInfo?.slug;
       updateEvent.mutate({ eventId: eventId, data: updatedEventInfo });
