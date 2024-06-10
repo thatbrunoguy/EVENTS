@@ -15,8 +15,14 @@ import { EventData } from "../../../event/page";
 import { EventObj } from "@/app/types";
 
 const CreateEmailCampaignContent = () => {
-  const { setData, setMailContent, mailContent, selectedEvent } =
-    useContext(EmailAdContext);
+  const {
+    setData,
+    setMailContent,
+    mailContent,
+    selectedEvent,
+    quillValue,
+    setQuillValue,
+  } = useContext(EmailAdContext);
   const [eventPhoto, setEventPhoto] = useState<any>([]);
   const [searchValue, setSearchValue] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
@@ -95,21 +101,21 @@ const CreateEmailCampaignContent = () => {
     };
   }, []);
 
-  const thumbs = eventPhoto.map((file: any, i: number) => (
-    <div key={i}>
-      <div>
-        <Image
-          alt=""
-          src={file.preview}
-          className="w-full h-full object-cover"
-          // Revoke data uri after image is loaded
-          onLoad={() => {
-            URL.revokeObjectURL(file.preview);
-          }}
-        />
-      </div>
-    </div>
-  ));
+  // const thumbs = eventPhoto.map((file: any, i: number) => (
+  //   <div key={i}>
+  //     <div>
+  //       <Image
+  //         alt=""
+  //         src={file.preview}
+  //         className="w-full h-full object-cover"
+  //         // Revoke data uri after image is loaded
+  //         onLoad={() => {
+  //           URL.revokeObjectURL(file.preview);
+  //         }}
+  //       />
+  //     </div>
+  //   </div>
+  // ));
 
   return (
     <div className="w-full  h-fullflex">
@@ -261,17 +267,7 @@ const CreateEmailCampaignContent = () => {
           >
             Email header <span className="text-red-500">*</span>
           </label>
-          <input
-            type="text"
-            className="h-[56px] text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600"
-            onChange={(e) =>
-              setMailContent((prev: any) => ({
-                ...prev,
-                emailHeader: e.target.value,
-              }))
-            }
-            value={mailContent?.emailHeader}
-          />
+          <ReactQuillEditor value={quillValue} setValue={setQuillValue} />
         </div>
 
         <div className="my-6">
@@ -294,15 +290,15 @@ const CreateEmailCampaignContent = () => {
           />
         </div>
 
-        <h2 className="text-[24px] font-semibold my-9">Header image</h2>
+        {/* <h2 className="text-[24px] font-semibold my-9">Header image</h2> */}
 
         {/* UPLOAD */}
 
-        {eventPhoto.length === 0 && (
+        {/* {eventPhoto.length === 0 && (
           <div className="w-full relative flex items-center justify-center h-[248px] border border-dashed rounded-lg border-gray-600">
             <FileUpload setEventPhoto={setEventPhoto} />
           </div>
-        )}
+        )} */}
         {/* {eventPhoto.length > 0 && (
           <div className="w-full relative overflow-hidden flex items-center justify-center h-[248px] border rounded-lg border-primaryPurple hover:bg-lightPurple">
             <div

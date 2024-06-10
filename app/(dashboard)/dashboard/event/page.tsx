@@ -233,10 +233,14 @@ export default function Event() {
                   <table className="w-full text-xs md:text-sm">
                     <thead className="h-[50px]">
                       <tr className="py-3 px-4 bg-[#FBFAFC]">
-                        <th className="w-[30%] text-left">Ticket name</th>
-                        <th className="text-left">Ticket quantity</th>
-                        <th className="text-left">Ticket price</th>
-                        <th className="text-left"></th>
+                        <th className="w-[30%] text-left font-medium">
+                          Ticket name
+                        </th>
+                        <th className="text-left font-medium">
+                          Ticket quantity
+                        </th>
+                        <th className="text-left font-medium">Ticket price</th>
+                        <th className="text-left font-medium"></th>
                       </tr>
                     </thead>
                     <tbody>
@@ -250,6 +254,7 @@ export default function Event() {
                                   src={e.img}
                                   alt={e.name}
                                   className="object-cover"
+                                  priority
                                 />
                               </div>
                               <div className="w-full  text-xs md:text-sm">
@@ -367,7 +372,7 @@ export default function Event() {
                               <MenuItem className="py-2 cursor-pointer pl-4 hover:bg-lightPurple mx-auto border-t">
                                 <div
                                   onClick={handleCopy(
-                                    `https://eventsparrot.vercel.app/events/${e.slug}`
+                                    `https://www.eventsparrot.com/events/${e.slug}`
                                   )}
                                   className="flex items-center w-full cursor-pointer  space-x-3 py-1"
                                 >

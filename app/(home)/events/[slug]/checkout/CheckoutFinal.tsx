@@ -18,6 +18,7 @@ const CheckoutFinal = ({
   const increaseQuantity = (index: number) => {
     const updatedTickets = [...tickets];
     if (
+      updatedTickets[index].purchase_limit != null &&
       updatedTickets[index].quantity >= updatedTickets[index].purchase_limit
     ) {
       toast.error(
@@ -27,7 +28,10 @@ const CheckoutFinal = ({
       );
       return;
     }
-    if (updatedTickets[index].quantity >= updatedTickets[index].qty_left) {
+    if (
+      updatedTickets[index].stock_qty !== null &&
+      updatedTickets[index].quantity >= updatedTickets[index].qty_left
+    ) {
       toast.error("This ticket is no more available");
       return;
     }
@@ -46,8 +50,6 @@ const CheckoutFinal = ({
     );
     setTickets(updatedTickets);
   };
-
-  console.log("tickets", tickets);
 
   return (
     <div className=" w-[94%] md:w-[50%] md:pl-8">

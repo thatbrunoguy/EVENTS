@@ -38,6 +38,7 @@ import AccountType from "./payout/AccountType";
 import AccountSubmission from "./payout/AccountSubmission";
 import VerificationPending from "./payout/VerificationPending";
 import { IoIosAlert } from "react-icons/io";
+import { useSession } from "next-auth/react";
 
 const emailCampaign = [
   {
@@ -77,6 +78,7 @@ export default function Dashboard() {
   const [openBankDetails, setOpenBankDetails] = useState<boolean>(false);
   const [openPending, setOpenPending] = useState<boolean>(false);
   const [accountType, setAccountType] = useState("individual");
+  const { data: session } = useSession();
 
   const handleCopy = (text: string) => () => {
     copy(text)
@@ -203,6 +205,16 @@ export default function Dashboard() {
     }));
   }, [salesAnalytics]);
 
+  const handleRequestPayout = () => {
+    //@ts-ignore
+    if (session?.user?.user?.isKycVerified === true) {
+      setOpenAccountSelect(true);
+      //@ts-ignore
+    } else if (!session?.user?.user?.isKycVerified) {
+      setOpenRequestPayout(true);
+    }
+  };
+
   return (
     <section className="flex ">
       <Sidebar />
@@ -289,7 +301,7 @@ export default function Dashboard() {
                           {/* Request payout */}
                           <p
                             className="text-primaryPurple text-sm py-3 cursor-pointer"
-                            onClick={() => setOpenRequestPayout(true)}
+                            onClick={handleRequestPayout}
                           >
                             Request payout
                           </p>

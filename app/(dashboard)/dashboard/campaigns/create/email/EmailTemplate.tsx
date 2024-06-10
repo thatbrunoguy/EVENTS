@@ -5,6 +5,7 @@ import { FaInstagram, FaLinkedinIn, FaTiktok, FaYoutube } from "react-icons/fa";
 import { FaFacebookF, FaXTwitter } from "react-icons/fa6";
 import Image from "next/image";
 import { EventObj } from "@/app/types";
+import "react-quill/dist/quill.snow.css";
 
 const socials = [
   { title: "facebookLink", icon: <FaFacebookF />, url: "/" },
@@ -16,7 +17,7 @@ const socials = [
 ];
 
 const EmailTemplate = () => {
-  const { data, mailContent, setData, selectedEvent } =
+  const { data, mailContent, setData, selectedEvent, quillValue } =
     useContext(EmailAdContext);
   const emailBodyRef = useRef(null);
 
@@ -88,13 +89,10 @@ const EmailTemplate = () => {
           >
             <div style={{ width: "450px" }}>
               <h2
-                style={{
-                  fontSize: "28px",
-                  fontWeight: "600",
-                  marginBottom: "12px",
-                }}
+                className="ql-editor"
+                dangerouslySetInnerHTML={{ __html: quillValue }}
               >
-                {mailContent?.emailHeader}
+                {/* {quillValue} */}
               </h2>
               <p style={{ color: "#6B7280" }}>
                 {mailContent?.emailDescription}
