@@ -3765,6 +3765,11 @@ react-date-picker@^10.6.0:
     react-fit "^1.7.0"
     update-input-width "^1.4.0"
 
+react-dojah@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/react-dojah/-/react-dojah-1.1.0.tgz#58235c9b037e8575988b84bdb8656fae7158d449"
+  integrity sha512-+O+NjhUR98Ti4QOvoTURVlN6mB4Df/+ebLWintElJX7y8eD4oVByJHhvXA6Qwr9oEXq6u9qDTY9OH5/UbEKm9w==
+
 react-dom@^18:
   version "18.2.0"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-18.2.0.tgz#22aaf38708db2674ed9ada224ca4aa708d821e3d"

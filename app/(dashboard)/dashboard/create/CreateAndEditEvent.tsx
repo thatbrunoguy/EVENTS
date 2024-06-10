@@ -500,8 +500,8 @@ const CreateAndEditEvent = () => {
   };
 
   // DETAILS
-  const thumbs = eventPhoto.map((file: any) => (
-    <div key={file.name}>
+  const thumbs = eventPhoto.map((file: any, idx: number) => (
+    <div key={idx}>
       <div>
         <img
           src={imageUrl ? imageUrl : file.preview}

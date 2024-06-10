@@ -3,8 +3,11 @@ import {
   TransparentButton,
 } from "@/app/components/buttons/button";
 import { useSession } from "next-auth/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CiCircleAlert } from "react-icons/ci";
+//@ts-ignore
+import Dojah from "react-dojah";
+import { useRouter } from "next/navigation";
 
 type Iprops = {
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -13,11 +16,57 @@ type Iprops = {
 
 const RequestPayoutModal = ({ setIsModalOpen, setOpenNextModal }: Iprops) => {
   const { data: session } = useSession();
+  const [openDojah, setOpenDojah] = useState(false);
+  const [trackDojah, setTrackDojah] = useState("rest");
+
+  const router = useRouter();
 
   const handleVerify = () => {
-    setOpenNextModal(true);
-    setIsModalOpen(false);
+    // setOpenNextModal(true);
+    setOpenDojah(true);
+    // setIsModalOpen(false);
   };
+
+  const appID = "6633bda644965600406cca04";
+  const publicKey = "test_pk_XIYxOrNa6gj8FtIjmsnXJrb0U";
+  const type = "custom";
+
+  const config = {
+    widget_id: "66618c205be915004061689f",
+  };
+
+  const userData = {
+    //@ts-ignore
+    first_name: `${session?.user?.user?.first_name}`,
+    //@ts-ignore
+    last_name: `${session?.user?.user?.last_name}`,
+    residence_country: "NG",
+    //@ts-ignore
+    email: `${session?.user?.user?.email}`,
+  };
+
+  const metadata = {
+    //@ts-ignore
+    user_id: `${session?.user?.user?.id}`,
+  };
+
+  const response = (type: any, data: any) => {
+    console.log(type, data);
+    if (type === "success") {
+      console.log("boom baby!");
+    } else if (type === "close") {
+      window.location.reload();
+    }
+    // else if(type === 'error'){
+    // }else if(type === 'close'){
+    // }else if(type === 'begin'){
+    // }else if(type === 'loading'){
+    // }
+  };
+
+  useEffect(() => {
+    if (trackDojah === "close") setIsModalOpen(false);
+  }, [trackDojah]);
 
   return (
     <>
@@ -26,6 +75,19 @@ const RequestPayoutModal = ({ setIsModalOpen, setOpenNextModal }: Iprops) => {
         className="bg-black bg-opacity-50 backdrop-blur-sm fixed z-20  top-0 left-0 right-0 bottom-0"
         aria-label="backdrop"
       />
+      <div>
+        {openDojah ? (
+          <Dojah
+            response={response}
+            appID={appID}
+            publicKey={publicKey}
+            type={type}
+            config={config}
+            userData={userData}
+            metadata={metadata}
+          />
+        ) : null}
+      </div>
 
       <div className="w-[96%] md:w-[760px] h-auto rounded-md bg-white z-50 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ">
         <div className="py-4 px-6 border-b">

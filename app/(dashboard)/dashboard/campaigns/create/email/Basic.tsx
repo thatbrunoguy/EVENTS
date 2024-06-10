@@ -15,6 +15,7 @@ import { extractUrlBeforeQueryString, uploadImage } from "@/app/helpers";
 import { Menu, MenuButton, MenuItem } from "@szhsin/react-menu";
 import Image from "next/image";
 import { IoChevronDown } from "react-icons/io5";
+import { FadeLoader } from "react-spinners";
 
 const CreateEmailCampaignBasic = () => {
   const [eventPhoto, setEventPhoto] = useState<any>([]);
@@ -29,25 +30,6 @@ const CreateEmailCampaignBasic = () => {
     setSelectedEvent,
     events,
   } = useContext(EmailAdContext);
-
-  const thumbs = eventPhoto.map((file: any) => (
-    <div key={file.name}>
-      <div>
-        <Image
-          src={file.preview}
-          fill
-          priority
-          alt=""
-          className="w-full h-full object-cover"
-          // Revoke data uri after image is loaded
-          onLoad={() => {
-            setImageUploadEnabled(true);
-            URL.revokeObjectURL(file.preview);
-          }}
-        />
-      </div>
-    </div>
-  ));
 
   const { data: imageUrl, status } = useQuery({
     queryKey: ["event-banner"],
@@ -78,6 +60,23 @@ const CreateEmailCampaignBasic = () => {
     }
   }, [isImageUploadEnabled, status]);
 
+  const thumbs = eventPhoto?.map((file: any, index: number) => (
+    <div key={index}>
+      <div>
+        <img
+          src={file.preview}
+          className="w-full h-[248px] object-cover"
+          // Revoke data uri after image is loaded
+          onLoad={() => {
+            setImageUploadEnabled(true);
+            URL.revokeObjectURL(file.preview);
+          }}
+          alt=""
+        />
+      </div>
+    </div>
+  ));
+
   return (
     <div className="w-full h-full flex">
       <div className="mt-9 w-full">
@@ -98,8 +97,8 @@ const CreateEmailCampaignBasic = () => {
                     <div className="h-[72px] w-[72px] relative rounded overflow-hidden">
                       <Image
                         fill
-                        src={selectedEvent?.img}
-                        alt={selectedEvent?.name}
+                        src={selectedEvent?.img ?? ""}
+                        alt={selectedEvent?.name ?? "img"}
                         objectFit="cover"
                       />
                     </div>
@@ -313,7 +312,8 @@ const CreateEmailCampaignBasic = () => {
               className="text-sm mb-2 block text-gray-800"
               htmlFor="organizerName"
             >
-              Facebook Link <span className="text-red-500">*</span>
+              Facebook Link
+              {/* <span className="text-red-500">*</span> */}
             </label>
             <div className="flex items-center h-[56px] text-sm w-full text-gray-600 px-3 mt-2  bg-[#F8F8F8] rounded-lg focus-within:border-[2px] focus-within:border-purple-600">
               <label className="p-3 block text-gray-600" htmlFor="facebook">
@@ -342,7 +342,8 @@ const CreateEmailCampaignBasic = () => {
               className="text-sm mb-2 block text-gray-800"
               htmlFor="organizerName"
             >
-              Instagram Link <span className="text-red-500">*</span>
+              Instagram Link
+              {/* <span className="text-red-500">*</span> */}
             </label>
             <div className="flex items-center h-[56px] text-sm w-full text-gray-600 px-3 mt-2  bg-[#F8F8F8] rounded-lg focus-within:border-[2px] focus-within:border-purple-600">
               <label className="p-3 block" htmlFor="facebook">
@@ -370,7 +371,8 @@ const CreateEmailCampaignBasic = () => {
               className="text-sm mb-2 block text-gray-800"
               htmlFor="organizerName"
             >
-              X Link <span className="text-red-500">*</span>
+              X Link
+              {/* <span className="text-red-500">*</span> */}
             </label>
             <div className="flex items-center h-[56px] text-sm w-full text-gray-600 px-3 mt-2  bg-[#F8F8F8] rounded-lg focus-within:border-[2px] focus-within:border-purple-600">
               <label className="p-3 block text-gray-600" htmlFor="facebook">
@@ -399,7 +401,8 @@ const CreateEmailCampaignBasic = () => {
               className="text-sm mb-2 block text-gray-800"
               htmlFor="organizerName"
             >
-              LinkedIn Link <span className="text-red-500">*</span>
+              LinkedIn Link
+              {/* <span className="text-red-500">*</span> */}
             </label>
             <div className="flex items-center h-[56px] text-sm w-full text-gray-600 px-3 mt-2  bg-[#F8F8F8] rounded-lg focus-within:border-[2px] focus-within:border-purple-600">
               <label className="p-3 block text-gray-600" htmlFor="facebook">
@@ -428,7 +431,8 @@ const CreateEmailCampaignBasic = () => {
               className="text-sm mb-2 block text-gray-800"
               htmlFor="organizerName"
             >
-              Tiktok Link <span className="text-red-500">*</span>
+              Tiktok Link
+              {/* <span className="text-red-500">*</span> */}
             </label>
             <div className="flex items-center h-[56px] text-sm w-full text-gray-600 px-3 mt-2  bg-[#F8F8F8] rounded-lg focus-within:border-[2px] focus-within:border-purple-600">
               <label className="p-3 block text-gray-600" htmlFor="facebook">
@@ -457,7 +461,8 @@ const CreateEmailCampaignBasic = () => {
               className="text-sm mb-2 block text-gray-800"
               htmlFor="organizerName"
             >
-              Youtube Link <span className="text-red-500">*</span>
+              Youtube Link
+              {/* <span className="text-red-500">*</span> */}
             </label>
             <div className="flex items-center h-[56px] text-sm w-full text-gray-600 px-3 mt-2  bg-[#F8F8F8] rounded-lg focus-within:border-[2px] focus-within:border-purple-600">
               <label className="p-3 block text-gray-600" htmlFor="facebook">
@@ -489,15 +494,30 @@ const CreateEmailCampaignBasic = () => {
           {eventPhoto.length > 0 && (
             <div className="w-full relative overflow-hidden flex items-center justify-center h-[248px] border rounded-lg border-primaryPurple hover:bg-lightPurple">
               <div
+                aria-disabled={isLoadingBanner}
                 onClick={() => setEventPhoto([])}
                 className="w-[72px] h-[72px] cursor-pointer text-3xl transition-all duration-300 ease-in-out hover:text-red-500 hover:bg-red-100 rounded-full bg-white grid place-content-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
               >
-                <RiDeleteBin6Fill onClick={() => setEventPhoto([])} />
+                {isLoadingBanner && (
+                  <div className="text-5xl ml-2 rounded-full   z-[99999999999]">
+                    <FadeLoader color="#7431B8" />
+                  </div>
+                )}
+                {!isLoadingBanner && (
+                  <RiDeleteBin6Fill
+                    onClick={() => {
+                      setEventPhoto([]);
+                      setMailContent((prev: any) => ({
+                        ...prev,
+                        media: [],
+                      }));
+                    }}
+                  />
+                )}
               </div>
-              <div className="w-full">{thumbs}</div>
+              <div>{thumbs}</div>
             </div>
           )}
-
           <p className="text-xs text-lightText mt-2">
             The logo appears above the content. We recommend using at least a
             150x75px (2:1 ratio) image that is no longer than 1mb

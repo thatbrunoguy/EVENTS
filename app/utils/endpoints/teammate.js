@@ -29,7 +29,6 @@ export const teammateFn = {
       );
 
       if (response.data && response.data.status === true) {
-        toast.success(response.data.message);
         return response.data.data;
       } else {
         throw new Error(response.data.message);

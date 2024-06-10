@@ -180,10 +180,10 @@ export default function AdsCampaign() {
               <table className="w-full text-xs md:text-sm">
                 <thead className="h-[50px]">
                   <tr className="py-3 px-4 bg-[#FBFAFC]">
-                    <th className="w-[30%] text-left">Campaigns</th>
-                    <th className="text-left">Start date</th>
-                    <th className="text-left">End date</th>
-                    <th className="text-left">Status</th>
+                    <th className="w-[30%] text-left font-medium">Campaigns</th>
+                    <th className="text-left font-medium">Start date</th>
+                    <th className="text-left font-medium">End date</th>
+                    <th className="text-left font-medium">Status</th>
                     {/* <th></th> */}
                   </tr>
                 </thead>
