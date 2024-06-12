@@ -108,12 +108,7 @@ export default function Dashboard() {
     { key: "net", name: "Net sales revenue" },
   ];
 
-  const {
-    data: userAccount,
-    isError,
-    isLoading,
-    status,
-  } = useQuery({
+  const { data: userAccount, status } = useQuery({
     queryKey: ["user-account"],
     queryFn: authFunctions.getUserAccount,
     staleTime: Infinity,
@@ -206,7 +201,7 @@ export default function Dashboard() {
   }, [salesAnalytics]);
 
   const handleRequestPayout = () => {
-    //@ts-ignore
+    // @ts-ignore
     if (session?.user?.user?.isKycVerified === true) {
       setOpenAccountSelect(true);
       //@ts-ignore

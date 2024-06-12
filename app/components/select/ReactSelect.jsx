@@ -28,9 +28,22 @@ export default function ReactSelectOptions({
           colors: {
             ...theme.colors,
             primary25: "#F4F0F7",
-            primary: "#7431B8",
+            primary: "#9333ea",
           },
         })}
+        styles={{
+          control: (baseStyles, state) => ({
+            ...baseStyles,
+            background: "#F8F8F8",
+            borderColor: state.isFocused ? "#9333ea" : "transparent",
+            height: "56px",
+            borderRadius: "8px",
+            boxShadow: state.isFocused && "none",
+            "&:hover": {
+              border: "none",
+            },
+          }),
+        }}
       />
     </div>
   );

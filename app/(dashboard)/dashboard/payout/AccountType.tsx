@@ -37,7 +37,7 @@ const AccountType = ({
         </div>
 
         <div className="w-[90%] mx-auto mb-28">
-          <div className="flex items-center gap-10 mt-4">
+          <div className="flex flex-col md:flex-row items-center gap-10 mt-4">
             <div
               className={`flex gap-3 w-[338px] h-[104px] items-center border ${
                 accountType === "individual"
