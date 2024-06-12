@@ -108,12 +108,7 @@ export default function Dashboard() {
     { key: "net", name: "Net sales revenue" },
   ];
 
-  const {
-    data: userAccount,
-    isError,
-    isLoading,
-    status,
-  } = useQuery({
+  const { data: userAccount, status } = useQuery({
     queryKey: ["user-account"],
     queryFn: authFunctions.getUserAccount,
     staleTime: Infinity,
@@ -207,12 +202,13 @@ export default function Dashboard() {
 
   const handleRequestPayout = () => {
     //@ts-ignore
-    if (session?.user?.user?.isKycVerified === true) {
-      setOpenAccountSelect(true);
-      //@ts-ignore
-    } else if (!session?.user?.user?.isKycVerified) {
-      setOpenRequestPayout(true);
-    }
+    // if (session?.user?.user?.isKycVerified === true) {
+    //   setOpenAccountSelect(true);
+    //   //@ts-ignore
+    // } else if (!session?.user?.user?.isKycVerified) {
+    //   setOpenRequestPayout(true);
+    // }
+    setOpenAccountSelect(true);
   };
 
   return (

@@ -15,6 +15,8 @@ import "swiper/css";
 import "swiper/css/pagination";
 import { payoutFn } from "@/app/utils/endpoints/payout";
 import { useQuery } from "@tanstack/react-query";
+import { authFunctions } from "@/app/utils/endpoints";
+import moment from "moment";
 
 const Payout = () => {
   const router = useRouter();
@@ -25,70 +27,35 @@ const Payout = () => {
   };
 
   const {
-    data: payoutData,
+    data,
     isLoading,
-    refetch: refetchEvent,
+    refetch: refetchPayouts,
   } = useQuery({
     queryKey: ["payouts", { page }],
     queryFn: () => payoutFn.getPayouts({ page } as any),
-    // select: (data) => {
-    //   const selectedEvents: = data?.events.map(
-    //     (event) => {
-    //       const startDate = event.start_date
-    //         ? `${formatDate(event.start_date)} | ${formatTime(
-    //             event.start_date
-    //           )}`
-    //         : null;
-    //       const quantity =
-    //         event.tickets[0]?.stock_qty != null
-    //           ? event.tickets[0].stock_qty
-    //           : null;
-    //       const lowestPrice = Math.min(
-    //         ...event.tickets.map((ticket: any) => ticket.price)
-    //       );
-    //       const highestPrice = Math.max(
-    //         ...event.tickets.map((ticket: any) => ticket.price)
-    //       );
-    //       const desc = event.tickets[0]?.description || null;
-    //       const img = event.medias[0]?.original || null;
-    //       const address = event.locations[0]?.address || "Online";
-    //       const status = event.status;
-
-    //       return {
-    //         id: event.id || null,
-    //         name: event.name || null,
-    //         startDate,
-    //         quantity,
-    //         desc,
-    //         img,
-    //         address,
-    //         status,
-    //         lowestPrice,
-    //         highestPrice,
-    //         slug: event.slug || null,
-    //       };
-    //     }
-    //   );
-
-    //   return {
-    //     events: selectedEvents,
-    //     pagination: data.pagination,
-    //   };
-    // },
   });
 
-  console.log("payoutData", payoutData);
+  const { data: walletData, refetch } = useQuery({
+    queryKey: ["wallet"],
+    queryFn: authFunctions.getUserToken,
+  });
+
+  console.log("walletData", walletData);
+
+  const payoutData = data?.events;
+  const pagination = data?.pagination;
+  const totalPages = pagination?.meta?.last_page;
 
   const adsCampaign = [
     {
       title: "Paid",
-      value: "₦266,679.00",
+      value: `₦${walletData?.debit || 0}`,
       icon: <FaMoneyBills color="#D90BD9" />,
       background: "#FCEDFC",
     },
     {
       title: "Net sales",
-      value: 30,
+      value: `₦${walletData?.balance || 0}`,
       icon: <FaMoneyBills color="#106BD5" />,
       background: "#EDF4FC",
     },
@@ -99,7 +66,7 @@ const Payout = () => {
       <Sidebar />
       <MobileFooter />
 
-      <main className="h-screen pb-24 md:pb-0 overflow-y-scroll flex-1 ">
+      <main className="h-screen pb-24 md:pb-0 overflow-y-scroll overflow-x-hidden flex-1 ">
         <div className="h-10 border-b w-full" />
         <div
           className="flex gap-3 items-center mx-[24px] my-3 font-medium cursor-pointer"
@@ -117,10 +84,10 @@ const Payout = () => {
             modules={[Pagination]}
             className="h-auto"
           >
-            {adsCampaign.map((item, i) => (
+            {adsCampaign?.map((item, i) => (
               <SwiperSlide
                 key={i}
-                style={{ width: "300px" }}
+                style={{ width: "250px" }}
                 className=" relative p-4 h-[140px] mb-12 bg-white shadow-lg rounded-e-md  border-[.4px] border-gray-300"
               >
                 <div className="absolute cursor-pointer top-4 right-4 text-sm">
@@ -137,6 +104,27 @@ const Payout = () => {
                 <p className="text-sm text-lightText">{item.title}</p>
               </SwiperSlide>
             ))}
+            <SwiperSlide
+              style={{ width: "250px" }}
+              className=" relative p-4 h-full mb-12 bg-white shadow-lg rounded-e-md  border-[.4px] border-gray-300 flex flex-col gap-5"
+            >
+              <div className="text-sm">
+                Next payment -{" "}
+                <span className="font-medium">
+                  {walletData?.next_payout_in
+                    ? moment(walletData?.next_payout_in).format("MMMM DD, YYYY")
+                    : "Not available"}
+                </span>
+              </div>
+              <div className="text-sm">
+                Available balance -{" "}
+                <span className="font-medium">
+                  {walletData?.available_payout
+                    ? `₦${walletData?.available_payout}`
+                    : "Not available"}
+                </span>
+              </div>
+            </SwiperSlide>
           </Swiper>
 
           <table className="w-full text-xs md:text-sm">
@@ -150,7 +138,21 @@ const Payout = () => {
                 <th className="text-left text-sm font-medium">Status</th>
               </tr>
             </thead>
-            <tbody></tbody>
+            <tbody>
+              {payoutData?.map((payout: any, i: number) => (
+                <tr
+                  key={i}
+                  className={`${
+                    i % 2 === 0 ? "bg-[#FBFAFC]" : "bg-white"
+                  } py-3 px-4`}
+                >
+                  <td className="w-[30%] text-sm">{payout.amount}</td>
+                  <td className="text-sm">{payout.bank_name}</td>
+                  <td className="text-sm">{payout.created_at}</td>
+                  <td className="text-sm">{payout.status}</td>
+                </tr>
+              ))}
+            </tbody>
           </table>
         </div>
       </main>

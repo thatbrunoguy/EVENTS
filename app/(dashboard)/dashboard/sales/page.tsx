@@ -344,7 +344,7 @@ export default function Guestlist() {
                 <div className="flex items-center justify-between mt-10 mb-8">
                   <h2 className="font-semibold text-2xl">Sales</h2>
 
-                  <button
+                  {/* <button
                     onClick={exportCSV}
                     className="border-primaryPurple border text-primaryPurple py-[10px] px-5 w-auto h-[41px] hover:bg-primaryPurple hover:text-white text-sm rounded-lg flex items-center space-x-[4px]"
                   >
@@ -357,7 +357,7 @@ export default function Guestlist() {
                     >
                       <p>Export as CSV</p>
                     </CSVLink>
-                  </button>
+                  </button> */}
                 </div>
 
                 <div className="h-auto">
@@ -374,7 +374,7 @@ export default function Guestlist() {
                 <div className="flex items-center justify-between mt-10 mb-8">
                   <h2 className="font-semibold text-2xl">Payment History</h2>
 
-                  <button
+                  {/* <button
                     onClick={exportCSV}
                     className="border-primaryPurple border text-primaryPurple py-[10px] px-5 w-auto h-[41px] hover:bg-primaryPurple hover:text-white text-sm rounded-lg flex items-center space-x-[4px]"
                   >
@@ -382,7 +382,7 @@ export default function Guestlist() {
                       <PiShareLight />
                     </div>
                     <p>Export as CSV</p>
-                  </button>
+                  </button> */}
                   {/* TABLE */}
                 </div>
 
