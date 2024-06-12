@@ -201,14 +201,13 @@ export default function Dashboard() {
   }, [salesAnalytics]);
 
   const handleRequestPayout = () => {
-    //@ts-ignore
-    // if (session?.user?.user?.isKycVerified === true) {
-    //   setOpenAccountSelect(true);
-    //   //@ts-ignore
-    // } else if (!session?.user?.user?.isKycVerified) {
-    //   setOpenRequestPayout(true);
-    // }
-    setOpenAccountSelect(true);
+    // @ts-ignore
+    if (session?.user?.user?.isKycVerified === true) {
+      setOpenAccountSelect(true);
+      //@ts-ignore
+    } else if (!session?.user?.user?.isKycVerified) {
+      setOpenRequestPayout(true);
+    }
   };
 
   return (
