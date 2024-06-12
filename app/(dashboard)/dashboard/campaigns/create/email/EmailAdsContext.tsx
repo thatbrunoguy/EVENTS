@@ -56,6 +56,8 @@ type DProps = {
   };
   setSelectedEvent: any;
   events: any;
+  quillValue: string;
+  setQuillValue: (value: any) => void;
 };
 
 const defaultValue: DProps = {
@@ -99,6 +101,8 @@ const defaultValue: DProps = {
   },
   setSelectedEvent: () => {},
   events: null,
+  quillValue: "",
+  setQuillValue: () => {},
 };
 
 export const EmailAdContext = createContext<DProps>(defaultValue);
@@ -138,6 +142,8 @@ export const EmailAdContextProvider = ({ children }: IProps) => {
       "  Don't miss out! Fill in the email below with a captivating description of these must-attend events.",
     media: [],
   });
+
+  const [quillValue, setQuillValue] = useState("Email header");
 
   const goBack = () => {
     router.push("/dashboard/campaigns");
@@ -181,7 +187,7 @@ export const EmailAdContextProvider = ({ children }: IProps) => {
     !!data.reply_to_email &&
     !!data.subject &&
     mailContent.selectedEvents.length > 0 &&
-    mailContent.emailHeader !== "Email Header" &&
+    quillValue !== "Email Header" &&
     !!selectedEvent;
 
   const createEmailCamp = useMutation({
@@ -215,6 +221,8 @@ export const EmailAdContextProvider = ({ children }: IProps) => {
         selectedEvent,
         setSelectedEvent,
         events,
+        quillValue,
+        setQuillValue,
       }}
     >
       {children}

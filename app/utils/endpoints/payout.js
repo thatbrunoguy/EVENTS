@@ -12,13 +12,13 @@ export const roles = {
   3: "Check-in attendees (Scan, Input & Check in attendees on the event day)",
 };
 
-export const teammateFn = {
-  getTeammates: async () => {
+export const payoutFn = {
+  getPayouts: async ({ page = 1 }) => {
     const TOKEN = getData(EVENTSPARROT_USER)?.token;
     const accountId = getData(EVENTSPARROT_USER)?.account?.id;
     try {
       const response = await axios.get(
-        `${BASE_URL}/account/${accountId}/team`,
+        `${BASE_URL}/account/${accountId}/payout?page=${page}`,
         {
           headers: {
             "Content-type": "application/json; charset=UTF-8",
@@ -34,79 +34,97 @@ export const teammateFn = {
         throw new Error(response.data.message);
       }
     } catch (error) {
-      toast.success(error.response.data.message);
       throw error;
     }
   },
 
-  //invite user
-  inviteUser: async (body) => {
+  //verify cac
+  verifyCac: async (cac) => {
+    const TOKEN = getData(EVENTSPARROT_USER)?.token;
+    try {
+      const response = await axios.post(`${BASE_URL}/kyc/business`, cac, {
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+          "X-APP-KEY": APP_KEY,
+          Authorization: `Bearer ${TOKEN}`,
+        },
+      });
+
+      if (response.data && response.data.status === true) {
+        return response.data.data;
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  //get banks
+  getBanks: async () => {
+    const TOKEN = getData(EVENTSPARROT_USER)?.token;
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/payment/banks?perPage=100&next=YmFuazozMjI=`,
+        {
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            "X-APP-KEY": APP_KEY,
+            Authorization: `Bearer ${TOKEN}`,
+          },
+        }
+      );
+
+      if (response.data && response.data.status === true) {
+        return response.data.data;
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      return error;
+    }
+  },
+
+  //get single bank
+  getBank: async (data) => {
+    const TOKEN = getData(EVENTSPARROT_USER)?.token;
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/payment/bank-details?bank_code=${data.bank_code}&account_number=${data.account_number}`,
+        {
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            "X-APP-KEY": APP_KEY,
+            Authorization: `Bearer ${TOKEN}`,
+          },
+        }
+      );
+
+      if (response.data && response.data.status === true) {
+        return response.data.data;
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      return error;
+    }
+  },
+
+  //save user bank
+  saveBankDetails: async (data) => {
     const TOKEN = getData(EVENTSPARROT_USER)?.token;
     const accountId = getData(EVENTSPARROT_USER)?.account?.id;
     try {
       const response = await axios.post(
-        `${BASE_URL}/account/${accountId}/invite`,
-        body,
+        `${BASE_URL}/account/${accountId}/bank`,
+        {
+          bank_code: data.bank_code,
+          bank_name: data.bank_name,
+          account_number: data.account_number,
+        },
         {
           headers: {
-            "Content-type": "application/json; charset=UTF-8",
-            "X-APP-KEY": APP_KEY,
-            Authorization: `Bearer ${TOKEN}`,
-          },
-        }
-      );
-      console.log("response", response);
-      if (response.data && response.data.status === true) {
-        toast.success(response.data.message);
-        return response.data.data;
-      } else {
-        throw new Error(response.data.message);
-      }
-    } catch (error) {
-      toast.success(error.response.data.message);
-      throw error;
-    }
-  },
-
-  //accept invite
-  acceptInvite: async (inviteId, body) => {
-    const TOKEN = getData(EVENTSPARROT_USER)?.token;
-    const accountId = getData(EVENTSPARROT_USER)?.account?.id;
-    try {
-      const response = await axios.post(
-        `${BASE_URL}/account/${accountId}/invite/${inviteId}`,
-        body,
-        {
-          headers: {
-            "Content-type": "application/json; charset=UTF-8",
-            "X-APP-KEY": APP_KEY,
-            Authorization: `Bearer ${TOKEN}`,
-          },
-        }
-      );
-      console.log("response", response);
-      if (response.data && response.data.status === true) {
-        toast.success(response.data.message);
-        return response.data.data;
-      } else {
-        throw new Error(response.data.message);
-      }
-    } catch (error) {
-      toast.success(error.response.data.message);
-      throw error;
-    }
-  },
-
-  //delete teammate invite
-  deleteMember: async (teamId) => {
-    const TOKEN = getData(EVENTSPARROT_USER)?.token;
-    const accountId = getData(EVENTSPARROT_USER)?.account?.id;
-    try {
-      const response = await axios.delete(
-        `${BASE_URL}/account/${accountId}/team/${teamId}`,
-        {
-          headers: {
-            "Content-type": "application/json; charset=UTF-8",
+            "Content-Type": "application/json; charset=UTF-8",
             "X-APP-KEY": APP_KEY,
             Authorization: `Bearer ${TOKEN}`,
           },
@@ -114,13 +132,12 @@ export const teammateFn = {
       );
 
       if (response.data && response.data.status === true) {
-        toast.success(response.data.message);
         return response.data.data;
       } else {
         throw new Error(response.data.message);
       }
     } catch (error) {
-      toast.success(error.response.data.message);
+      toast.error(error.response.data.message);
       throw error;
     }
   },
