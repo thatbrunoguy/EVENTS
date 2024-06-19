@@ -120,13 +120,7 @@ export default function Dashboard() {
     staleTime: Infinity,
   });
 
-  const isAccountOwner = useMemo(() => {
-    if (accountInfo && userAccount) {
-      return accountInfo?.owner[0]?.full_name === userAccount[0]?.name;
-    } else {
-      return false;
-    }
-  }, [accountInfo, userAccount]);
+  const isAccountOwner = accountInfo?.owner[0]?.is_owner_of_account === 1;
 
   if (status === "success") {
     const activeAccount = getData(EVENTSPARROT_USER)?.account;

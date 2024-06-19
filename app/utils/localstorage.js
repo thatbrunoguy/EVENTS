@@ -1,8 +1,11 @@
+import Cookies from "js-cookie";
+
 export function storeData(key, data) {
   if (typeof window !== "undefined") {
     try {
       const serializedData = JSON.stringify(data);
       localStorage.setItem(key, serializedData);
+
       // console.log(`Data stored successfully with key: ${key}`);
     } catch (error) {
       console.error("Error storing data:", error);
