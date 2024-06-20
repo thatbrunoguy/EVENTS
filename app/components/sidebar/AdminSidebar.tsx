@@ -64,7 +64,7 @@ const AdminSidebar = () => {
       </div>
 
       <div className="flex items-center space-x-3 text-base px-4 py-3 text-gray-500 rounded-2xl hover:bg-lightPurple hover:text-primaryPurple hover:font-semibold">
-        <button>Sign out</button>
+        <button onClick={handleSignOutClick}>Sign out</button>
       </div>
     </div>
   );

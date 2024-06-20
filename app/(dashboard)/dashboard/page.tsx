@@ -5,7 +5,7 @@ import Sidebar from "../../components/sidebar/Sidebar";
 import Link from "next/link";
 import { HiOutlineSpeakerWave } from "react-icons/hi2";
 import { GoInfo } from "react-icons/go";
-import { useEffect, useMemo, useState } from "react";
+import { use, useEffect, useMemo, useState } from "react";
 import {
   FaFacebook,
   FaInstagram,
@@ -39,6 +39,7 @@ import AccountSubmission from "./payout/AccountSubmission";
 import VerificationPending from "./payout/VerificationPending";
 import { IoIosAlert } from "react-icons/io";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const emailCampaign = [
   {
@@ -64,6 +65,7 @@ const emailCampaign = [
 ];
 
 export default function Dashboard() {
+  const router = useRouter();
   const [selectedEvent, setSelectedEvent] = useState({
     name: "",
     eventId: "",
@@ -194,9 +196,25 @@ export default function Dashboard() {
     }));
   }, [salesAnalytics]);
 
+  let updatedAccount = userAccount && userAccount[0];
+  useEffect(() => {
+    const activeAccount = getData(EVENTSPARROT_USER)?.account;
+    if (activeAccount) updatedAccount = activeAccount;
+  }, []);
+
   const handleRequestPayout = () => {
     // @ts-ignore
-    if (session?.user?.user?.isKycVerified === true) {
+    if (
+      // @ts-ignore
+      session?.user?.user?.isKycVerified === true &&
+      updatedAccount?.has_bank
+    ) {
+      router.push("/dashboard/payout");
+    } else if (
+      // @ts-ignore
+      session?.user?.user?.isKycVerified === true &&
+      !updatedAccount?.has_bank
+    ) {
       setOpenAccountSelect(true);
       //@ts-ignore
     } else if (!session?.user?.user?.isKycVerified) {
@@ -204,6 +222,7 @@ export default function Dashboard() {
     }
   };
 
+  console.log("updatedAccount", updatedAccount);
   return (
     <section className="flex ">
       <Sidebar />

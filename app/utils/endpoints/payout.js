@@ -141,4 +141,62 @@ export const payoutFn = {
       throw error;
     }
   },
+
+  //request payout
+  requestPayout: async (data) => {
+    const TOKEN = getData(EVENTSPARROT_USER)?.token;
+    const accountId = getData(EVENTSPARROT_USER)?.account?.id;
+    try {
+      const response = await axios.post(
+        `${BASE_URL}/account/${accountId}/payout`,
+        {
+          amount: data.amount,
+          user_bank: data.user_bank,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json; charset=UTF-8",
+            "X-APP-KEY": APP_KEY,
+            Authorization: `Bearer ${TOKEN}`,
+          },
+        }
+      );
+
+      if (response.data && response.data.status === true) {
+        return response.data.data;
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      toast.error(error.response.data.message);
+      throw error;
+    }
+  },
+
+  //get user bank
+  getBankDetails: async (data) => {
+    const TOKEN = getData(EVENTSPARROT_USER)?.token;
+    const accountId = getData(EVENTSPARROT_USER)?.account?.id;
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/account/${accountId}/bank`,
+        {
+          headers: {
+            "Content-Type": "application/json; charset=UTF-8",
+            "X-APP-KEY": APP_KEY,
+            Authorization: `Bearer ${TOKEN}`,
+          },
+        }
+      );
+
+      if (response.data && response.data.status === true) {
+        return response.data.data;
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      toast.error(error.response.data.message);
+      throw error;
+    }
+  },
 };
