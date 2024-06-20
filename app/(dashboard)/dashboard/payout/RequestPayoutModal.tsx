@@ -17,22 +17,20 @@ type Iprops = {
 const RequestPayoutModal = ({ setIsModalOpen, setOpenNextModal }: Iprops) => {
   const { data: session } = useSession();
   const [openDojah, setOpenDojah] = useState(false);
-  const [trackDojah, setTrackDojah] = useState("rest");
 
   const router = useRouter();
 
   const handleVerify = () => {
-    // setOpenNextModal(true);
     setOpenDojah(true);
-    // setIsModalOpen(false);
   };
 
-  const appID = "6633bda644965600406cca04";
-  const publicKey = "test_pk_XIYxOrNa6gj8FtIjmsnXJrb0U";
+  const appID = process.env.NEXT_PUBLIC_DOJAH_APP_ID;
+  const publicKey = process.env.NEXT_PUBLIC_DOJAH_PUBLIC_KEY;
   const type = "custom";
 
   const config = {
-    widget_id: "66618c205be915004061689f",
+    widget_id: process.env.NEXT_PUBLIC_DOJAH_WIDGET_ID,
+    webhook: true,
   };
 
   const userData = {
@@ -43,6 +41,8 @@ const RequestPayoutModal = ({ setIsModalOpen, setOpenNextModal }: Iprops) => {
     residence_country: "NG",
     //@ts-ignore
     email: `${session?.user?.user?.email}`,
+    //@ts-ignore
+    account_id: `${session?.user?.user?.id}`,
   };
 
   const metadata = {
@@ -57,16 +57,7 @@ const RequestPayoutModal = ({ setIsModalOpen, setOpenNextModal }: Iprops) => {
     } else if (type === "close") {
       window.location.reload();
     }
-    // else if(type === 'error'){
-    // }else if(type === 'close'){
-    // }else if(type === 'begin'){
-    // }else if(type === 'loading'){
-    // }
   };
-
-  useEffect(() => {
-    if (trackDojah === "close") setIsModalOpen(false);
-  }, [trackDojah]);
 
   return (
     <>

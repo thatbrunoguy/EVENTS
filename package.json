@@ -23,6 +23,7 @@
     "@types/react-data-grid": "^4.0.12",
     "add": "^2.0.6",
     "axios": "^1.6.7",
+    "js-cookie": "^3.0.5",
     "moment": "^2.30.1",
     "next": "14.0.4",
     "next-auth": "^4.24.5",

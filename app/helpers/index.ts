@@ -98,3 +98,16 @@ export const formatDateTime = (dateString: any): string => {
 
   return formattedDate;
 };
+
+export const maskNumber = (number: number | string) => {
+  if (!number) return;
+  let numStr = number?.toString();
+
+  if (numStr?.length !== 10) {
+    throw new Error("The number must be exactly 10 digits long");
+  }
+
+  let maskedNum = numStr?.slice(0, 7)?.replace(/\d/g, "*") + numStr?.slice(7);
+
+  return maskedNum;
+};
