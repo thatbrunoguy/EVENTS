@@ -14,6 +14,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { addToLocalStorage, storeData } from "@/app/utils/localstorage";
 import { EVENTSPARROT_ADMIN, EVENTSPARROT_USER } from "@/app/constants";
 import { authFunctions } from "@/app/utils/endpoints";
+import Cookies from "js-cookie";
 
 const Login = () => {
   const router = useRouter();
@@ -43,6 +44,10 @@ const Login = () => {
 
       if (res) {
         addToLocalStorage(EVENTSPARROT_USER, "account", res[0]);
+        Cookies.set("account", JSON.stringify(res[0]), {
+          expires: 7,
+          path: "/",
+        });
         await getAccount();
 
         if (res[0].events_count > 0) {

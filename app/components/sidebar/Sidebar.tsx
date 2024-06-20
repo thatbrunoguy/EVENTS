@@ -27,6 +27,7 @@ import {
 } from "@/app/utils/localstorage";
 import { roles } from "@/app/utils/endpoints/teammate";
 import { BiLogOutCircle } from "react-icons/bi";
+import Cookies from "js-cookie";
 
 const routes = [
   {
@@ -106,9 +107,13 @@ const Sidebar = () => {
 
   const handleWorkspaceSwitch = (workspace: any) => {
     addToLocalStorage(EVENTSPARROT_USER, "account", workspace);
+    Cookies.set("account", JSON.stringify(workspace), {
+      expires: 7,
+      path: "/",
+    });
     removeFromLocalStorage("activeEvent");
-    router.push("/dashboard");
     queryClient.invalidateQueries();
+    router.push("/dashboard");
   };
 
   // if(status === "authenticated"){

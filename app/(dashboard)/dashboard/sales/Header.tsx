@@ -5,6 +5,7 @@ import {
 } from "react-icons/md";
 import React from "react";
 import { Carousel, ScrollingCarousel } from "@trendyol-js/react-carousel";
+import { useRouter } from "next/navigation";
 
 type ListItem = {
   title: string;
@@ -27,6 +28,7 @@ const Right = () => {
 };
 
 const DashHeader = ({ data }: any) => {
+  const router = useRouter();
   const list: ListItem[] = [
     { title: "Tickets sold", total: 704 },
     { title: "Sales revenue", total: "₦1,377,900.00" },
@@ -51,7 +53,10 @@ const DashHeader = ({ data }: any) => {
             <p className="text-lightText text-center">{item.title}</p>
           </div>
           {i === 2 && (
-            <button className="py-[10px] hover:bg-opacity-50 px-3 md:px-5 rounded-md text-sm text-white h-10 bg-primaryPurple grid place-content-center">
+            <button
+              onClick={() => router.push("/dashboard/payout")}
+              className="py-[10px] hover:bg-opacity-50 px-3 md:px-5 rounded-md text-sm text-white h-10 bg-primaryPurple grid place-content-center"
+            >
               Payout Now
             </button>
           )}

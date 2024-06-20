@@ -219,7 +219,7 @@ export const authFunctions = {
         throw new Error(response.data.message);
       }
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error?.response?.data?.message);
     }
   },
   getUserToken: async () => {
