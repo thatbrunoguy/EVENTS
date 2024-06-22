@@ -27,6 +27,7 @@ import {
 } from "@/app/utils/localstorage";
 import { roles } from "@/app/utils/endpoints/teammate";
 import { BiLogOutCircle } from "react-icons/bi";
+//@ts-ignore
 import Cookies from "js-cookie";
 
 const routes = [
