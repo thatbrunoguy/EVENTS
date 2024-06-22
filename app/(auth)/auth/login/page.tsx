@@ -14,6 +14,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { addToLocalStorage, storeData } from "@/app/utils/localstorage";
 import { EVENTSPARROT_ADMIN, EVENTSPARROT_USER } from "@/app/constants";
 import { authFunctions } from "@/app/utils/endpoints";
+//@ts-ignore
 import Cookies from "js-cookie";
 
 const Login = () => {
