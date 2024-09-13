@@ -1042,7 +1042,7 @@ const CreateAndEditEvent = () => {
                         <div className="w-[100%]">
                           <p className="text-sm text-lightText">Url</p>
                           <div className="flex items-center">
-                            <p>eventsparrot.com/ </p>
+                            <p>eventsparrot.com/events/ </p>
                             <p>{eventInfo.slug}</p>
                             {slugCheck?.exists && <CiWarning color="red" />}
                           </div>
