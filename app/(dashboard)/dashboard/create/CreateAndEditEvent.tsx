@@ -1081,7 +1081,7 @@ const CreateAndEditEvent = () => {
                           </label>
                           <div className="grid grid-cols-3 gap-4">
                             <input
-                              value={"eventsparrot.com/"}
+                              value={"eventsparrot.com/events/"}
                               readOnly
                               type="text"
                               className="h-[56px] text-sm w-full text-gray-600 px-3 mt-2 block bg-[#F8F8F8] rounded-lg outline-purple-600 col-span-1"
